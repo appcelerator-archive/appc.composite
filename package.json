@@ -1,0 +1,37 @@
+{
+	"name": "appc.composite",
+	"description": "Composite connector",
+	"version": "1.0.0",
+	"author": "Dawson Toth",
+	"maintainers": [
+		"Dawson Toth <dtoth@appcelerator.com>"
+	],
+	"license": "Apache2",
+	"framework": "none",
+	"keywords": [
+		"apibuilder",
+		"apibuilder-connector"
+	],
+	"repository": {},
+	"scripts": {
+		"test": "grunt",
+		"start": "node ./app.js"
+	},
+	"private": true,
+	"dependencies": {
+		"appcelerator": "*",
+		"highlight.js": "^8.2.0",
+		"pkginfo": "^0.3.0"
+	},
+	"devDependencies": {
+		"apibuilder": "*",
+		"async": "^0.9.0",
+		"grunt": "^0.4.5",
+		"grunt-contrib-clean": "^0.6.0",
+		"grunt-contrib-jshint": "^0.10.0",
+		"grunt-kahvesi": "^0.1.0",
+		"grunt-mocha-test": "^0.12.0",
+		"should": "^4.0.4"
+	},
+	"appcelerator": {}
+}
