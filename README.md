@@ -10,6 +10,24 @@ To install:
 $ appc install appc.composite --save
 ```
 
+To use the tests, you'll want to create a database in MySQL with the following table:
+
+```
+CREATE TABLE user
+(
+	id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	first_name VARCHAR(255),
+	last_name VARCHAR(255)
+);
+INSERT INTO user (first_name, last_name) VALUES ('Dawson', 'Toth');
+```
+
+Then you can create an article with a JSON body like this:
+
+```
+{ "title": "My Test Title", "content": "My articles content goes here.", "author_id": 1 }
+```
+
 # License
 
 This source code is licensed as part of the Appcelerator Enterprise Platform and subject to the End User License Agreement and Enterprise License and Ordering Agreement. Copyright (c) 2014 by Appcelerator, Inc. All Rights Reserved. This source code is Proprietary and Confidential to Appcelerator, Inc.

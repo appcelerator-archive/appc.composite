@@ -6,5 +6,14 @@ module.exports = {
 	admin: {
 		enabled: true,
 		prefix: '/mobware'
-	}
+	},
+
+	// MySQL
+	host: 'localhost',
+	database: 'connector',
+	user: 'root',
+	password: 'root',
+
+	// Mongo
+	url: 'mongodb://localhost/mobware'
 };

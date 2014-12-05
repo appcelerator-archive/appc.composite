@@ -2,13 +2,24 @@ var APIBuilder = require('apibuilder'),
 	server = new APIBuilder(),
 	ConnectorFactory = require('./lib'),
 	Connector = ConnectorFactory.create(APIBuilder, server),
-	connector = new Connector();
+	connector = new Connector({
+		sourceConnectors: [
+			{
+				connector: 'appc.mongo',
+				// optionally:
+				config: {}
+			},
+			{
+				connector: 'appc.mysql'
+			}
+		]
+	});
 
 server.addModel(APIBuilder.createModel('article', {
 	fields: {
 		title: { type: String, source: 'mongo' },
 		content: { type: String, source: 'mongo' },
-		author_id: { type: String, source: 'mongo' },
+		author_id: { type: Number, source: 'mongo' },
 		author_first_name: { type: String, source: 'mysql', name: 'first_name', required: false },
 		author_last_name: { type: String, source: 'mysql', name: 'last_name', required: false }
 	},
@@ -21,7 +32,7 @@ server.addModel(APIBuilder.createModel('article', {
 					id: 'mongo',
 					connector: 'appc.mongo',
 					metadata: {
-						mongo: {
+						'appc.mongo': {
 							table: 'post'
 						}
 					}
@@ -30,14 +41,12 @@ server.addModel(APIBuilder.createModel('article', {
 					id: 'mysql',
 					connector: 'appc.mysql',
 					metadata: {
-						mysql: {
+						'appc.mysql': {
 							table: 'user'
 						}
 					},
 					left_join: {
-						mongo: {
-							'post.author_id': 'user.id'
-						}
+						'id': 'author_id'
 					}
 				}
 			]
