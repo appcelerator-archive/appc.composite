@@ -1,50 +1,50 @@
-var APIBuilder = require('apibuilder'),
-	server = new APIBuilder(),
-	ConnectorFactory = require('./lib'),
-	Connector = ConnectorFactory.create(APIBuilder, server),
-	connector = new Connector({
-		sourceConnectors: [
-			{
-				connector: 'appc.mongo',
-				// optionally:
-				config: {}
-			},
-			{
-				connector: 'appc.mysql'
-			}
-		]
-	});
+var APIBuilder = require('appcelerator').apibuilder,
+	server = new APIBuilder();
 
-server.addModel(APIBuilder.createModel('article', {
+/*
+
+ Add two traditional models from two different connectors.
+
+ */
+server.addModel(APIBuilder.Model.extend('user', {
 	fields: {
-		title: { type: String, source: 'mongo' },
-		content: { type: String, source: 'mongo' },
-		author_id: { type: Number, source: 'mongo' },
-		author_first_name: { type: String, source: 'mysql', name: 'first_name', required: false },
-		author_last_name: { type: String, source: 'mysql', name: 'last_name', required: false }
+		first_name: { type: String },
+		last_name: { type: String }
 	},
-	connector: connector, // aka 'appc.composite'
+	connector: 'appc.mysql'
+}));
+server.addModel(APIBuilder.Model.extend('post', {
+	fields: {
+		title: { type: String },
+		content: { type: String },
+		author_id: { type: Number }
+	},
+	connector: 'appc.mongo'
+}));
+
+/*
+
+ Now create a composite model that uses both of them.
+
+ */
+server.addModel(APIBuilder.Model.extend('article', {
+	fields: {
+		title: { type: String },
+		content: { type: String },
+		author_id: { type: Number },
+		author_first_name: { type: String, name: 'first_name', required: false },
+		author_last_name: { type: String, name: 'last_name', required: false }
+	},
+	connector: 'appc.composite',
 
 	metadata: {
 		composite: {
-			sources: [
+			models: [
 				{
-					id: 'mongo',
-					connector: 'appc.mongo',
-					metadata: {
-						'appc.mongo': {
-							table: 'post'
-						}
-					}
+					name: 'post'
 				},
 				{
-					id: 'mysql',
-					connector: 'appc.mysql',
-					metadata: {
-						'appc.mysql': {
-							table: 'user'
-						}
-					},
+					name: 'user',
 					left_join: {
 						'id': 'author_id'
 					}
@@ -52,26 +52,6 @@ server.addModel(APIBuilder.createModel('article', {
 			]
 		}
 	}
-
-	/*
-	 This connector handles CRUD in this way:
-
-	 - findAll:
-	 - - with the first source, we do a findAll
-	 - - for subsequent sources, we do a query, utilizing the join, and mixing in the results
-
-	 - findOne:
-	 - - with the first source, we do a findOne
-	 - - for subsequent sources, we do a query, utilizing the join, and mixing in the results
-
-	 - create / save:
-	 - - none of the joined fields are required?
-
-	 - delete:
-	 - - we don't cascade 
-
-	 */
-
 }));
 
 server.start(function() {

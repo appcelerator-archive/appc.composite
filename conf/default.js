@@ -15,5 +15,7 @@ module.exports = {
 	password: 'root',
 
 	// Mongo
-	url: 'mongodb://localhost/mobware'
+	url: 'mongodb://localhost/mobware',
+
+	connectors: {}
 };

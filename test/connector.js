@@ -1,57 +1,52 @@
 var should = require('should'),
 	async = require('async'),
 	url = require('url'),
-	APIBuilder = require('apibuilder'),
+	APIBuilder = require('appcelerator').apibuilder,
 	server = new APIBuilder(),
-	Connector = require('../').create(APIBuilder, server),
+	Connector = require('../lib').create(APIBuilder, server),
 	log = APIBuilder.createLogger({}, { name: 'api-connector-composite TEST', useConsole: true, level: 'info' });
 
 describe('Connector', function() {
 
-	var connector = new Connector({
-			sourceConnectors: [
-				{
-					connector: 'appc.mongo',
-					// optionally:
-					config: {
-						// some additional config can go here
-					}
-				},
-				{
-					connector: 'appc.mysql'
-				}
-			]
-		}),
-		Model = APIBuilder.Model.extend('article', {
+	var connector = new Connector(),
+	/*
+	 Done: c1. Use models.
+	 TODO: c2. Also do model without any join.
+	 TODO: c3. No join, but common input param to query multiple.
+	 */
+		UserModel = APIBuilder.Model.extend('user', {
 			fields: {
-				title: { type: String, source: 'mongo' },
-				content: { type: String, source: 'mongo' },
-				author_id: { type: Number, source: 'mongo' },
-				author_first_name: { type: String, source: 'mysql', name: 'first_name', required: false },
-				author_last_name: { type: String, source: 'mysql', name: 'last_name', required: false }
+				first_name: { type: String },
+				last_name: { type: String }
+			},
+			connector: 'appc.mysql'
+		}),
+		PostModel = APIBuilder.Model.extend('post', {
+			fields: {
+				title: { type: String },
+				content: { type: String },
+				author_id: { type: Number }
+			},
+			connector: 'appc.mongo'
+		}),
+		JoinedModel = APIBuilder.Model.extend('article', {
+			fields: {
+				title: { type: String },
+				content: { type: String },
+				author_id: { type: Number },
+				author_first_name: { type: String, name: 'first_name', required: false },
+				author_last_name: { type: String, name: 'last_name', required: false }
 			},
 			connector: connector,
 
 			metadata: {
 				composite: {
-					sources: [
+					models: [
 						{
-							id: 'mongo',
-							connector: 'appc.mongo',
-							metadata: {
-								'appc.mongo': {
-									table: 'post'
-								}
-							}
+							name: 'post'
 						},
 						{
-							id: 'mysql',
-							connector: 'appc.mysql',
-							metadata: {
-								'appc.mysql': {
-									table: 'user'
-								}
-							},
+							name: 'user',
 							left_join: {
 								'id': 'author_id'
 							}
@@ -59,14 +54,42 @@ describe('Connector', function() {
 					]
 				}
 			}
+		}),
+		BatchedModel = APIBuilder.Model.extend('users_posts', {
+			fields: {
+				users: { collection: 'user' },
+				posts: { collection: 'post' }
+			},
+			connector: connector,
+
+			metadata: {
+				composite: {
+					models: [
+						{
+							model: 'post'
+						},
+						{
+							model: 'user'
+						}
+					]
+				}
+			}
 		});
 
-	/*before(function(next) {
-	 connector.connect(next);
-	 });
-	 after(function(next) {
-	 connector.disconnect(next);
-	 });*/
+	before(function(next) {
+		server.addModel(UserModel);
+		server.addModel(PostModel);
+		server.addModel(JoinedModel);
+		server.addModel(BatchedModel);
+
+		server.start(function() {
+			next();
+		});
+	});
+
+	after(function(next) {
+		server.stop(next);
+	});
 
 	it('should be able to create instance', function(next) {
 
@@ -75,7 +98,7 @@ describe('Connector', function() {
 			content: 'Test Content',
 			author_id: 1
 		};
-		Model.create(obj, function(err, instance) {
+		JoinedModel.create(obj, function(err, instance) {
 			should(err).be.not.ok;
 			should(instance).be.an.Object;
 			should(instance.getPrimaryKey()).be.ok;
@@ -95,11 +118,11 @@ describe('Connector', function() {
 			content: 'Test Content',
 			author_id: 1
 		};
-		Model.create(obj, function(err, instance) {
+		JoinedModel.create(obj, function(err, instance) {
 			should(err).be.not.ok;
 			should(instance).be.an.Object;
 			var id = instance.getPrimaryKey();
-			Model.find(id, function(err, instance2) {
+			JoinedModel.find(id, function(err, instance2) {
 				should(err).be.not.ok;
 				should(instance2).be.an.Object;
 				should(instance2.getPrimaryKey()).equal(id);
@@ -120,7 +143,7 @@ describe('Connector', function() {
 			content: 'Test Content',
 			author_id: 1
 		};
-		Model.create(obj, function(err, instance) {
+		JoinedModel.create(obj, function(err, instance) {
 			should(err).be.not.ok;
 			should(instance).be.an.Object;
 			var options = {
@@ -130,7 +153,7 @@ describe('Connector', function() {
 				limit: 3,
 				skip: 0
 			};
-			Model.query(options, function(err, coll) {
+			JoinedModel.query(options, function(err, coll) {
 				should(err).be.not.ok;
 
 				async.eachSeries(coll, function(model, next) {
@@ -161,7 +184,7 @@ describe('Connector', function() {
 			}
 		];
 
-		Model.create(objs, function(err, coll) {
+		JoinedModel.create(objs, function(err, coll) {
 			should(err).be.not.ok;
 			should(coll.length).equal(objs.length);
 
@@ -170,7 +193,7 @@ describe('Connector', function() {
 				keys.push(post.getPrimaryKey());
 			});
 
-			Model.find(function(err, coll2) {
+			JoinedModel.find(function(err, coll2) {
 				should(err).be.not.ok;
 				should(coll2.length).be.greaterThan(coll.length - 1);
 
@@ -194,7 +217,7 @@ describe('Connector', function() {
 			author_id: 1
 		};
 
-		Model.create(obj, function(err, instance) {
+		JoinedModel.create(obj, function(err, instance) {
 			should(err).be.not.ok;
 			should(instance).be.an.Object;
 			var id = instance.getPrimaryKey();
