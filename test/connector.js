@@ -11,70 +11,16 @@ describe('Connector', function() {
 	var connector = new Connector(),
 	/*
 	 Done: c1. Use models.
-	 TODO: c2. Also do model without any join.
-	 TODO: c3. No join, but common input param to query multiple.
+	 Done: c2. Also do model without any join.
+	 Done: c3. No join, but common input param to query multiple.
 	 */
-		UserModel = APIBuilder.Model.extend('user', {
-			fields: {
-				first_name: { type: String },
-				last_name: { type: String }
-			},
-			connector: 'appc.mysql'
-		}),
-		PostModel = APIBuilder.Model.extend('post', {
-			fields: {
-				title: { type: String },
-				content: { type: String },
-				author_id: { type: Number }
-			},
-			connector: 'appc.mongo'
-		}),
-		JoinedModel = APIBuilder.Model.extend('article', {
-			fields: {
-				title: { type: String },
-				content: { type: String },
-				author_id: { type: Number },
-				author_first_name: { type: String, name: 'first_name', required: false },
-				author_last_name: { type: String, name: 'last_name', required: false }
-			},
-			connector: connector,
+		UserModel = require('./models/user')(APIBuilder),
+		PostModel = require('./models/post')(APIBuilder),
+		JoinedModel = require('./models/article')(APIBuilder, connector),
+		BatchedModel = require('./models/user_post')(APIBuilder, connector);
 
-			metadata: {
-				composite: {
-					models: [
-						{
-							name: 'post'
-						},
-						{
-							name: 'user',
-							left_join: {
-								'id': 'author_id'
-							}
-						}
-					]
-				}
-			}
-		}),
-		BatchedModel = APIBuilder.Model.extend('users_posts', {
-			fields: {
-				users: { collection: 'user' },
-				posts: { collection: 'post' }
-			},
-			connector: connector,
-
-			metadata: {
-				composite: {
-					models: [
-						{
-							model: 'post'
-						},
-						{
-							model: 'user'
-						}
-					]
-				}
-			}
-		});
+	var firstUserID,
+		firstPostID;
 
 	before(function(next) {
 		server.addModel(UserModel);
@@ -83,7 +29,29 @@ describe('Connector', function() {
 		server.addModel(BatchedModel);
 
 		server.start(function() {
-			next();
+			UserModel.create({
+				first_name: 'Dawson',
+				last_name: 'Toth'
+			}, function(err, instance) {
+				firstUserID = instance.getPrimaryKey();
+
+				PostModel.create({
+					title: 'Test Title',
+					content: 'Test Content',
+					author_id: firstUserID
+				}, function(err, instance) {
+					firstPostID = instance.getPrimaryKey();
+					next();
+				});
+			});
+		});
+	});
+
+	after(function(next) {
+		UserModel.deleteAll(function() {
+			PostModel.deleteAll(function() {
+				next();
+			});
 		});
 	});
 
@@ -96,7 +64,7 @@ describe('Connector', function() {
 		var obj = {
 			title: 'Test Title',
 			content: 'Test Content',
-			author_id: 1
+			author_id: firstUserID
 		};
 		JoinedModel.create(obj, function(err, instance) {
 			should(err).be.not.ok;
@@ -106,7 +74,7 @@ describe('Connector', function() {
 			should(instance.content).equal(obj.content);
 			should(instance.author_first_name).equal('Dawson');
 			should(instance.author_last_name).equal('Toth');
-			instance.delete(next);
+			next();
 		});
 
 	});
@@ -116,7 +84,7 @@ describe('Connector', function() {
 		var obj = {
 			title: 'Test Title',
 			content: 'Test Content',
-			author_id: 1
+			author_id: firstUserID
 		};
 		JoinedModel.create(obj, function(err, instance) {
 			should(err).be.not.ok;
@@ -130,7 +98,7 @@ describe('Connector', function() {
 				should(instance2.content).equal(obj.content);
 				should(instance2.author_first_name).equal('Dawson');
 				should(instance2.author_last_name).equal('Toth');
-				instance.delete(next);
+				next();
 			});
 		});
 
@@ -141,7 +109,7 @@ describe('Connector', function() {
 		var obj = {
 			title: 'Test Title',
 			content: 'Test Content',
-			author_id: 1
+			author_id: firstUserID
 		};
 		JoinedModel.create(obj, function(err, instance) {
 			should(err).be.not.ok;
@@ -162,7 +130,6 @@ describe('Connector', function() {
 					should(model.content).be.a.String;
 					should(model.author_first_name).be.a.String;
 					should(model.author_last_name).be.not.ok;
-					model.remove(next);
 				}, callback);
 			});
 		});
@@ -175,12 +142,12 @@ describe('Connector', function() {
 			{
 				title: 'Test Title 1',
 				content: 'Test Content 1',
-				author_id: 1
+				author_id: firstUserID
 			},
 			{
 				title: 'Test Title 2',
 				content: 'Test Content 2',
-				author_id: 1
+				author_id: firstUserID
 			}
 		];
 
@@ -197,9 +164,9 @@ describe('Connector', function() {
 				should(err).be.not.ok;
 				should(coll2.length).be.greaterThan(coll.length - 1);
 
-				async.eachSeries(coll2, function(post, next_) {
+				async.eachSeries(coll2, function(post, cb) {
 					should(post).be.an.Object;
-					post.delete(next_);
+					cb();
 				}, function(err) {
 					next(err);
 				});
@@ -214,7 +181,7 @@ describe('Connector', function() {
 		var obj = {
 			title: 'Test Title',
 			content: 'Test Content',
-			author_id: 1
+			author_id: firstUserID
 		};
 
 		JoinedModel.create(obj, function(err, instance) {
@@ -230,10 +197,72 @@ describe('Connector', function() {
 				should(result.content).equal('Goodbye world');
 				should(result.author_first_name).equal('Dawson');
 				should(result.author_last_name).equal('Toth');
-				instance.delete(next);
+				next();
 			});
 		});
 
+	});
+
+	it('should be able to batched find all', function(next) {
+		var user1Data = { first_name: 'Dawson1', last_name: 'Toth1' },
+			user2Data = { first_name: 'Dawson2', last_name: 'Toth2' },
+			post1Data = { title: 'Title1', content: 'Content1', author_id: firstUserID },
+			post2Data = { title: 'Title2', content: 'Content2', author_id: firstUserID };
+
+		// Create test data.
+		UserModel.create(user1Data, function(err, user1) {
+			should(err).be.not.ok;
+			UserModel.create(user2Data, function(err, user2) {
+				should(err).be.not.ok;
+				PostModel.create(post1Data, function(err, post1) {
+					should(err).be.not.ok;
+					PostModel.create(post2Data, function(err, post2) {
+						should(err).be.not.ok;
+						BatchedModel.findAll(function(err, result) {
+							should(err).be.not.ok;
+							should(result.user).be.ok;
+							should(result.user.length).be.greaterThan(0);
+							should(result.post).be.ok;
+							should(result.post.length).be.greaterThan(0);
+							next();
+						});
+					});
+				});
+			});
+		});
+	});
+
+	it('should be able to batched query', function(next) {
+		BatchedModel.query({
+			user: {
+				limit: 1
+			},
+			post: {
+				where: { title: 'Title1' }
+			}
+		}, function(err, result) {
+			should(err).be.not.ok;
+			should(result.user).be.ok;
+			should(result.user.length).be.greaterThan(0);
+			should(result.user.length).be.lessThan(2);
+			should(result.post).be.ok;
+			should(result.post.length).be.greaterThan(0);
+			next();
+		});
+	});
+
+	it('should be able to batched findOne', function(next) {
+		BatchedModel.findOne({
+			user: firstUserID,
+			post: firstPostID
+		}, function(err, result) {
+			should(err).be.not.ok;
+			should(result.user).be.ok;
+			should(result.user.getPrimaryKey()).be.ok;
+			should(result.post).be.ok;
+			should(result.post.getPrimaryKey()).be.ok;
+			next();
+		});
 	});
 
 });
