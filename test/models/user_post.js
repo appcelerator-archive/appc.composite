@@ -8,7 +8,7 @@ module.exports = function(APIBuilder, connector) {
 		connector: connector,
 
 		metadata: {
-			composite: {
+			'appc.composite': {
 				models: [
 					{
 						name: 'post'
