@@ -90,7 +90,7 @@ describe('Connector', function() {
 			should(err).be.not.ok;
 			should(instance).be.an.Object;
 			var id = instance.getPrimaryKey();
-			JoinedModel.find(id, function(err, instance2) {
+			JoinedModel.findOne(id, function(err, instance2) {
 				should(err).be.not.ok;
 				should(instance2).be.an.Object;
 				should(instance2.getPrimaryKey()).equal(id);
