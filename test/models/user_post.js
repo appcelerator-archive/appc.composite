@@ -1,11 +1,11 @@
-module.exports = function(APIBuilder, connector) {
+module.exports = function(APIBuilder) {
 	return APIBuilder.Model.extend('user_post', {
 		fields: {
 			test: { type: String },
 			users: { type: Object, collection: 'user' },
 			posts: { type: Object, collection: 'post' }
 		},
-		connector: connector,
+		connector: 'appc.composite',
 
 		metadata: {
 			'appc.composite': {

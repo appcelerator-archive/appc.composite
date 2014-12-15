@@ -13,6 +13,4 @@ server.addModel(require('./test/models/post')(APIBuilder));
 server.addModel(require('./test/models/article')(APIBuilder, 'appc.composite'));
 server.addModel(require('./test/models/user_post')(APIBuilder, 'appc.composite'));
 
-server.start(function() {
-	server.logger.info('server started on port', server.port);
-});
+server.start();

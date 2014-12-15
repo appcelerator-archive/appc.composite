@@ -3,21 +3,19 @@ var should = require('should'),
 	url = require('url'),
 	APIBuilder = require('appcelerator').apibuilder,
 	server = new APIBuilder(),
-	Connector = require('../lib').create(APIBuilder, server),
 	log = APIBuilder.createLogger({}, { name: 'api-connector-composite TEST', useConsole: true, level: 'info' });
 
 describe('Connector', function() {
 
-	var connector = new Connector(),
 	/*
 	 Done: c1. Use models.
 	 Done: c2. Also do model without any join.
 	 Done: c3. No join, but common input param to query multiple.
 	 */
-		UserModel = require('./models/user')(APIBuilder),
+	var UserModel = require('./models/user')(APIBuilder),
 		PostModel = require('./models/post')(APIBuilder),
-		JoinedModel = require('./models/article')(APIBuilder, connector),
-		BatchedModel = require('./models/user_post')(APIBuilder, connector);
+		JoinedModel = require('./models/article')(APIBuilder),
+		BatchedModel = require('./models/user_post')(APIBuilder);
 
 	var firstUserID,
 		firstPostID;
@@ -28,7 +26,9 @@ describe('Connector', function() {
 		server.addModel(JoinedModel);
 		server.addModel(BatchedModel);
 
-		server.start(function() {
+		server.start(function(err) {
+			should(err).be.not.ok;
+
 			UserModel.create({
 				first_name: 'Dawson',
 				last_name: 'Toth'

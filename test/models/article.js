@@ -1,4 +1,4 @@
-module.exports = function(APIBuilder, connector) {
+module.exports = function(APIBuilder) {
 	return APIBuilder.Model.extend('article', {
 		fields: {
 			title: { type: String },
@@ -7,7 +7,7 @@ module.exports = function(APIBuilder, connector) {
 			author_first_name: { type: String, name: 'first_name', required: false },
 			author_last_name: { type: String, name: 'last_name', required: false }
 		},
-		connector: connector,
+		connector: 'appc.composite',
 
 		metadata: {
 			'appc.composite': {
