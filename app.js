@@ -1,3 +1,7 @@
+/**
+ * NOTE: This file is simply for testing this connector and will not
+ * be used or packaged with the actual connector when published.
+ */
 var APIBuilder = require('appcelerator').apibuilder,
 	server = new APIBuilder();
 
@@ -10,7 +14,7 @@ server.addModel(require('./test/models/post')(APIBuilder));
 /*
  Now create composite models that use both of them.
  */
-server.addModel(require('./test/models/article')(APIBuilder, 'appc.composite'));
-server.addModel(require('./test/models/user_post')(APIBuilder, 'appc.composite'));
+server.addModel(require('./test/models/article')(APIBuilder));
+server.addModel(require('./test/models/user_post')(APIBuilder));
 
 server.start();

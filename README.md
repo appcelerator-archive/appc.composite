@@ -13,13 +13,13 @@ $ appc install appc.composite --save
 To use the tests, you'll want to create a database in MySQL with the following table:
 
 ```
-CREATE TABLE user
+CREATE TABLE Composite_UserTable
 (
 	id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	first_name VARCHAR(255),
 	last_name VARCHAR(255)
 );
-INSERT INTO user (first_name, last_name) VALUES ('Dawson', 'Toth');
+INSERT INTO Composite_UserTable (first_name, last_name) VALUES ('Dawson', 'Toth');
 ```
 
 Then you can create an article with a JSON body like this:

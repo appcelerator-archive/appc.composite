@@ -5,6 +5,12 @@ module.exports = function(APIBuilder) {
 			content: { type: String },
 			author_id: { type: Number }
 		},
-		connector: 'appc.mongo'
+		connector: 'appc.mongo',
+
+		metadata: {
+			'appc.mysql': {
+				table: 'Composite_Post'
+			}
+		}
 	});
 };

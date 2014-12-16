@@ -4,6 +4,12 @@ module.exports = function(APIBuilder) {
 			first_name: { type: String },
 			last_name: { type: String }
 		},
-		connector: 'appc.mysql'
+		connector: 'appc.mysql',
+
+		metadata: {
+			'appc.mysql': {
+				table: 'Composite_UserTable'
+			}
+		}
 	});
 };
