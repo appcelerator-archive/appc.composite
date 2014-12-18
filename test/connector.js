@@ -16,7 +16,10 @@ describe('Connector', function() {
 	var UserModel = require('./models/user')(APIBuilder),
 		PostModel = require('./models/post')(APIBuilder),
 		ArticleModel = require('./models/article')(APIBuilder),
-		UserPostModel = require('./models/user_post')(APIBuilder);
+		UserPostModel = require('./models/user_post')(APIBuilder),
+		EmployeeModel = require('./models/employee')(APIBuilder),
+		HabitModel = require('./models/habit')(APIBuilder),
+		EmployeeHabitModel = require('./models/employeeHabit')(APIBuilder);
 
 	var firstUserID,
 		firstPostID;
@@ -26,6 +29,9 @@ describe('Connector', function() {
 		server.addModel(PostModel);
 		server.addModel(ArticleModel);
 		server.addModel(UserPostModel);
+		server.addModel(EmployeeModel);
+		server.addModel(HabitModel);
+		server.addModel(EmployeeHabitModel);
 
 		server.start(function(err) {
 			should(err).be.not.ok;
@@ -49,11 +55,15 @@ describe('Connector', function() {
 	});
 
 	after(function(next) {
-		UserModel.deleteAll(function() {
-			PostModel.deleteAll(function() {
-				next();
-			});
-		});
+		async.parallel(
+			[
+				UserModel.deleteAll,
+				PostModel.deleteAll,
+				EmployeeModel.deleteAll,
+				HabitModel.deleteAll
+			],
+			next
+		);
 	});
 
 	after(function(next) {
@@ -234,6 +244,57 @@ describe('Connector', function() {
 
 		});
 
+	});
+
+	it('API-283: should allow 0-1-many joins', function(next) {
+		EmployeeModel.create([
+			{
+				first_name: 'Employee',
+				last_name: '1',
+				email_address: 'e1@corp.com',
+				phone_number: '1',
+				home_address: '1 St'
+			},
+			{
+				first_name: 'Employee',
+				last_name: '2',
+				email_address: 'e2@corp.com',
+				phone_number: '2',
+				home_address: '2 St'
+			}
+		], function(err, coll) {
+			should(err).be.not.ok;
+			should(coll.length).equal(2);
+
+			HabitModel.create([
+				{
+					user_id: coll[0].getPrimaryKey(),
+					habit: 'Programming'
+				},
+				{
+					user_id: coll[0].getPrimaryKey(),
+					habit: 'Eating'
+				},
+				{
+					user_id: coll[0].getPrimaryKey(),
+					habit: 'Sleeping'
+				}
+			], function(err, coll) {
+				should(err).be.not.ok;
+				should(coll.length).equal(3);
+
+				EmployeeHabitModel.findAll(function(err, coll) {
+					should(err).be.not.ok;
+					should(coll.length).equal(2);
+					console.log(coll);
+					should(coll[0].habit).be.ok;
+					should(coll[0].habit.length).equal(3);
+					should(coll[1].habit).be.not.ok;
+					next();
+				});
+			});
+
+		});
 	});
 
 	it('should be able to update an instance', function(next) {

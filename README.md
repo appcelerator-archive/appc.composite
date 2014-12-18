@@ -10,16 +10,32 @@ To install:
 $ appc install appc.composite --save
 ```
 
-To use the tests, you'll want to create a database in MySQL with the following table:
+To use the tests, you'll want to create a database in MySQL with the following tables:
 
 ```
-CREATE TABLE Composite_UserTable
+CREATE DATABASE IF NOT EXISTS connector;
+USE connector;
+CREATE TABLE IF NOT EXISTS Composite_UserTable
 (
 	id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	first_name VARCHAR(255),
 	last_name VARCHAR(255)
 );
 INSERT INTO Composite_UserTable (first_name, last_name) VALUES ('Dawson', 'Toth');
+CREATE TABLE IF NOT EXISTS nolan_user (
+	id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	first_name VARCHAR(40),
+	last_name VARCHAR(50),
+	email_address VARCHAR(100),
+	phone_number VARCHAR(20),
+	home_address VARCHAR(30)
+);
+CREATE TABLE IF NOT EXISTS nolan_user_bad_habits(
+	id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	user_id INT NOT NULL,
+	habit VARCHAR(100) NOT NULL,
+	FOREIGN KEY (user_id) REFERENCES nolan_user (id) on delete cascade
+);
 ```
 
 Then you can create an article with a JSON body like this:
