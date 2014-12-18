@@ -8,14 +8,17 @@ module.exports = {
 		prefix: '/apibuilder'
 	},
 
-	// MySQL
-	host: 'localhost',
-	database: 'connector',
-	user: 'root',
-	password: 'root',
-
-	// Mongo
-	url: 'mongodb://localhost/mobware',
-
-	connectors: {}
+	connectors: {
+		'appc.mysql': {
+			dontGenerateModelsFromSchema: true,
+			host: 'localhost',
+			database: 'connector',
+			user: 'root',
+			password: 'root',
+			port: 3306
+		},
+		'appc.mongo': {
+			url: 'mongodb://localhost/mobware'
+		}
+	}
 };

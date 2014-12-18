@@ -8,7 +8,7 @@ module.exports = function(APIBuilder) {
 		connector: 'appc.mongo',
 
 		metadata: {
-			'appc.mysql': {
+			'appc.mongo': {
 				table: 'Composite_Post'
 			}
 		}
