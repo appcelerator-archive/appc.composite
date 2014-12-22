@@ -7,12 +7,6 @@ var should = require('should'),
 
 describe('Connector', function() {
 
-	/*
-	 Done: c1. Use models for a left join.
-	 Done: c2. Also do model without any join.
-	 Done: c3. No join, but common input param to query multiple.
-	 TODO: c4. Do a left join with multiple results (one left, zero-to-many right).
-	 */
 	var UserModel = require('./models/user')(APIBuilder),
 		PostModel = require('./models/post')(APIBuilder),
 		ArticleModel = require('./models/article')(APIBuilder),
@@ -286,7 +280,6 @@ describe('Connector', function() {
 				EmployeeHabitModel.findAll(function(err, coll) {
 					should(err).be.not.ok;
 					should(coll.length).equal(2);
-					console.log(coll);
 					should(coll[0].habit).be.ok;
 					should(coll[0].habit.length).equal(3);
 					should(coll[1].habit).be.not.ok;
