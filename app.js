@@ -15,6 +15,7 @@ server.addModel(require('./test/models/post')(APIBuilder));
  Now create composite models that use both of them.
  */
 server.addModel(require('./test/models/article')(APIBuilder));
+server.addModel(require('./test/models/authored_article')(APIBuilder));
 server.addModel(require('./test/models/user_post')(APIBuilder));
 
 server.start();
