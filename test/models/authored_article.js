@@ -1,11 +1,11 @@
 module.exports = function(APIBuilder) {
 	return APIBuilder.Model.extend('authored_article', {
 		fields: {
-			title: { type: String, cmodel: 'post' },
-			content: { type: String, cmodel: 'post' },
-			author_id: { type: Number, cmodel: 'post' },
-			author_first_name: { type: String, name: 'first_name', required: false, cmodel: 'user' },
-			author_last_name: { type: String, name: 'last_name', required: false, cmodel: 'user' }
+			title: { type: String, model: 'post' },
+			content: { type: String, model: 'post' },
+			author_id: { type: Number, model: 'post' },
+			author_first_name: { type: String, name: 'first_name', required: false, model: 'user' },
+			author_last_name: { type: String, name: 'last_name', required: false, model: 'user' }
 		},
 		connector: 'appc.composite',
 
