@@ -10,10 +10,10 @@ describe('Connector', function() {
 	var UserModel = require('./models/user')(APIBuilder),
 		PostModel = require('./models/post')(APIBuilder),
 		ArticleModel = require('./models/article')(APIBuilder),
-		AuthoredArticleModel = require('./models/authored_article')(APIBuilder),
-		UserPostModel = require('./models/user_post')(APIBuilder),
-		EmployeeModel = require('./models/employee')(APIBuilder),
-		HabitModel = require('./models/habit')(APIBuilder),
+		AuthoredArticleModel = require('./models/authoredArticle')(APIBuilder),
+		UserPostModel = require('./models/userPost')(APIBuilder),
+		EmployeeModel,
+		HabitModel,
 		EmployeeHabitModel = require('./models/employeeHabit')(APIBuilder);
 
 	var firstUserID,
@@ -24,12 +24,15 @@ describe('Connector', function() {
 		server.addModel(PostModel);
 		server.addModel(ArticleModel);
 		server.addModel(UserPostModel);
-		server.addModel(EmployeeModel);
-		server.addModel(HabitModel);
 		server.addModel(EmployeeHabitModel);
 
 		server.start(function(err) {
 			should(err).be.not.ok;
+			
+			EmployeeModel = server.getModel('appc.mysql/nolan_user');
+			HabitModel = server.getModel('appc.mysql/nolan_user_bad_habits');
+			should(EmployeeModel).be.ok;
+			should(HabitModel).be.ok;
 
 			UserModel.create({
 				first_name: 'Dawson',

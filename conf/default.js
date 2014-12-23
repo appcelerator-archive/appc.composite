@@ -10,7 +10,6 @@ module.exports = {
 
 	connectors: {
 		'appc.mysql': {
-			dontGenerateModelsFromSchema: true,
 			host: 'localhost',
 			database: 'connector',
 			user: 'root',
