@@ -341,6 +341,7 @@ describe('Connector', function() {
 					should(coll.length).equal(2);
 					should(coll[0].habit).be.ok;
 					should(coll[0].habit.length).equal(3);
+					should(coll[0].fname).be.ok;
 					should(coll[1].habit).be.not.ok;
 					next();
 				});

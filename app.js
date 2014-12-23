@@ -10,6 +10,8 @@ var APIBuilder = require('appcelerator').apibuilder,
  */
 server.addModel(require('./test/models/user')(APIBuilder));
 server.addModel(require('./test/models/post')(APIBuilder));
+server.addModel(require('./test/models/employee')(APIBuilder));
+server.addModel(require('./test/models/habit')(APIBuilder));
 
 /*
  Now create composite models that use both of them.
@@ -17,5 +19,6 @@ server.addModel(require('./test/models/post')(APIBuilder));
 server.addModel(require('./test/models/article')(APIBuilder));
 server.addModel(require('./test/models/authored_article')(APIBuilder));
 server.addModel(require('./test/models/user_post')(APIBuilder));
+server.addModel(require('./test/models/employeeHabit')(APIBuilder));
 
 server.start();
