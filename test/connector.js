@@ -28,7 +28,7 @@ describe('Connector', function() {
 
 		server.start(function(err) {
 			should(err).be.not.ok;
-			
+
 			EmployeeModel = server.getModel('appc.mysql/nolan_user');
 			HabitModel = server.getModel('appc.mysql/nolan_user_bad_habits');
 			should(EmployeeModel).be.ok;
@@ -438,6 +438,38 @@ describe('Connector', function() {
 			should(result.user.getPrimaryKey()).be.ok;
 			should(result.post).be.ok;
 			should(result.post.getPrimaryKey()).be.ok;
+			next();
+		});
+	});
+
+	it('should warn about bad joined fields', function(next) {
+		var BadJoinedFieldModel = APIBuilder.Model.extend('article', {
+			fields: {
+				title: { type: String, model: 'post' },
+				content: { type: String, model: 'post' },
+				author_id: { type: Number, model: 'post' },
+				author_first_name: { type: String, name: 'first_name', required: false, model: 'user' },
+				author_last_name: { type: String, name: 'last_name', required: false, model: 'user' }
+			},
+			connector: 'appc.composite',
+
+			metadata: {
+				'appc.composite': {
+					left_join: {
+						model: 'user',
+						readonly: true,
+						join_properties: {
+							'bad_id': 'author_id'
+						}
+					}
+				}
+			}
+		});
+		BadJoinedFieldModel.findOne(firstPostID, function(err, instance) {
+			should(err).be.not.ok;
+			should(instance.author_id).be.ok;
+			should(instance.author_first_name).be.not.ok;
+			should(instance.author_last_name).be.not.ok;
 			next();
 		});
 	});
