@@ -7,7 +7,7 @@ This is a composite APIBuilder connector.
 To install:
 
 ```bash
-$ appc install appc.composite --save
+$ appc install connector/appc.composite --save
 ```
 
 To use the tests, you'll want to create a database in MySQL with the following tables:
