@@ -11,6 +11,7 @@ describe('Connector', function() {
 		PostModel = require('./models/post')(APIBuilder),
 		AttachmentModel = require('./models/attachment')(APIBuilder),
 		ArticleModel = require('./models/article')(APIBuilder),
+		ArticleObjectsModel = require('./models/articleObjects')(APIBuilder),
 		AuthoredArticleModel = require('./models/authoredArticle')(APIBuilder),
 		UserPostModel = require('./models/userPost')(APIBuilder),
 		EmployeeModel,
@@ -26,6 +27,7 @@ describe('Connector', function() {
 		server.addModel(PostModel);
 		server.addModel(AttachmentModel);
 		server.addModel(ArticleModel);
+		server.addModel(ArticleObjectsModel);
 		server.addModel(UserPostModel);
 		server.addModel(EmployeeHabitModel);
 
@@ -125,6 +127,38 @@ describe('Connector', function() {
 				should(instance2.author_first_name).equal('Dawson');
 				should(instance2.author_last_name).equal('Toth');
 				should(instance2.attachment_content).equal('Test Attachment Content');
+				next();
+			});
+		});
+
+	});
+
+	it('should be able to reference models as objects', function(next) {
+
+		var obj = {
+			post: {
+				title: 'Test Title',
+				content: 'Test Content',
+				author_id: firstUserID,
+				attachment_id: firstAttachmentID
+			}
+		};
+		ArticleObjectsModel.create(obj, function(err, instance) {
+			should(err).be.not.ok;
+			should(instance).be.an.Object;
+			var id = instance.getPrimaryKey();
+			ArticleObjectsModel.findOne(id, function(err, instance2) {
+				should(err).be.not.ok;
+				should(instance2).be.an.Object;
+				should(instance2.getPrimaryKey()).equal(id);
+				should(instance2.post).be.ok;
+				should(instance2.author).be.ok;
+				should(instance2.attachment).be.ok;
+				should(instance2.post.title).equal(obj.post.title);
+				should(instance2.post.content).equal(obj.post.content);
+				should(instance2.author.first_name).equal('Dawson');
+				should(instance2.author.last_name).equal('Toth');
+				should(instance2.attachment.attachment_content).equal('Test Attachment Content');
 				next();
 			});
 		});
