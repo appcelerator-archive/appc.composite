@@ -9,6 +9,7 @@ describe('Connector', function() {
 
 	var UserModel = require('./models/user')(APIBuilder),
 		PostModel = require('./models/post')(APIBuilder),
+		AttachmentModel = require('./models/attachment')(APIBuilder),
 		ArticleModel = require('./models/article')(APIBuilder),
 		AuthoredArticleModel = require('./models/authoredArticle')(APIBuilder),
 		UserPostModel = require('./models/userPost')(APIBuilder),
@@ -17,11 +18,13 @@ describe('Connector', function() {
 		EmployeeHabitModel = require('./models/employeeHabit')(APIBuilder);
 
 	var firstUserID,
-		firstPostID;
+		firstPostID,
+		firstAttachmentID;
 
 	before(function(next) {
 		server.addModel(UserModel);
 		server.addModel(PostModel);
+		server.addModel(AttachmentModel);
 		server.addModel(ArticleModel);
 		server.addModel(UserPostModel);
 		server.addModel(EmployeeHabitModel);
@@ -38,15 +41,26 @@ describe('Connector', function() {
 				first_name: 'Dawson',
 				last_name: 'Toth'
 			}, function(err, instance) {
+				should(err).be.not.ok;
 				firstUserID = instance.getPrimaryKey();
 
-				PostModel.create({
-					title: 'Test Title',
-					content: 'Test Content',
-					author_id: firstUserID
+				AttachmentModel.create({
+					content: 'Test Attachment Content'
 				}, function(err, instance) {
-					firstPostID = instance.getPrimaryKey();
-					next();
+					should(err).be.not.ok;
+					firstAttachmentID = instance.getPrimaryKey();
+
+					PostModel.create({
+						title: 'Test Title',
+						content: 'Test Content',
+						author_id: firstUserID,
+						attachment_id: firstAttachmentID
+					}, function(err, instance) {
+						should(err).be.not.ok;
+						firstPostID = instance.getPrimaryKey();
+
+						next();
+					});
 				});
 			});
 		});
@@ -73,7 +87,8 @@ describe('Connector', function() {
 		var obj = {
 			title: 'Test Title',
 			content: 'Test Content',
-			author_id: firstUserID
+			author_id: firstUserID,
+			attachment_id: firstAttachmentID
 		};
 		ArticleModel.create(obj, function(err, instance) {
 			should(err).be.not.ok;
@@ -83,6 +98,7 @@ describe('Connector', function() {
 			should(instance.content).equal(obj.content);
 			should(instance.author_first_name).equal('Dawson');
 			should(instance.author_last_name).equal('Toth');
+			should(instance.attachment_content).equal('Test Attachment Content');
 			next();
 		});
 
@@ -93,7 +109,8 @@ describe('Connector', function() {
 		var obj = {
 			title: 'Test Title',
 			content: 'Test Content',
-			author_id: firstUserID
+			author_id: firstUserID,
+			attachment_id: firstAttachmentID
 		};
 		ArticleModel.create(obj, function(err, instance) {
 			should(err).be.not.ok;
@@ -107,6 +124,7 @@ describe('Connector', function() {
 				should(instance2.content).equal(obj.content);
 				should(instance2.author_first_name).equal('Dawson');
 				should(instance2.author_last_name).equal('Toth');
+				should(instance2.attachment_content).equal('Test Attachment Content');
 				next();
 			});
 		});
@@ -118,7 +136,8 @@ describe('Connector', function() {
 		var obj = {
 			title: 'Test Title',
 			content: 'Test Content',
-			author_id: firstUserID
+			author_id: firstUserID,
+			attachment_id: firstAttachmentID
 		};
 		ArticleModel.create(obj, function(err, instance) {
 			should(err).be.not.ok;
@@ -139,6 +158,7 @@ describe('Connector', function() {
 					should(model.content).be.a.String;
 					should(model.author_first_name).be.a.String;
 					should(model.author_last_name).be.not.ok;
+					should(model.attachment_content).be.not.ok;
 				}, callback);
 			});
 		});
@@ -151,12 +171,14 @@ describe('Connector', function() {
 			{
 				title: 'Test Title 1',
 				content: 'Test Content 1',
-				author_id: firstUserID
+				author_id: firstUserID,
+				attachment_id: firstAttachmentID
 			},
 			{
 				title: 'Test Title 2',
 				content: 'Test Content 2',
-				author_id: firstUserID
+				author_id: firstUserID,
+				attachment_id: firstAttachmentID
 			}
 		];
 
@@ -191,12 +213,14 @@ describe('Connector', function() {
 			{
 				title: 'Test Title 1',
 				content: 'Test Content 1',
-				author_id: firstUserID
+				author_id: firstUserID,
+				attachment_id: firstAttachmentID
 			},
 			{
 				title: 'Test Title 2',
 				content: 'Test Content 2',
-				author_id: firstUserID
+				author_id: firstUserID,
+				attachment_id: firstAttachmentID
 			},
 			{
 				title: 'Test Title 3',
@@ -234,6 +258,9 @@ describe('Connector', function() {
 						should(post.author_first_name).be.not.ok;
 						should(post.author_last_name).be.not.ok;
 					}
+					if (!post.attachment_id) {
+						should(post.attachment_content).be.not.ok;
+					}
 					cb();
 				}, function(err) {
 					next(err);
@@ -250,12 +277,14 @@ describe('Connector', function() {
 			{
 				title: 'Test Title 1',
 				content: 'Test Content 1',
-				author_id: firstUserID
+				author_id: firstUserID,
+				attachment_id: firstAttachmentID
 			},
 			{
 				title: 'Test Title 2',
 				content: 'Test Content 2',
-				author_id: firstUserID
+				author_id: firstUserID,
+				attachment_id: firstAttachmentID
 			},
 			{
 				title: 'Test Title 3',
@@ -358,7 +387,8 @@ describe('Connector', function() {
 		var obj = {
 			title: 'Test Title',
 			content: 'Test Content',
-			author_id: firstUserID
+			author_id: firstUserID,
+			attachment_id: firstAttachmentID
 		};
 
 		ArticleModel.create(obj, function(err, instance) {
@@ -387,23 +417,17 @@ describe('Connector', function() {
 			post2Data = { title: 'Title2', content: 'Content2', author_id: firstUserID };
 
 		// Create test data.
-		UserModel.create(user1Data, function(err, user1) {
+		UserModel.create([user1Data, user2Data], function(err, user1) {
 			should(err).be.not.ok;
-			UserModel.create(user2Data, function(err, user2) {
+			PostModel.create([post1Data, post2Data], function(err, post1) {
 				should(err).be.not.ok;
-				PostModel.create(post1Data, function(err, post1) {
+				UserPostModel.findAll(function(err, result) {
 					should(err).be.not.ok;
-					PostModel.create(post2Data, function(err, post2) {
-						should(err).be.not.ok;
-						UserPostModel.findAll(function(err, result) {
-							should(err).be.not.ok;
-							should(result.user).be.ok;
-							should(result.user.length).be.greaterThan(0);
-							should(result.post).be.ok;
-							should(result.post.length).be.greaterThan(0);
-							next();
-						});
-					});
+					should(result.user).be.ok;
+					should(result.user.length).be.greaterThan(0);
+					should(result.post).be.ok;
+					should(result.post.length).be.greaterThan(0);
+					next();
 				});
 			});
 		});
