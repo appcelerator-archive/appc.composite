@@ -17,7 +17,7 @@ module.exports = {
 			port: 3306
 		},
 		'appc.mongo': {
-			url: 'mongodb://localhost/mobware'
+			url: 'mongodb://localhost/apibuilder'
 		},
 		'appc.salesforce': {
 			url: '',
