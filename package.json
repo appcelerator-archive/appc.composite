@@ -1,7 +1,7 @@
 {
 	"name": "appc.composite",
 	"description": "Composite connector",
-	"version": "1.0.12",
+	"version": "1.0.13",
 	"author": "Dawson Toth",
 	"maintainers": [
 		"Dawson Toth <dtoth@appcelerator.com>"
@@ -23,7 +23,8 @@
 		"lodash": "^2.4.1",
 		"pkginfo": "^0.3.0",
 		"appc.mongo": "git+ssh://git@github.com:appcelerator/api-connector-mongo.git",
-		"appc.mysql": "git+ssh://git@github.com:appcelerator/api-connector-mysql.git"
+		"appc.mysql": "git+ssh://git@github.com:appcelerator/api-connector-mysql.git",
+		"appc.salesforce": "git+ssh://git@github.com:appcelerator/api-connector-salesforce.git"
 	},
 	"devDependencies": {
 		"appcelerator": "*",

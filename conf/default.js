@@ -18,6 +18,12 @@ module.exports = {
 		},
 		'appc.mongo': {
 			url: 'mongodb://localhost/mobware'
+		},
+		'appc.salesforce': {
+			url: '',
+			username: '',
+			password: '',
+			token: ''
 		}
 	}
 };

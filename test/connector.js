@@ -11,6 +11,9 @@ describe('Connector', function() {
 		PostModel = require('./models/post')(APIBuilder),
 		AttachmentModel = require('./models/attachment')(APIBuilder),
 		ArticleModel = require('./models/article')(APIBuilder),
+		ContractModel,
+		AccountModel,
+		AccountContractModel,
 		ArticleObjectsModel = require('./models/articleObjects')(APIBuilder),
 		AuthoredArticleModel = require('./models/authoredArticle')(APIBuilder),
 		UserPostModel = require('./models/userPost')(APIBuilder),
@@ -33,6 +36,16 @@ describe('Connector', function() {
 
 		server.start(function(err) {
 			should(err).be.not.ok;
+
+			ContractModel = require('./models/contract')(APIBuilder);
+			AccountModel = require('./models/account')(APIBuilder);
+			AccountContractModel = require('./models/accountContract')(APIBuilder);
+			should(ContractModel).be.ok;
+			should(AccountModel).be.ok;
+			should(AccountContractModel).be.ok;
+			server.addModel(ContractModel);
+			server.addModel(AccountModel);
+			server.addModel(AccountContractModel);
 
 			EmployeeModel = server.getModel('appc.mysql/nolan_user');
 			HabitModel = server.getModel('appc.mysql/nolan_user_bad_habits');
@@ -133,32 +146,17 @@ describe('Connector', function() {
 
 	});
 
-	it('should be able to reference models as objects', function(next) {
-
-		var obj = {
-			post: {
-				title: 'Test Title',
-				content: 'Test Content',
-				author_id: firstUserID,
-				attachment_id: firstAttachmentID
-			}
-		};
-		ArticleObjectsModel.create(obj, function(err, instance) {
+	it('API-317: should be able to reference models as objects', function(next) {
+		ContractModel.findAll(function(err, coll) {
 			should(err).be.not.ok;
-			should(instance).be.an.Object;
-			var id = instance.getPrimaryKey();
-			ArticleObjectsModel.findOne(id, function(err, instance2) {
+			should(coll).be.ok;
+			should(coll.length).be.greaterThan(0);
+			var accountWithContract = coll[0].AccountId;
+
+			AccountContractModel.findOne(accountWithContract, function(err, instance) {
 				should(err).be.not.ok;
-				should(instance2).be.an.Object;
-				should(instance2.getPrimaryKey()).equal(id);
-				should(instance2.post).be.ok;
-				should(instance2.author).be.ok;
-				should(instance2.attachment).be.ok;
-				should(instance2.post.title).equal(obj.post.title);
-				should(instance2.post.content).equal(obj.post.content);
-				should(instance2.author.first_name).equal('Dawson');
-				should(instance2.author.last_name).equal('Toth');
-				should(instance2.attachment.attachment_content).equal('Test Attachment Content');
+				should(instance).be.ok;
+				should(instance.contract.ContractNumber).be.ok;
 				next();
 			});
 		});

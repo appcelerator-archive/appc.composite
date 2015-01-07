@@ -6,13 +6,13 @@ var APIBuilder = require('appcelerator').apibuilder,
 	server = new APIBuilder();
 
 /*
- Add two traditional models from two different connectors.
+ Add traditional models from different connectors.
  */
 server.addModel(require('./test/models/user')(APIBuilder));
 server.addModel(require('./test/models/post')(APIBuilder));
 
 /*
- Now create composite models that use both of them.
+ Now create composite models that use them.
  */
 server.addModel(require('./test/models/article')(APIBuilder));
 server.addModel(require('./test/models/authoredArticle')(APIBuilder));
