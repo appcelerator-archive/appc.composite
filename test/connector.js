@@ -11,6 +11,7 @@ describe('Connector', function() {
 		PostModel = require('./models/post')(APIBuilder),
 		AttachmentModel = require('./models/attachment')(APIBuilder),
 		ArticleModel = require('./models/article')(APIBuilder),
+		UC9A,
 		ContractModel,
 		AccountModel,
 		AccountContractModel,
@@ -40,12 +41,15 @@ describe('Connector', function() {
 			ContractModel = require('./models/contract')(APIBuilder);
 			AccountModel = require('./models/account')(APIBuilder);
 			AccountContractModel = require('./models/accountContract')(APIBuilder);
+			UC9A = require('./models/uc_9a')(APIBuilder);
 			should(ContractModel).be.ok;
 			should(AccountModel).be.ok;
 			should(AccountContractModel).be.ok;
+			should(UC9A).be.ok;
 			server.addModel(ContractModel);
 			server.addModel(AccountModel);
 			server.addModel(AccountContractModel);
+			server.addModel(UC9A);
 
 			EmployeeModel = server.getModel('appc.mysql/nolan_user');
 			HabitModel = server.getModel('appc.mysql/nolan_user_bad_habits');
@@ -494,6 +498,14 @@ describe('Connector', function() {
 			should(result.user.getPrimaryKey()).be.ok;
 			should(result.post).be.ok;
 			should(result.post.getPrimaryKey()).be.ok;
+			next();
+		});
+	});
+
+	it('API-344: should be able to batch across 4 different connectors', function(next) {
+		UC9A.findAll(function(err, result) {
+			should(err).be.not.ok;
+			should(result).be.ok;
 			next();
 		});
 	});

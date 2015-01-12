@@ -23,7 +23,19 @@ module.exports = {
 			url: '',
 			username: '',
 			password: '',
-			token: ''
+			token: '',
+			modelAutogen: false
+		},
+		'appc.mssql': {
+			user: '',
+			password: '',
+			server: '',
+			port: 1433,
+			database: '',
+
+			options: {
+				encrypt: true
+			}
 		}
 	}
 };
