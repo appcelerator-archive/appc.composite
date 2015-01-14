@@ -15,6 +15,7 @@ describe('Connector', function() {
 		firstAttachmentID;
 
 	before(function(next) {
+		this.timeout(60 * 1000);
 
 		server.start(function(err) {
 			should(err).be.not.ok;
@@ -436,10 +437,10 @@ describe('Connector', function() {
 				should(err).be.not.ok;
 				Models.user_post.findAll(function(err, result) {
 					should(err).be.not.ok;
-					should(result.user).be.ok;
-					should(result.user.length).be.greaterThan(0);
-					should(result.post).be.ok;
-					should(result.post.length).be.greaterThan(0);
+					should(result.users).be.ok;
+					should(result.users.length).be.greaterThan(0);
+					should(result.posts).be.ok;
+					should(result.posts.length).be.greaterThan(0);
 					next();
 				});
 			});
@@ -448,33 +449,33 @@ describe('Connector', function() {
 
 	it('should be able to batched query', function(next) {
 		Models.user_post.query({
-			user: {
+			users: {
 				limit: 1
 			},
-			post: {
+			posts: {
 				where: { title: 'Title1' }
 			}
 		}, function(err, result) {
 			should(err).be.not.ok;
-			should(result.user).be.ok;
-			should(result.user.length).be.greaterThan(0);
-			should(result.user.length).be.lessThan(2);
-			should(result.post).be.ok;
-			should(result.post.length).be.greaterThan(0);
+			should(result.users).be.ok;
+			should(result.users.length).be.greaterThan(0);
+			should(result.users.length).be.lessThan(2);
+			should(result.posts).be.ok;
+			should(result.posts.length).be.greaterThan(0);
 			next();
 		});
 	});
 
 	it('should be able to batched findOne', function(next) {
 		Models.user_post.findOne({
-			user: firstUserID,
-			post: firstPostID
+			users: firstUserID,
+			posts: firstPostID
 		}, function(err, result) {
 			should(err).be.not.ok;
-			should(result.user).be.ok;
-			should(result.user.getPrimaryKey()).be.ok;
-			should(result.post).be.ok;
-			should(result.post.getPrimaryKey()).be.ok;
+			should(result.users).be.ok;
+			should(result.users.getPrimaryKey()).be.ok;
+			should(result.posts).be.ok;
+			should(result.posts.getPrimaryKey()).be.ok;
 			next();
 		});
 	});
@@ -483,7 +484,36 @@ describe('Connector', function() {
 		Models.uc_9a.findAll(function(err, result) {
 			should(err).be.not.ok;
 			should(result).be.ok;
-			next();
+
+			Models.uc_9a.query({
+				'users': {
+					'where': {
+						'last_name': 'Toth'
+					}
+				},
+				'mssql_posts': {
+					'where': {
+						'title': { $like: '%foo%' }
+					}
+				},
+				'mongo_posts': {
+					'where': {
+						'title': { $like: '%o%' }
+					}
+				},
+				'accounts': {
+					'where': {
+						'Name': { $like: '%ee%' }
+					}
+				}
+			}, function(err, results) {
+				should(err).be.not.ok;
+				should(results).be.ok;
+				for (var i = 0; i < results.users.length; i++) {
+					should(results.users[i].last_name).equal('Toth');
+				}
+				next();
+			});
 		});
 	});
 
