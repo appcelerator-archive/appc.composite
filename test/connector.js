@@ -12,6 +12,7 @@ describe('Connector', function() {
 		AttachmentModel = require('./models/attachment')(APIBuilder),
 		ArticleModel = require('./models/article')(APIBuilder),
 		UC9A,
+		SFID,
 		ContractModel,
 		AccountModel,
 		AccountContractModel,
@@ -42,6 +43,7 @@ describe('Connector', function() {
 			AccountModel = require('./models/account')(APIBuilder);
 			AccountContractModel = require('./models/accountContract')(APIBuilder);
 			UC9A = require('./models/uc_9a')(APIBuilder);
+			SFID = require('./models/sfID')(APIBuilder);
 			should(ContractModel).be.ok;
 			should(AccountModel).be.ok;
 			should(AccountContractModel).be.ok;
@@ -368,53 +370,56 @@ describe('Connector', function() {
 	});
 
 	it('API-283: should allow 0-1-many joins', function(next) {
-		EmployeeModel.create([
-			{
-				first_name: 'Employee',
-				last_name: '1',
-				email_address: 'e1@corp.com',
-				phone_number: '1',
-				home_address: '1 St'
-			},
-			{
-				first_name: 'Employee',
-				last_name: '2',
-				email_address: 'e2@corp.com',
-				phone_number: '2',
-				home_address: '2 St'
-			}
-		], function(err, coll) {
+		EmployeeModel.deleteAll(function(err) {
 			should(err).be.not.ok;
-			should(coll.length).equal(2);
-
-			HabitModel.create([
+			EmployeeModel.create([
 				{
-					user_id: coll[0].getPrimaryKey(),
-					habit: 'Programming'
+					first_name: 'Employee',
+					last_name: '1',
+					email_address: 'e1@corp.com',
+					phone_number: '1',
+					home_address: '1 St'
 				},
 				{
-					user_id: coll[0].getPrimaryKey(),
-					habit: 'Eating'
-				},
-				{
-					user_id: coll[0].getPrimaryKey(),
-					habit: 'Sleeping'
+					first_name: 'Employee',
+					last_name: '2',
+					email_address: 'e2@corp.com',
+					phone_number: '2',
+					home_address: '2 St'
 				}
 			], function(err, coll) {
 				should(err).be.not.ok;
-				should(coll.length).equal(3);
+				should(coll.length).equal(2);
 
-				EmployeeHabitModel.findAll(function(err, coll) {
+				HabitModel.create([
+					{
+						user_id: coll[0].getPrimaryKey(),
+						habit: 'Programming'
+					},
+					{
+						user_id: coll[0].getPrimaryKey(),
+						habit: 'Eating'
+					},
+					{
+						user_id: coll[0].getPrimaryKey(),
+						habit: 'Sleeping'
+					}
+				], function(err, coll) {
 					should(err).be.not.ok;
-					should(coll.length).equal(2);
-					should(coll[0].habit).be.ok;
-					should(coll[0].habit.length).equal(3);
-					should(coll[0].fname).be.ok;
-					should(coll[1].habit).be.not.ok;
-					next();
-				});
-			});
+					should(coll.length).equal(3);
 
+					EmployeeHabitModel.findAll(function(err, coll) {
+						should(err).be.not.ok;
+						should(coll.length).equal(2);
+						should(coll[0].habit).be.ok;
+						should(coll[0].habit.length).equal(3);
+						should(coll[0].fname).be.ok;
+						should(coll[1].habit).be.not.ok;
+						next();
+					});
+				});
+
+			});
 		});
 	});
 
@@ -510,6 +515,16 @@ describe('Connector', function() {
 		});
 	});
 
+	it('API-344: should be able to find contracts with salesforce id', function(next) {
+		SFID.findOne('001M000000fe0V7IAI', function(err, result) {
+			should(err).be.not.ok;
+			should(result).be.ok;
+			should(result.account).be.ok;
+			should(result.contract).be.ok;
+			next();
+		});
+	});
+
 	it('should warn about bad joined fields', function(next) {
 		var BadJoinedFieldModel = APIBuilder.Model.extend('article', {
 			fields: {
@@ -525,7 +540,6 @@ describe('Connector', function() {
 				'appc.composite': {
 					left_join: {
 						model: 'user',
-						readonly: true,
 						join_properties: {
 							'bad_id': 'author_id'
 						}
@@ -538,6 +552,58 @@ describe('Connector', function() {
 			should(instance.author_id).be.ok;
 			should(instance.author_first_name).be.not.ok;
 			should(instance.author_last_name).be.not.ok;
+			next();
+		});
+	});
+
+	it('should not allow querying on joined models (for now)', function(next) {
+		var ExampleModel = APIBuilder.Model.extend('article', {
+			fields: {
+				title: { type: String, model: 'post' },
+				author_id: { type: Number, model: 'post' },
+				first_name: { type: String, model: 'user' }
+			},
+			connector: 'appc.composite',
+
+			metadata: {
+				'appc.composite': {
+					left_join: {
+						model: 'user',
+						join_properties: {
+							'id': 'author_id'
+						}
+					}
+				}
+			}
+		});
+		ExampleModel.query({ first_name: 'cant be queried on just yet' }, function(err) {
+			should(err).be.ok;
+			next();
+		});
+	});
+
+	it('should not allow writing to joined models (for now)', function(next) {
+		var ExampleModel = APIBuilder.Model.extend('article', {
+			fields: {
+				title: { type: String, model: 'post' },
+				author_id: { type: Number, model: 'post' },
+				first_name: { type: String, model: 'user' }
+			},
+			connector: 'appc.composite',
+
+			metadata: {
+				'appc.composite': {
+					left_join: {
+						model: 'user',
+						join_properties: {
+							'id': 'author_id'
+						}
+					}
+				}
+			}
+		});
+		ExampleModel.create({ first_name: 'cant be written just yet' }, function(err, instance) {
+			should(err).be.ok;
 			next();
 		});
 	});

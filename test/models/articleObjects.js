@@ -12,14 +12,12 @@ module.exports = function(APIBuilder) {
 				left_join: [
 					{
 						model: 'user',
-						readonly: true,
 						join_properties: {
 							'id': 'author_id'
 						}
 					},
 					{
 						model: 'attachment',
-						readonly: true,
 						join_properties: {
 							'id': 'attachment_id'
 						}

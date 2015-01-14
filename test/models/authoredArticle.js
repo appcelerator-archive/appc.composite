@@ -13,7 +13,6 @@ module.exports = function(APIBuilder) {
 			'appc.composite': {
 				inner_join: {
 					model: 'user',
-					readonly: true,
 					join_properties: {
 						'id': 'author_id'
 					}

@@ -1,8 +1,8 @@
 module.exports = function(APIBuilder) {
 	return APIBuilder.Model.extend('user_post', {
 		fields: {
-			users: { type: Array, collection: 'user' },
-			posts: { type: Array, collection: 'post' }
+			users: { type: Array, model: 'user' },
+			posts: { type: Array, model: 'post' }
 		},
 		connector: 'appc.composite'
 	});

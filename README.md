@@ -32,7 +32,6 @@ APIBuilder.Model.extend('article', {
 		'appc.composite': {
 			left_join: {
 				model: 'user',
-				readonly: true,
 				join_properties: {
 					'id': 'author_id'
 				}
@@ -83,14 +82,12 @@ APIBuilder.Model.extend('article', {
 			left_join: [
 				{
 					model: 'user',
-					readonly: true,
 					join_properties: {
 						'id': 'author_id'
 					}
 				},
 				{
 					model: 'attachment',
-					readonly: true,
 					join_properties: {
 						'id': 'attachment_id'
 					}
@@ -121,7 +118,6 @@ APIBuilder.Model.extend('accountContract', {
 		'appc.composite': {
 			left_join: {
 				model: 'contract',
-				readonly: true,
 				join_properties: {
 					'AccountId': 'id'
 				}
@@ -138,7 +134,7 @@ look up contracts that have an AccountId of the account's id, and store one in a
 
 We have heretofore assumed that an article will have just a single author. But what if we want to join with multiple
 results? For example, let's say we have a "author" model, and we want to select all of their posts. Just add
-"multiple: true" to the metadata and a field with type: Array and model: "post" and the connector will handle the rest:
+a field with type: Array and model: "post" and the connector will handle the rest:
 
 ```
 APIBuilder.Model.extend('authorWithArticles', {
@@ -153,8 +149,6 @@ APIBuilder.Model.extend('authorWithArticles', {
 		'appc.composite': {
 			left_join: {
 				model: 'post',
-				readonly: true,
-				multiple: true,
 				join_properties: {
 					'author_id': 'id'
 				}
@@ -172,8 +166,8 @@ What if your models aren't strongly related, but you want them returned together
 module.exports = function(APIBuilder) {
 	return APIBuilder.Model.extend('user_post', {
 		fields: {
-			users: { type: Array, collection: 'user' },
-			posts: { type: Array, collection: 'post' }
+			users: { type: Array, model: 'user' },
+			posts: { type: Array, model: 'post' }
 		},
 		connector: 'appc.composite'
 	});

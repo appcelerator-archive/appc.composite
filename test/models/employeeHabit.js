@@ -11,8 +11,6 @@ module.exports = function(APIBuilder) {
 			'appc.composite': {
 				left_join: { // there would be a property for each join type
 					model: 'appc.mysql/nolan_user_bad_habits',
-					readonly: true,
-					multiple: true,
 					join_properties: {
 						'user_id': 'id'
 					}

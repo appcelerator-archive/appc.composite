@@ -9,7 +9,6 @@ module.exports = function(APIBuilder) {
 			'appc.composite': {
 				left_join: {
 					model: 'contract',
-					readonly: true,
 					join_properties: {
 						'AccountId': 'id'
 					}
