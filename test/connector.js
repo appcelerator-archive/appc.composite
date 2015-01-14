@@ -1,77 +1,50 @@
 var should = require('should'),
 	async = require('async'),
 	url = require('url'),
+	fs = require('fs'),
 	APIBuilder = require('appcelerator').apibuilder,
 	server = new APIBuilder(),
 	log = APIBuilder.createLogger({}, { name: 'api-connector-composite TEST', useConsole: true, level: 'info' });
 
 describe('Connector', function() {
 
-	var UserModel = require('./models/user')(APIBuilder),
-		PostModel = require('./models/post')(APIBuilder),
-		AttachmentModel = require('./models/attachment')(APIBuilder),
-		ArticleModel = require('./models/article')(APIBuilder),
-		UC9A,
-		SFID,
-		ContractModel,
-		AccountModel,
-		AccountContractModel,
-		ArticleObjectsModel = require('./models/articleObjects')(APIBuilder),
-		AuthoredArticleModel = require('./models/authoredArticle')(APIBuilder),
-		UserPostModel = require('./models/userPost')(APIBuilder),
-		EmployeeModel,
-		HabitModel,
-		EmployeeHabitModel = require('./models/employeeHabit')(APIBuilder);
+	var Models = {};
 
 	var firstUserID,
 		firstPostID,
 		firstAttachmentID;
 
 	before(function(next) {
-		server.addModel(UserModel);
-		server.addModel(PostModel);
-		server.addModel(AttachmentModel);
-		server.addModel(ArticleModel);
-		server.addModel(ArticleObjectsModel);
-		server.addModel(UserPostModel);
-		server.addModel(EmployeeHabitModel);
 
 		server.start(function(err) {
 			should(err).be.not.ok;
 
-			ContractModel = require('./models/contract')(APIBuilder);
-			AccountModel = require('./models/account')(APIBuilder);
-			AccountContractModel = require('./models/accountContract')(APIBuilder);
-			UC9A = require('./models/uc_9a')(APIBuilder);
-			SFID = require('./models/sfID')(APIBuilder);
-			should(ContractModel).be.ok;
-			should(AccountModel).be.ok;
-			should(AccountContractModel).be.ok;
-			should(UC9A).be.ok;
-			server.addModel(ContractModel);
-			server.addModel(AccountModel);
-			server.addModel(AccountContractModel);
-			server.addModel(UC9A);
+			// Load models from their directory.
+			fs.readdirSync('./test/models/').forEach(function(file) {
+				if (file.indexOf('.js') > 0) {
+					var model = require('./models/' + file)(APIBuilder);
+					Models[model.name] = model;
+					log.info('loaded model ' + model.name);
+					server.addModel(model);
+				}
+			});
+			Models.employee = server.getModel('appc.mysql/nolan_user');
+			Models.habit = server.getModel('appc.mysql/nolan_user_bad_habits');
 
-			EmployeeModel = server.getModel('appc.mysql/nolan_user');
-			HabitModel = server.getModel('appc.mysql/nolan_user_bad_habits');
-			should(EmployeeModel).be.ok;
-			should(HabitModel).be.ok;
-
-			UserModel.create({
+			Models.user.create({
 				first_name: 'Dawson',
 				last_name: 'Toth'
 			}, function(err, instance) {
 				should(err).be.not.ok;
 				firstUserID = instance.getPrimaryKey();
 
-				AttachmentModel.create({
+				Models.attachment.create({
 					content: 'Test Attachment Content'
 				}, function(err, instance) {
 					should(err).be.not.ok;
 					firstAttachmentID = instance.getPrimaryKey();
 
-					PostModel.create({
+					Models.post.create({
 						title: 'Test Title',
 						content: 'Test Content',
 						author_id: firstUserID,
@@ -90,10 +63,10 @@ describe('Connector', function() {
 	after(function(next) {
 		async.parallel(
 			[
-				UserModel.deleteAll,
-				PostModel.deleteAll,
-				EmployeeModel.deleteAll,
-				HabitModel.deleteAll
+				Models.user.deleteAll,
+				Models.post.deleteAll,
+				Models.employee.deleteAll,
+				Models.habit.deleteAll
 			],
 			next
 		);
@@ -111,7 +84,7 @@ describe('Connector', function() {
 			author_id: firstUserID,
 			attachment_id: firstAttachmentID
 		};
-		ArticleModel.create(obj, function(err, instance) {
+		Models.article.create(obj, function(err, instance) {
 			should(err).be.not.ok;
 			should(instance).be.an.Object;
 			should(instance.getPrimaryKey()).be.ok;
@@ -133,11 +106,11 @@ describe('Connector', function() {
 			author_id: firstUserID,
 			attachment_id: firstAttachmentID
 		};
-		ArticleModel.create(obj, function(err, instance) {
+		Models.article.create(obj, function(err, instance) {
 			should(err).be.not.ok;
 			should(instance).be.an.Object;
 			var id = instance.getPrimaryKey();
-			ArticleModel.findOne(id, function(err, instance2) {
+			Models.article.findOne(id, function(err, instance2) {
 				should(err).be.not.ok;
 				should(instance2).be.an.Object;
 				should(instance2.getPrimaryKey()).equal(id);
@@ -153,13 +126,13 @@ describe('Connector', function() {
 	});
 
 	it('API-317: should be able to reference models as objects', function(next) {
-		ContractModel.findAll(function(err, coll) {
+		Models.contract.findAll(function(err, coll) {
 			should(err).be.not.ok;
 			should(coll).be.ok;
 			should(coll.length).be.greaterThan(0);
 			var accountWithContract = coll[0].AccountId;
 
-			AccountContractModel.findOne(accountWithContract, function(err, instance) {
+			Models.account_contract.findOne(accountWithContract, function(err, instance) {
 				should(err).be.not.ok;
 				should(instance).be.ok;
 				should(instance.contract.ContractNumber).be.ok;
@@ -177,7 +150,7 @@ describe('Connector', function() {
 			author_id: firstUserID,
 			attachment_id: firstAttachmentID
 		};
-		ArticleModel.create(obj, function(err, instance) {
+		Models.article.create(obj, function(err, instance) {
 			should(err).be.not.ok;
 			should(instance).be.an.Object;
 			var options = {
@@ -187,7 +160,7 @@ describe('Connector', function() {
 				limit: 3,
 				skip: 0
 			};
-			ArticleModel.query(options, function(err, coll) {
+			Models.article.query(options, function(err, coll) {
 				should(err).be.not.ok;
 
 				async.eachSeries(coll, function(model, next) {
@@ -220,7 +193,7 @@ describe('Connector', function() {
 			}
 		];
 
-		ArticleModel.create(objs, function(err, coll) {
+		Models.article.create(objs, function(err, coll) {
 			should(err).be.not.ok;
 			should(coll.length).equal(objs.length);
 
@@ -229,7 +202,7 @@ describe('Connector', function() {
 				keys.push(post.getPrimaryKey());
 			});
 
-			ArticleModel.find(function(err, coll2) {
+			Models.article.find(function(err, coll2) {
 				should(err).be.not.ok;
 				should(coll2.length).be.greaterThan(coll.length - 1);
 
@@ -282,11 +255,11 @@ describe('Connector', function() {
 			}
 		];
 
-		ArticleModel.create(objs, function(err, coll) {
+		Models.article.create(objs, function(err, coll) {
 			should(err).be.not.ok;
 			should(coll.length).equal(objs.length);
 
-			ArticleModel.find(function(err, coll2) {
+			Models.article.find(function(err, coll2) {
 				should(err).be.not.ok;
 				should(coll2.length).be.greaterThan(coll.length - 1);
 
@@ -346,11 +319,11 @@ describe('Connector', function() {
 			}
 		];
 
-		ArticleModel.create(objs, function(err, coll) {
+		Models.article.create(objs, function(err, coll) {
 			should(err).be.not.ok;
 			should(coll.length).equal(objs.length);
 
-			AuthoredArticleModel.find(function(err, coll2) {
+			Models.authored_article.find(function(err, coll2) {
 				should(err).be.not.ok;
 				should(coll2.length).be.greaterThan(1);
 
@@ -370,9 +343,9 @@ describe('Connector', function() {
 	});
 
 	it('API-283: API-351: should allow 0-1-many joins', function(next) {
-		EmployeeModel.deleteAll(function(err) {
+		Models.employee.deleteAll(function(err) {
 			should(err).be.not.ok;
-			EmployeeModel.create([
+			Models.employee.create([
 				{
 					first_name: 'Employee',
 					last_name: '1',
@@ -391,7 +364,7 @@ describe('Connector', function() {
 				should(err).be.not.ok;
 				should(coll.length).equal(2);
 
-				HabitModel.create([
+				Models.habit.create([
 					{
 						user_id: coll[0].getPrimaryKey(),
 						habit: 'Programming'
@@ -408,7 +381,7 @@ describe('Connector', function() {
 					should(err).be.not.ok;
 					should(coll.length).equal(3);
 
-					EmployeeHabitModel.findAll(function(err, coll) {
+					Models.employee_habit.findAll(function(err, coll) {
 						should(err).be.not.ok;
 						should(coll.length).equal(1);
 						should(coll[0].habit).be.ok;
@@ -431,7 +404,7 @@ describe('Connector', function() {
 			attachment_id: firstAttachmentID
 		};
 
-		ArticleModel.create(obj, function(err, instance) {
+		Models.article.create(obj, function(err, instance) {
 			should(err).be.not.ok;
 			should(instance).be.an.Object;
 			var id = instance.getPrimaryKey();
@@ -457,11 +430,11 @@ describe('Connector', function() {
 			post2Data = { title: 'Title2', content: 'Content2', author_id: firstUserID };
 
 		// Create test data.
-		UserModel.create([user1Data, user2Data], function(err, user1) {
+		Models.user.create([user1Data, user2Data], function(err, user1) {
 			should(err).be.not.ok;
-			PostModel.create([post1Data, post2Data], function(err, post1) {
+			Models.post.create([post1Data, post2Data], function(err, post1) {
 				should(err).be.not.ok;
-				UserPostModel.findAll(function(err, result) {
+				Models.user_post.findAll(function(err, result) {
 					should(err).be.not.ok;
 					should(result.user).be.ok;
 					should(result.user.length).be.greaterThan(0);
@@ -474,7 +447,7 @@ describe('Connector', function() {
 	});
 
 	it('should be able to batched query', function(next) {
-		UserPostModel.query({
+		Models.user_post.query({
 			user: {
 				limit: 1
 			},
@@ -493,7 +466,7 @@ describe('Connector', function() {
 	});
 
 	it('should be able to batched findOne', function(next) {
-		UserPostModel.findOne({
+		Models.user_post.findOne({
 			user: firstUserID,
 			post: firstPostID
 		}, function(err, result) {
@@ -507,7 +480,7 @@ describe('Connector', function() {
 	});
 
 	it('API-344: should be able to batch across 4 different connectors', function(next) {
-		UC9A.findAll(function(err, result) {
+		Models.uc_9a.findAll(function(err, result) {
 			should(err).be.not.ok;
 			should(result).be.ok;
 			next();
@@ -515,7 +488,7 @@ describe('Connector', function() {
 	});
 
 	it('API-344: should be able to find contracts with salesforce id', function(next) {
-		SFID.findOne('001M000000fe0V7IAI', function(err, result) {
+		Models.sf_id.findOne('001M000000fe0V7IAI', function(err, result) {
 			should(err).be.not.ok;
 			should(result).be.ok;
 			should(result.account).be.ok;

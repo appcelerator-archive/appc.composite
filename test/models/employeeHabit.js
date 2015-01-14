@@ -1,5 +1,5 @@
 module.exports = function(APIBuilder) {
-	return APIBuilder.Model.extend('employeeHabit', {
+	return APIBuilder.Model.extend('employee_habit', {
 		fields: {
 			fname: { type: String, description: 'First name', name: 'first_name', model: 'appc.mysql/nolan_user' },
 			lname: { type: String, description: 'Last name', name: 'last_name', model: 'appc.mysql/nolan_user' },
