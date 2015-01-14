@@ -9,7 +9,7 @@ module.exports = function(APIBuilder) {
 		connector: 'appc.composite',
 		metadata: {
 			'appc.composite': {
-				left_join: { // there would be a property for each join type
+				inner_join: {
 					model: 'appc.mysql/nolan_user_bad_habits',
 					join_properties: {
 						'user_id': 'id'

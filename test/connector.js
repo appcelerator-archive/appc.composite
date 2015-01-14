@@ -369,7 +369,7 @@ describe('Connector', function() {
 
 	});
 
-	it('API-283: should allow 0-1-many joins', function(next) {
+	it('API-283: API-351: should allow 0-1-many joins', function(next) {
 		EmployeeModel.deleteAll(function(err) {
 			should(err).be.not.ok;
 			EmployeeModel.create([
@@ -410,11 +410,10 @@ describe('Connector', function() {
 
 					EmployeeHabitModel.findAll(function(err, coll) {
 						should(err).be.not.ok;
-						should(coll.length).equal(2);
+						should(coll.length).equal(1);
 						should(coll[0].habit).be.ok;
 						should(coll[0].habit.length).equal(3);
 						should(coll[0].fname).be.ok;
-						should(coll[1].habit).be.not.ok;
 						next();
 					});
 				});
