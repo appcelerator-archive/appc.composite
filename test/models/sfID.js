@@ -10,7 +10,7 @@ return APIBuilder.Model.extend('sf_id', {
 			left_join: {
 				model: 'appc.salesforce/Contract',
 				join_properties: {
-					'AccountId': 'id'
+					AccountId: 'id'
 				}
 			}
 		}

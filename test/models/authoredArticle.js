@@ -14,7 +14,7 @@ module.exports = function(APIBuilder) {
 				inner_join: {
 					model: 'user',
 					join_properties: {
-						'id': 'author_id'
+						id: 'author_id'
 					}
 				}
 			}

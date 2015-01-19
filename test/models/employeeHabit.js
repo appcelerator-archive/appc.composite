@@ -12,7 +12,7 @@ module.exports = function(APIBuilder) {
 				inner_join: {
 					model: 'appc.mysql/nolan_user_bad_habits',
 					join_properties: {
-						'user_id': 'id'
+						user_id: 'id'
 					}
 				}
 			}

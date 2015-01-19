@@ -10,7 +10,7 @@ module.exports = function(APIBuilder) {
 				left_join: {
 					model: 'contract',
 					join_properties: {
-						'AccountId': 'id'
+						AccountId: 'id'
 					}
 				}
 			}

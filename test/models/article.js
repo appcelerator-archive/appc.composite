@@ -17,13 +17,13 @@ module.exports = function(APIBuilder) {
 					{
 						model: 'user',
 						join_properties: {
-							'id': 'author_id'
+							id: 'author_id'
 						}
 					},
 					{
 						model: 'attachment',
 						join_properties: {
-							'id': 'attachment_id'
+							id: 'attachment_id'
 						}
 					}
 				]

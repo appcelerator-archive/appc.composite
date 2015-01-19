@@ -1,7 +1,7 @@
 module.exports = {
 	logs: './logs',
 	quiet: false,
-	logLevel: 'debug',
+	logLevel: 'info',
 	apikey: 'bYVrelF3EQ8qGaJj/SoSlTyP6IhtA+1Y',
 	admin: {
 		enabled: true,
