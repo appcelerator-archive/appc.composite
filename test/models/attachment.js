@@ -1,5 +1,5 @@
-module.exports = function(APIBuilder) {
-	return APIBuilder.Model.extend('attachment', {
+module.exports = function(Arrow) {
+	return Arrow.Model.extend('attachment', {
 		fields: {
 			attachment_content: { name: 'content', type: String }
 		},

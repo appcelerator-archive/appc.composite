@@ -1,7 +1,7 @@
 var should = require('should'),
 	async = require('async'),
 	common = require('./common'),
-	APIBuilder = common.APIBuilder;
+	Arrow = common.Arrow;
 
 describe('Create / Update / Delete', function() {
 
@@ -87,7 +87,7 @@ describe('Create / Update / Delete', function() {
 	});
 
 	it('should not allow writing to joined models (for now)', function(next) {
-		var ExampleModel = APIBuilder.Model.extend('article', {
+		var ExampleModel = Arrow.Model.extend('article', {
 			fields: {
 				title: { type: String, model: 'post' },
 				author_id: { type: Number, model: 'post' },

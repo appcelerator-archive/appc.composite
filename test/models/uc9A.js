@@ -1,5 +1,5 @@
-module.exports = function(APIBuilder) {
-	return APIBuilder.createModel('uc_9a', {
+module.exports = function(Arrow) {
+	return Arrow.createModel('uc_9a', {
 		fields: {
 			users: { type: Array, model: 'appc.mysql/Composite_UserTable' },
 			mssql_posts: { type: Array, model: 'appc.mssql/TEST_Post' },

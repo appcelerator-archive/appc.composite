@@ -1,7 +1,7 @@
 var should = require('should'),
 	async = require('async'),
 	common = require('./common'),
-	APIBuilder = common.APIBuilder;
+	Arrow = common.Arrow;
 
 describe('Left Join', function() {
 
@@ -9,7 +9,7 @@ describe('Left Join', function() {
 		IDs = common.IDs;
 
 	it('should warn when joined on a bad model', function(next) {
-		var ExampleModel = APIBuilder.Model.extend('bad_model_query_example', {
+		var ExampleModel = Arrow.Model.extend('bad_model_query_example', {
 			fields: {
 				title: { type: String, model: 'i_dont_exist' },
 				author_id: { type: Number, model: 'i_dont_exist' },

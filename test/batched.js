@@ -1,7 +1,7 @@
 var should = require('should'),
 	async = require('async'),
 	common = require('./common'),
-	APIBuilder = common.APIBuilder;
+	Arrow = common.Arrow;
 
 describe('Connector', function() {
 

@@ -2,14 +2,14 @@ var should = require('should'),
 	async = require('async'),
 	url = require('url'),
 	fs = require('fs'),
-	APIBuilder = require('appcelerator').apibuilder,
-	server = new APIBuilder(),
-	log = server && server.logger || APIBuilder.createLogger({}, { name: 'api-connector-composite TEST' });
+	Arrow = require('appcelerator').arrow,
+	server = new Arrow(),
+	log = server && server.logger || Arrow.createLogger({}, { name: 'api-connector-composite TEST' });
 
 var Models = {},
 	IDs = {};
 
-exports.APIBuilder = APIBuilder;
+exports.Arrow = Arrow;
 exports.server = server;
 exports.log = log;
 exports.Models = Models;
@@ -24,7 +24,7 @@ before(function before(next) {
 		// Load models from their directory.
 		fs.readdirSync('./test/models/').forEach(function(file) {
 			if (file.indexOf('.js') > 0) {
-				var model = require('./models/' + file)(APIBuilder);
+				var model = require('./models/' + file)(Arrow);
 				Models[model.name] = model;
 				log.info('loaded model ' + model.name);
 				server.addModel(model);

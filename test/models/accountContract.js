@@ -1,5 +1,5 @@
-module.exports = function(APIBuilder) {
-	return APIBuilder.Model.extend('account_contract', {
+module.exports = function(Arrow) {
+	return Arrow.Model.extend('account_contract', {
 		fields: {
 			account: { type: Object, model: 'account' },
 			contract: { type: Object, model: 'contract' }

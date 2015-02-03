@@ -1,5 +1,5 @@
-module.exports = function(APIBuilder) {
-	return APIBuilder.Model.extend('article_objects', {
+module.exports = function(Arrow) {
+	return Arrow.Model.extend('article_objects', {
 		fields: {
 			post: { type: Object, model: 'post' },
 			author: { type: Object, model: 'user' },

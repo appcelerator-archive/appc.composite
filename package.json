@@ -9,8 +9,8 @@
 	"license": "Apache2",
 	"framework": "none",
 	"keywords": [
-		"apibuilder",
-		"apibuilder-connector"
+		"arrow",
+		"arrow-connector"
 	],
 	"repository": {},
 	"scripts": {

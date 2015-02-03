@@ -1,7 +1,7 @@
 var should = require('should'),
 	async = require('async'),
 	common = require('./common'),
-	APIBuilder = common.APIBuilder;
+	Arrow = common.Arrow;
 
 describe('Find / Query', function() {
 
@@ -112,7 +112,7 @@ describe('Find / Query', function() {
 	});
 
 	it('should warn about bad joined fields', function(next) {
-		var BadJoinedFieldModel = APIBuilder.Model.extend('article', {
+		var BadJoinedFieldModel = Arrow.Model.extend('article', {
 			fields: {
 				title: { type: String, model: 'post' },
 				content: { type: String, model: 'post' },
@@ -143,7 +143,7 @@ describe('Find / Query', function() {
 	});
 
 	it('should not allow querying on joined models (for now)', function(next) {
-		var ExampleModel = APIBuilder.Model.extend('dont_allow_querying_example', {
+		var ExampleModel = Arrow.Model.extend('dont_allow_querying_example', {
 			fields: {
 				title: { type: String, model: 'post' },
 				author_id: { type: Number, model: 'post' },

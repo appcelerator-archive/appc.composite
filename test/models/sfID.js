@@ -1,5 +1,5 @@
-module.exports = function(APIBuilder) {
-return APIBuilder.Model.extend('sf_id', {
+module.exports = function(Arrow) {
+return Arrow.Model.extend('sf_id', {
 	fields: {
 		account: { type: Object, model: 'appc.salesforce/Account' },
 		contract: { type: Object, model: 'appc.salesforce/Contract' }

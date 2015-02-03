@@ -18,7 +18,7 @@ The composite connector can join multiple models together in to a single model. 
 Let's say we have a table "post" with a field "author_id". author_id contains a string that maps to an "id" in a "user" table. Therefore, we can do a left join to look up the author, and mix its fields in to the model, as follows:
 
 ```
-APIBuilder.Model.extend('article', {
+Arrow.Model.extend('article', {
 	fields: {
 		title: { type: String, model: 'post' },
 		content: { type: String, model: 'post' },
@@ -65,7 +65,7 @@ To join on multiple models, just change your left_join or inner_join to be an ar
 example to also lookup an "attachment" table for our article:
 
 ```
-APIBuilder.Model.extend('article', {
+Arrow.Model.extend('article', {
 	fields: {
 		title: { type: String, model: 'post' },
 		content: { type: String, model: 'post' },
@@ -107,7 +107,7 @@ Instead of specifying the precise fields you want, you can instead include the e
 For example:
 
 ```
-APIBuilder.Model.extend('accountContract', {
+Arrow.Model.extend('accountContract', {
 	fields: {
 		account: { type: Object, model: 'account' },
 		contract: { type: Object, model: 'contract' }
@@ -137,7 +137,7 @@ results? For example, let's say we have a "author" model, and we want to select 
 a field with type: Array and model: "post" and the connector will handle the rest:
 
 ```
-APIBuilder.Model.extend('authorWithArticles', {
+Arrow.Model.extend('authorWithArticles', {
 	fields: {
 		first_name: { type: String, model: 'user' },
 		last_name: { type: String, model: 'user' },
@@ -163,8 +163,8 @@ APIBuilder.Model.extend('authorWithArticles', {
 What if your models aren't strongly related, but you want them returned together nonetheless? That's also supported:
 
 ```
-module.exports = function(APIBuilder) {
-	return APIBuilder.Model.extend('user_post', {
+module.exports = function(Arrow) {
+	return Arrow.Model.extend('user_post', {
 		fields: {
 			users: { type: Array, model: 'user' },
 			posts: { type: Array, model: 'post' }
