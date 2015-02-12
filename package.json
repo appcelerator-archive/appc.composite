@@ -1,7 +1,7 @@
 {
 	"name": "appc.composite",
 	"description": "Composite connector",
-	"version": "1.0.18",
+	"version": "1.0.19",
 	"author": "Dawson Toth",
 	"maintainers": [
 		"Dawson Toth <dtoth@appcelerator.com>"
@@ -10,7 +10,9 @@
 	"framework": "none",
 	"keywords": [
 		"arrow",
-		"arrow-connector"
+		"arrow-connector",
+		"appc-package-connector",
+		"appcelerator"
 	],
 	"repository": {},
 	"scripts": {
@@ -24,7 +26,7 @@
 		"pkginfo": "^0.3.0"
 	},
 	"devDependencies": {
-		"appcelerator": "*",
+		"arrow.js": "*",
 		"appc.mongo": "git+ssh://git@github.com:appcelerator/api-connector-mongo.git",
 		"appc.mysql": "git+ssh://git@github.com:appcelerator/api-connector-mysql.git",
 		"appc.salesforce": "git+ssh://git@github.com:appcelerator/api-connector-salesforce.git",
@@ -37,5 +39,6 @@
 		"mocha": "^1.21.4",
 		"should": "^4.0.4"
 	},
-	"appcelerator": {}
+	"appcelerator": {},
+	"appc_access": "public"
 }

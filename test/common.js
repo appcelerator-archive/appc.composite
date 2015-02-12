@@ -2,7 +2,7 @@ var should = require('should'),
 	async = require('async'),
 	url = require('url'),
 	fs = require('fs'),
-	Arrow = require('appcelerator').arrow,
+	Arrow = require('arrow.js'),
 	server = new Arrow(),
 	log = server && server.logger || Arrow.createLogger({}, { name: 'api-connector-composite TEST' });
 
