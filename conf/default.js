@@ -13,11 +13,11 @@ module.exports = {
 			host: 'localhost',
 			database: 'connector',
 			user: 'root',
-			password: 'root',
+			password: '',
 			port: 3306
 		},
 		'appc.mongo': {
-			url: 'mongodb://localhost/apibuilder'
+			url: 'mongodb://localhost/arrow'
 		},
 		'appc.salesforce': {
 			url: '',

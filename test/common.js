@@ -2,9 +2,9 @@ var should = require('should'),
 	async = require('async'),
 	url = require('url'),
 	fs = require('fs'),
-	Arrow = require('arrow.js'),
+	Arrow = require('arrow'),
 	server = new Arrow(),
-	log = server && server.logger || Arrow.createLogger({}, { name: 'api-connector-composite TEST' });
+	log = server && server.logger || Arrow.createLogger({}, { name: 'appc.composite TEST' });
 
 var Models = {},
 	IDs = {};
