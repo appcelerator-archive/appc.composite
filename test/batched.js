@@ -33,13 +33,13 @@ describe('Connector', function() {
 
 	it('should be able to batched query', function(next) {
 		Models.user_post.query({
-			users: { limit: 1 },
+			users: { limit: 2 },
 			posts: { where: { title: 'Title1' } }
 		}, function(err, result) {
 			should(err).be.not.ok;
 			should(result.users).be.ok;
 			should(result.users.length).be.greaterThan(0);
-			should(result.users.length).be.lessThan(2);
+			should(result.users.length).be.lessThan(3);
 			should(result.posts).be.ok;
 			should(result.posts.length).be.greaterThan(0);
 			next();
