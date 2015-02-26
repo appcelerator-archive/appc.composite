@@ -3,7 +3,9 @@ var should = require('should'),
 	url = require('url'),
 	fs = require('fs'),
 	Arrow = require('arrow'),
-	server = new Arrow(),
+	server = new Arrow({
+		ignoreDuplicateModels: true
+	}),
 	log = server && server.logger || Arrow.createLogger({}, { name: 'appc.composite TEST' });
 
 var Models = {},
