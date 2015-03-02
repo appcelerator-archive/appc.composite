@@ -43,7 +43,7 @@ before(function before(next) {
 			IDs.user = instance.getPrimaryKey();
 
 			Models.attachment.create({
-				content: 'Test Attachment Content'
+				attachment_content: 'Test Attachment Content'
 			}, function(err, instance) {
 				should(err).be.not.ok;
 				IDs.attachment = instance.getPrimaryKey();
