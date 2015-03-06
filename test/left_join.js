@@ -35,6 +35,19 @@ describe('Left Join', function() {
 		});
 	});
 
+	it('API-565: should query on joined something or other', function (next) {
+		Models.emp.query({
+			where: {
+				fname: { $like: 'Fre%' }
+			}
+		}, function (err, results) {
+			should(err).be.not.ok;
+			should(results).be.ok;
+			should(results.length).be.greaterThan(0);
+			next();
+		});
+	});
+
 	it('API-284: should handle left join when right can be null', function(next) {
 
 		var objs = [

@@ -2,6 +2,7 @@ var should = require('should'),
 	async = require('async'),
 	url = require('url'),
 	fs = require('fs'),
+	path = require('path'),
 	Arrow = require('arrow'),
 	server = new Arrow({
 		ignoreDuplicateModels: true
@@ -57,7 +58,22 @@ before(function before(next) {
 					should(err).be.not.ok;
 					IDs.post = instance.getPrimaryKey();
 
-					next();
+					var mysql = server.getConnector('appc.mysql');
+					mysql.getConnection(function (err, connection) {
+						if (err) { return next(err); }
+						var scripts = fs.readFileSync(path.join(__dirname, '/scripts/employees.sql'), 'UTF-8').split(';');
+						async.eachSeries(scripts, function (script, cb) {
+							if (!script.trim()) { return cb(); }
+							connection.query(script, [mysql.config.database], function (err) {
+								if (err) { return cb(err); }
+								else { cb(); }
+							});
+						}, function (err) {
+							if (mysql.pool) { connection.release(); }
+							if (err) { next(err); }
+							else { next(); }
+						});
+					});
 				});
 			});
 		});
