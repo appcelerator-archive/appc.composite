@@ -1,4 +1,4 @@
-module.exports = function(Arrow) {
+module.exports = function (Arrow) {
 	return Arrow.createModel('uc_9a', {
 		fields: {
 			users: { type: Array, model: 'appc.mysql/Composite_UserTable' },

@@ -21,11 +21,11 @@ exports.IDs = IDs;
 before(function before(next) {
 	this.timeout(60 * 1000);
 
-	server.start(function(err) {
+	server.start(function (err) {
 		should(err).be.not.ok;
 
 		// Load models from their directory.
-		fs.readdirSync('./test/models/').forEach(function(file) {
+		fs.readdirSync('./test/models/').forEach(function (file) {
 			if (file.indexOf('.js') > 0) {
 				var model = require('./models/' + file)(Arrow);
 				Models[model.name] = model;
@@ -39,13 +39,13 @@ before(function before(next) {
 		Models.user.create({
 			first_name: 'Dawson',
 			last_name: 'Toth'
-		}, function(err, instance) {
+		}, function (err, instance) {
 			should(err).be.not.ok;
 			IDs.user = instance.getPrimaryKey();
 
 			Models.attachment.create({
 				attachment_content: 'Test Attachment Content'
-			}, function(err, instance) {
+			}, function (err, instance) {
 				should(err).be.not.ok;
 				IDs.attachment = instance.getPrimaryKey();
 
@@ -54,7 +54,7 @@ before(function before(next) {
 					content: 'Test Content',
 					author_id: IDs.user,
 					attachment_id: IDs.attachment
-				}, function(err, instance) {
+				}, function (err, instance) {
 					should(err).be.not.ok;
 					IDs.post = instance.getPrimaryKey();
 
@@ -80,7 +80,7 @@ before(function before(next) {
 	});
 });
 
-after(function(next) {
+after(function (next) {
 	async.parallel(
 		[
 			Models.user.deleteAll.bind(Models.user),
@@ -92,6 +92,6 @@ after(function(next) {
 	);
 });
 
-after(function(next) {
+after(function (next) {
 	server.stop(next);
 });

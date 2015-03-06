@@ -27,6 +27,7 @@
 	},
 	"devDependencies": {
 		"arrow": "*",
+		"appc.arrowdb": "git+ssh://git@github.com:appcelerator/appc.arrowdb.git",
 		"appc.mongo": "git+ssh://git@github.com:appcelerator/appc.mongo.git",
 		"appc.mysql": "git+ssh://git@github.com:appcelerator/appc.mysql.git",
 		"appc.salesforce": "git+ssh://git@github.com:appcelerator/appc.salesforce.git",

@@ -1,4 +1,4 @@
-module.exports = function(Arrow) {
+module.exports = function (Arrow) {
 	return Arrow.Model.extend('authored_article', {
 		fields: {
 			title: { type: String, model: 'post' },

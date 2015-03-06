@@ -16,6 +16,11 @@ module.exports = {
 			password: '',
 			port: 3306
 		},
+		'appc.arrowdb': {
+			key: '',
+			username: '',
+			password: ''
+		},
 		'appc.mongo': {
 			url: 'mongodb://localhost/arrow'
 		},

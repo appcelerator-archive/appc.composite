@@ -1,4 +1,4 @@
-module.exports = function(Arrow) {
+module.exports = function (Arrow) {
 	return Arrow.Model.extend('post', {
 		fields: {
 			title: { type: String },

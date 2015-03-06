@@ -3,12 +3,12 @@ var should = require('should'),
 	common = require('./common'),
 	Arrow = common.Arrow;
 
-describe('Create / Update / Delete', function() {
+describe('Create / Update / Delete', function () {
 
 	var Models = common.Models,
 		IDs = common.IDs;
 
-	it('should be able to create instance', function(next) {
+	it('should be able to create instance', function (next) {
 
 		var obj = {
 			title: 'Test Title',
@@ -16,7 +16,7 @@ describe('Create / Update / Delete', function() {
 			author_id: IDs.user,
 			attachment_id: IDs.attachment
 		};
-		Models.article.create(obj, function(err, instance) {
+		Models.article.create(obj, function (err, instance) {
 			should(err).be.not.ok;
 			should(instance).be.an.Object;
 			should(instance.getPrimaryKey()).be.ok;
@@ -30,7 +30,7 @@ describe('Create / Update / Delete', function() {
 
 	});
 
-	it('should be able to update an instance', function(next) {
+	it('should be able to update an instance', function (next) {
 
 		var obj = {
 			title: 'Test Title',
@@ -39,12 +39,12 @@ describe('Create / Update / Delete', function() {
 			attachment_id: IDs.attachment
 		};
 
-		Models.article.create(obj, function(err, instance) {
+		Models.article.create(obj, function (err, instance) {
 			should(err).be.not.ok;
 			should(instance).be.an.Object;
 			var id = instance.getPrimaryKey();
 			instance.set('content', 'Goodbye world');
-			instance.save(function(err, result) {
+			instance.save(function (err, result) {
 				should(err).be.not.ok;
 				should(result).be.an.Object;
 				should(result.getPrimaryKey()).equal(id);
@@ -58,7 +58,7 @@ describe('Create / Update / Delete', function() {
 
 	});
 
-	it('should be able to delete an instance', function(next) {
+	it('should be able to delete an instance', function (next) {
 
 		var obj = {
 			title: 'Test Title',
@@ -67,16 +67,16 @@ describe('Create / Update / Delete', function() {
 			attachment_id: IDs.attachment
 		};
 
-		Models.article.create(obj, function(err, instance) {
+		Models.article.create(obj, function (err, instance) {
 			should(err).be.not.ok;
 			should(instance).be.an.Object;
 			var id = instance.getPrimaryKey();
-			
-			instance.remove(function(err, result) {
+
+			instance.remove(function (err, result) {
 				should(err).be.not.ok;
 				should(result).be.ok;
 
-				Models.article.findOne(id, function(err, result) {
+				Models.article.findOne(id, function (err, result) {
 					should(err).be.not.ok;
 					should(result).be.not.ok;
 					next();
@@ -86,7 +86,7 @@ describe('Create / Update / Delete', function() {
 
 	});
 
-	it('should not allow writing to joined models (for now)', function(next) {
+	it('should not allow writing to joined models (for now)', function (next) {
 		var ExampleModel = Arrow.Model.extend('article', {
 			fields: {
 				title: { type: String, model: 'post' },
@@ -106,7 +106,7 @@ describe('Create / Update / Delete', function() {
 				}
 			}
 		});
-		ExampleModel.create({ first_name: 'cant be written just yet' }, function(err, instance) {
+		ExampleModel.create({ first_name: 'cant be written just yet' }, function (err, instance) {
 			should(err).be.ok;
 			next();
 		});

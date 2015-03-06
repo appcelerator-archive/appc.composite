@@ -3,12 +3,12 @@ var should = require('should'),
 	common = require('./common'),
 	Arrow = common.Arrow;
 
-describe('Find / Query', function() {
+describe('Find / Query', function () {
 
 	var Models = common.Models,
 		IDs = common.IDs;
 
-	it('should be able to find an instance by ID', function(next) {
+	it('should be able to find an instance by ID', function (next) {
 
 		var obj = {
 			title: 'Test Title',
@@ -16,11 +16,11 @@ describe('Find / Query', function() {
 			author_id: IDs.user,
 			attachment_id: IDs.attachment
 		};
-		Models.article.create(obj, function(err, instance) {
+		Models.article.create(obj, function (err, instance) {
 			should(err).be.not.ok;
 			should(instance).be.an.Object;
 			var id = instance.getPrimaryKey();
-			Models.article.findOne(id, function(err, instance2) {
+			Models.article.findOne(id, function (err, instance2) {
 				should(err).be.not.ok;
 				should(instance2).be.an.Object;
 				should(instance2.getPrimaryKey()).equal(id);
@@ -35,7 +35,7 @@ describe('Find / Query', function() {
 
 	});
 
-	it('should be able to query', function(callback) {
+	it('should be able to query', function (callback) {
 
 		var obj = {
 			title: 'Test Title',
@@ -43,7 +43,7 @@ describe('Find / Query', function() {
 			author_id: IDs.user,
 			attachment_id: IDs.attachment
 		};
-		Models.article.create(obj, function(err, instance) {
+		Models.article.create(obj, function (err, instance) {
 			should(err).be.not.ok;
 			should(instance).be.an.Object;
 			var options = {
@@ -53,10 +53,10 @@ describe('Find / Query', function() {
 				limit: 3,
 				skip: 0
 			};
-			Models.article.query(options, function(err, coll) {
+			Models.article.query(options, function (err, coll) {
 				should(err).be.not.ok;
 
-				async.eachSeries(coll, function(model, next) {
+				async.eachSeries(coll, function (model, next) {
 					should(model.getPrimaryKey()).be.ok;
 					should(model.title).be.not.ok;
 					should(model.content).be.a.String;
@@ -69,7 +69,7 @@ describe('Find / Query', function() {
 
 	});
 
-	it('should be able to find all instances', function(next) {
+	it('should be able to find all instances', function (next) {
 
 		var objs = [
 			{
@@ -86,23 +86,23 @@ describe('Find / Query', function() {
 			}
 		];
 
-		Models.article.create(objs, function(err, coll) {
+		Models.article.create(objs, function (err, coll) {
 			should(err).be.not.ok;
 			should(coll.length).equal(objs.length);
 
 			var keys = [];
-			coll.forEach(function(post) {
+			coll.forEach(function (post) {
 				keys.push(post.getPrimaryKey());
 			});
 
-			Models.article.find(function(err, coll2) {
+			Models.article.find(function (err, coll2) {
 				should(err).be.not.ok;
 				should(coll2.length).be.greaterThan(coll.length - 1);
 
-				async.eachSeries(coll2, function(post, cb) {
+				async.eachSeries(coll2, function (post, cb) {
 					should(post).be.an.Object;
 					cb();
-				}, function(err) {
+				}, function (err) {
 					next(err);
 				});
 			});
@@ -111,7 +111,7 @@ describe('Find / Query', function() {
 
 	});
 
-	it('should warn about bad joined fields', function(next) {
+	it('should warn about bad joined fields', function (next) {
 		var BadJoinedFieldModel = Arrow.Model.extend('article', {
 			fields: {
 				title: { type: String, model: 'post' },
@@ -133,7 +133,7 @@ describe('Find / Query', function() {
 				}
 			}
 		});
-		BadJoinedFieldModel.findOne(IDs.post, function(err, instance) {
+		BadJoinedFieldModel.findOne(IDs.post, function (err, instance) {
 			should(err).be.not.ok;
 			should(instance.author_id).be.ok;
 			should(instance.author_first_name).be.not.ok;
@@ -142,7 +142,7 @@ describe('Find / Query', function() {
 		});
 	});
 
-	it('should not allow querying on joined models (for now)', function(next) {
+	it('should not allow querying on joined models (for now)', function (next) {
 		var ExampleModel = Arrow.Model.extend('dont_allow_querying_example', {
 			fields: {
 				title: { type: String, model: 'post' },
@@ -162,15 +162,15 @@ describe('Find / Query', function() {
 				}
 			}
 		});
-		ExampleModel.query({ first_name: 'cant be queried on just yet' }, function(err) {
+		ExampleModel.query({ first_name: 'cant be queried on just yet' }, function (err) {
 			should(err).be.ok;
 			should(String(err)).containEql('Joined fields cannot be queried on yet');
 			next();
 		});
 	});
 
-	it('API-344: should be able to find contracts with salesforce id', function(next) {
-		Models.sf_id.findOne('001M000000fe0V7IAI', function(err, result) {
+	it('API-344: should be able to find contracts with salesforce id', function (next) {
+		Models.sf_id.findOne('001M000000fe0V7IAI', function (err, result) {
 			should(err).be.not.ok;
 			should(result).be.ok;
 			should(result.account).be.ok;
@@ -179,14 +179,14 @@ describe('Find / Query', function() {
 		});
 	});
 
-	it('API-317: should be able to reference models as objects', function(next) {
-		Models.contract.findAll(function(err, coll) {
+	it('API-317: should be able to reference models as objects', function (next) {
+		Models.contract.findAll(function (err, coll) {
 			should(err).be.not.ok;
 			should(coll).be.ok;
 			should(coll.length).be.greaterThan(0);
 			var accountWithContract = coll[0].AccountId;
 
-			Models.account_contract.findOne(accountWithContract, function(err, instance) {
+			Models.account_contract.findOne(accountWithContract, function (err, instance) {
 				should(err).be.not.ok;
 				should(instance).be.ok;
 				should(instance.contract.ContractNumber).be.ok;
