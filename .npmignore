@@ -7,3 +7,4 @@ appc.json
 *.tgz
 conf/local.js
 test
+app.js
