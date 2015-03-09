@@ -3,7 +3,6 @@ logs
 Gruntfile.js
 .travis.yml
 .jshintrc
-appc.json
 *.tgz
 conf/local.js
 test
