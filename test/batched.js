@@ -3,23 +3,23 @@ var should = require('should'),
 	common = require('./common'),
 	Arrow = common.Arrow;
 
-describe('Connector', function() {
+describe('Connector', function () {
 
 	var Models = common.Models,
 		IDs = common.IDs;
 
-	it('should be able to batched find all', function(next) {
+	it('should be able to batched find all', function (next) {
 		var user1Data = { first_name: 'Dawson1', last_name: 'Toth1' },
 			user2Data = { first_name: 'Dawson2', last_name: 'Toth2' },
 			post1Data = { title: 'Title1', content: 'Content1', author_id: IDs.user },
 			post2Data = { title: 'Title2', content: 'Content2', author_id: IDs.user };
 
 		// Create test data.
-		Models.user.create([user1Data, user2Data], function(err, user1) {
+		Models.user.create([user1Data, user2Data], function (err, user1) {
 			should(err).be.not.ok;
-			Models.post.create([post1Data, post2Data], function(err, post1) {
+			Models.post.create([post1Data, post2Data], function (err, post1) {
 				should(err).be.not.ok;
-				Models.user_post.findAll(function(err, result) {
+				Models.user_post.findAll(function (err, result) {
 					should(err).be.not.ok;
 					should(result.users).be.ok;
 					should(result.users.length).be.greaterThan(0);
@@ -31,26 +31,26 @@ describe('Connector', function() {
 		});
 	});
 
-	it('should be able to batched query', function(next) {
+	it('should be able to batched query', function (next) {
 		Models.user_post.query({
-			users: { limit: 1 },
+			users: { limit: 2 },
 			posts: { where: { title: 'Title1' } }
-		}, function(err, result) {
+		}, function (err, result) {
 			should(err).be.not.ok;
 			should(result.users).be.ok;
 			should(result.users.length).be.greaterThan(0);
-			should(result.users.length).be.lessThan(2);
+			should(result.users.length).be.lessThan(3);
 			should(result.posts).be.ok;
 			should(result.posts.length).be.greaterThan(0);
 			next();
 		});
 	});
 
-	it('should be able to batched findOne', function(next) {
+	it('should be able to batched findOne', function (next) {
 		Models.user_post.findOne({
 			users: IDs.user,
 			posts: IDs.post
-		}, function(err, result) {
+		}, function (err, result) {
 			should(err).be.not.ok;
 			should(result.users).be.ok;
 			should(result.users.getPrimaryKey()).be.ok;
@@ -60,11 +60,11 @@ describe('Connector', function() {
 		});
 	});
 
-	it('should be able to batched findOne with stringified params', function(next) {
+	it('should be able to batched findOne with stringified params', function (next) {
 		Models.user_post.findOne(JSON.stringify({
 			users: IDs.user,
 			posts: IDs.post
-		}), function(err, result) {
+		}), function (err, result) {
 			should(err).be.not.ok;
 			should(result.users).be.ok;
 			should(result.users.getPrimaryKey()).be.ok;
@@ -74,15 +74,15 @@ describe('Connector', function() {
 		});
 	});
 
-	it('should be able to handle bad stringified params', function(next) {
-		Models.user_post.findOne("{ some: bad json }", function(err, result) {
+	it('should be able to handle bad stringified params', function (next) {
+		Models.user_post.findOne("{ some: bad json }", function (err, result) {
 			should(err).be.ok;
 			next();
 		});
 	});
 
-	it('API-344: should be able to batch across 4 different connectors', function(next) {
-		Models.uc_9a.findAll(function(err, result) {
+	it('API-344: should be able to batch across 4 different connectors', function (next) {
+		Models.uc_9a.findAll(function (err, result) {
 			should(err).be.not.ok;
 			should(result).be.ok;
 
@@ -91,7 +91,7 @@ describe('Connector', function() {
 				mssql_posts: { where: { title: { $like: '%foo%' } } },
 				mongo_posts: { where: { title: { $like: '%o%' } } },
 				accounts: { where: { Name: { $like: '%ee%' } } }
-			}, function(err, results) {
+			}, function (err, results) {
 				should(err).be.not.ok;
 				should(results).be.ok;
 				for (var i = 0; i < results.users.length; i++) {
@@ -99,6 +99,26 @@ describe('Connector', function() {
 				}
 				next();
 			});
+		});
+	});
+
+	it('API-567: should not mysql error on bad regex field', function (next) {
+		Models.multijoin.query({
+			where: {
+				employees: { where: { email_address: { $like: 'smith.com' } } },
+				teams: { where: { division: 'AFC' } },
+				cities: { where: { name: { $like: '%esno' } } },
+				accounts: { where: { Name: 'Foo' } },
+				cars: { where: { model: { $like: '%anza' } } }
+			}
+		}, function (err, results) {
+			console.log(arguments);
+			should(err).be.not.ok;
+			should(results).be.ok;
+			should(results.employees).be.ok;
+			should(results.teams).be.ok;
+			should(results.accounts).be.ok;
+			next();
 		});
 	});
 

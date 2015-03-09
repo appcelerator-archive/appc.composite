@@ -1,4 +1,4 @@
-module.exports = function(Arrow) {
+module.exports = function (Arrow) {
 	return Arrow.Model.extend('user', {
 		fields: {
 			first_name: { type: String },

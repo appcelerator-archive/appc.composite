@@ -1,4 +1,4 @@
-module.exports = function(Arrow) {
+module.exports = function (Arrow) {
 	return Arrow.Model.reduce('appc.salesforce/Account', 'account', {
 		fields: {
 			Name: { type: String },

@@ -3,12 +3,12 @@ var should = require('should'),
 	common = require('./common'),
 	Arrow = common.Arrow;
 
-describe('Inner Join', function() {
+describe('Inner Join', function () {
 
 	var Models = common.Models,
 		IDs = common.IDs;
 
-	it('API-285: should support inner join', function(next) {
+	it('API-285: should support inner join', function (next) {
 
 		var objs = [
 			{
@@ -45,21 +45,21 @@ describe('Inner Join', function() {
 			}
 		];
 
-		Models.article.create(objs, function(err, coll) {
+		Models.article.create(objs, function (err, coll) {
 			should(err).be.not.ok;
 			should(coll.length).equal(objs.length);
 
-			Models.authored_article.find(function(err, coll2) {
+			Models.authored_article.find(function (err, coll2) {
 				should(err).be.not.ok;
 				should(coll2.length).be.greaterThan(1);
 
-				async.eachSeries(coll2, function(post, cb) {
+				async.eachSeries(coll2, function (post, cb) {
 					should(post).be.an.Object;
 					should(post.author_id).be.ok;
 					should(post.author_first_name).be.ok;
 					should(post.author_last_name).be.ok;
 					cb();
-				}, function(err) {
+				}, function (err) {
 					next(err);
 				});
 			});
