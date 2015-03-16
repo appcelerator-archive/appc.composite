@@ -1,12 +1,12 @@
 {
   "name": "appc.composite",
   "description": "Composite connector",
-  "version": "1.0.24",
+  "version": "1.0.25",
   "author": "Dawson Toth",
   "maintainers": [
     "Dawson Toth <dtoth@appcelerator.com>"
   ],
-  "license": "Apache2",
+  "license": "Apache-2.0",
   "framework": "none",
   "keywords": [
     "arrow",
