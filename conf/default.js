@@ -19,7 +19,8 @@ module.exports = {
 		'appc.arrowdb': {
 			key: '',
 			username: '',
-			password: ''
+			password: '',
+			modelAutogen: false
 		},
 		'appc.mongo': {
 			url: 'mongodb://localhost/arrow'

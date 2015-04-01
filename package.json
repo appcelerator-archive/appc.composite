@@ -1,7 +1,7 @@
 {
   "name": "appc.composite",
   "description": "Composite connector",
-  "version": "1.0.26",
+  "version": "1.0.27",
   "author": "Dawson Toth",
   "maintainers": [
     "Dawson Toth <dtoth@appcelerator.com>"
@@ -16,7 +16,8 @@
   "repository": {},
   "scripts": {
     "test": "grunt",
-    "start": "node ./app.js"
+    "start": "node ./app.js",
+    "preinstall": "node ./bin/update"
   },
   "private": true,
   "dependencies": {
@@ -25,11 +26,13 @@
     "pkginfo": "^0.3.0"
   },
   "devDependencies": {
-    "arrow": "*",
+    "arrow": "0.3.158",
+    "appc.arrowdb": "git+ssh://git@github.com:appcelerator/appc.arrowdb.git",
     "appc.mongo": "git+ssh://git@github.com:appcelerator/appc.mongo.git",
     "appc.mysql": "git+ssh://git@github.com:appcelerator/appc.mysql.git",
     "appc.salesforce": "git+ssh://git@github.com:appcelerator/appc.salesforce.git",
     "appc.mssql": "git+ssh://git@github.com:appcelerator/appc.mssql.git",
+    "ensure-latest": "^1.0.3",
     "grunt": "^0.4.5",
     "grunt-contrib-clean": "^0.6.0",
     "grunt-contrib-jshint": "^0.10.0",
@@ -37,5 +40,6 @@
     "grunt-mocha-test": "^0.12.0",
     "mocha": "^1.21.4",
     "should": "^4.0.4"
-  }
+  },
+  "ensureLatest": ["arrow"]
 }

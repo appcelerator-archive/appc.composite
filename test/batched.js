@@ -109,10 +109,9 @@ describe('Connector', function () {
 				teams: { where: { division: 'AFC' } },
 				cities: { where: { name: { $like: '%esno' } } },
 				accounts: { where: { Name: 'Foo' } },
-				cars: { where: { model: { $like: '%anza' } } }
+				cars: { where: { model: { $like: 'anza%' } } }
 			}
 		}, function (err, results) {
-			console.log(arguments);
 			should(err).be.not.ok;
 			should(results).be.ok;
 			should(results.employees).be.ok;
