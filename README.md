@@ -1,20 +1,20 @@
 # Composite Connector
 
-This is a composite connector for Arrow.
+This is a composite connector for Arrow. It lets you composite together models from other connectors in to a single model.
 
-> This software is pre-release and not yet ready for usage.  Please don't use this just yet while we're working through testing and finishing it up. Once it's ready, we'll make an announcement about it.
-
-To install:
+## Installation
 
 ```bash
 $ appc install connector/appc.composite --save
 ```
 
-# Joining
+## Usage
+
+### Joining
 
 The composite connector can join multiple models together in to a single model. It does this through the use of various joins.
 
-## Single Left Join
+#### Single Left Join
 Let's say we have a table "post" with a field "author_id". author_id contains a string that maps to an "id" in a "user" table. Therefore, we can do a left join to look up the author, and mix its fields in to the model, as follows:
 
 ```
@@ -53,13 +53,13 @@ The composite connector will thus do a findAll, query, update, or whatever other
 Having received the results from post, it will then continue and do a query on "user", searching for the specific
 "author_id" from each result, one at a time. It then merges the results together and returns them as one unified model.
 
-## Single Inner Join
+#### Single Inner Join
 
 The only practical difference between a left join and an inner join is for you to specify "inner_join" instead of
 "left_join" in your composite model's metadata. With this property set, only results that successfully join on their
 children will be returned. (In other words, the intersection of both sets.)
 
-## Multiple Joins
+#### Multiple Joins
 
 To join on multiple models, just change your left_join or inner_join to be an array of joins. Let's update our previous
 example to also lookup an "attachment" table for our article:
@@ -100,7 +100,7 @@ Arrow.Model.extend('article', {
 
 The connector will go through the left_joins in order, looking them up and merging the results together.
 
-## Selecting Whole Models Instead of Fields
+#### Selecting Whole Models Instead of Fields
 
 Instead of specifying the precise fields you want, you can instead include the entire joined model in your model.
  
@@ -130,7 +130,7 @@ Arrow.Model.extend('accountContract', {
 This will look up accounts and each instance will have the account stored in an "account" sub-dictionary. Then it will
 look up contracts that have an AccountId of the account's id, and store one in a "contract" sub-dictionary.
 
-## Joining with Multiple Children
+#### Joining with Multiple Children
 
 We have heretofore assumed that an article will have just a single author. But what if we want to join with multiple
 results? For example, let's say we have a "author" model, and we want to select all of their posts. Just add
@@ -202,7 +202,17 @@ This applies to all the methods. For example, a findOne could look like this:
 That findOne results in user.findOne('9bc...') being called, and post.findOne(61204).
 
 
-# Testing
+## Development
+
+> This section is for individuals developing the Composite Connector and not intended
+  for end-users.
+
+```bash
+npm install
+node app.js
+```
+
+### Running Unit Tests
 
 To use the tests, you'll want to create a database in MySQL with the following tables:
 
@@ -236,6 +246,12 @@ Then you can create an article with a JSON body like this:
 
 ```
 { "title": "My Test Title", "content": "My articles content goes here.", "author_id": 1 }
+```
+
+Run the unit tests:
+
+```bash
+npm test
 ```
 
 # Contributing
