@@ -1,7 +1,7 @@
 {
   "name": "appc.composite",
   "description": "Composite connector",
-  "version": "1.0.31",
+  "version": "1.0.32",
   "author": "Dawson Toth",
   "maintainers": [
     "Dawson Toth <dtoth@appcelerator.com>"
