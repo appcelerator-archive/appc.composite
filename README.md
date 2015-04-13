@@ -10,6 +10,33 @@ $ appc install connector/appc.composite --save
 
 ## Usage
 
+### Example Models
+
+```
+var User = Arrow.Model.extend('user', {
+		fields: {
+			first_name: { type: String },
+			last_name: { type: String }
+		},
+		connector: 'appc.mysql'
+	}),
+	Post = Arrow.Model.extend('post', {
+		fields: {
+			title: { type: String },
+			content: { type: String },
+			author_id: { type: Number },
+			attachment_id: { type: String }
+		},
+		connector: 'appc.mongo'
+	}),
+	Attachment = Arrow.Model.extend('attachment', {
+		fields: {
+			attachment_content: { name: 'content', type: String }
+		},
+		connector: 'appc.mongo'
+	});
+```
+
 ### Joining
 
 The composite connector can join multiple models together in to a single model. It does this through the use of various joins.
