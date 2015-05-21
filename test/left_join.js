@@ -11,9 +11,9 @@ describe('Left Join', function () {
 	it('should warn when joined on a bad model', function (next) {
 		var ExampleModel = Arrow.Model.extend('bad_model_query_example', {
 			fields: {
-				title: { type: String, model: 'i_dont_exist' },
-				author_id: { type: Number, model: 'i_dont_exist' },
-				first_name: { type: String, model: 'user' }
+				title: {type: String, model: 'i_dont_exist'},
+				author_id: {type: Number, model: 'i_dont_exist'},
+				first_name: {type: String, model: 'user'}
 			},
 			connector: 'appc.composite',
 
@@ -38,7 +38,7 @@ describe('Left Join', function () {
 	it('API-565: should translate named fields in queries', function (next) {
 		Models.emp.query({
 			where: {
-				fname: { $like: 'Fre%' }
+				fname: {$like: 'Fre%'}
 			}
 		}, function (err, results) {
 			should(err).be.not.ok;
@@ -165,13 +165,72 @@ describe('Left Join', function () {
 		});
 	});
 
+	it('API-805: should ignore custom fields', function (next) {
+		var MasterModel = Arrow.Model.extend('masterModel805', {
+				fields: {rid: {type: Number}, name: {type: String}},
+				connector: 'memory'
+			}),
+			ChildModel = Arrow.Model.extend('childModel805', {
+				fields: {rid: {type: Number}, age: {type: String}},
+				connector: 'memory'
+			});
+		common.server.addModel(MasterModel);
+		common.server.addModel(ChildModel);
+
+		var JoinedModel = Arrow.Model.extend('joinedMasterChildModel805', {
+			fields: {
+				rid: {type: Number, model: 'masterModel805'},
+				name: {type: String, model: 'masterModel805'},
+				age: {type: String, model: 'childModel805'},
+				customField: {type: String, custom: true}
+			},
+			connector: 'appc.composite',
+
+			metadata: {
+				'appc.composite': {
+					left_join: {
+						model: 'childModel805',
+						join_properties: {
+							rid: 'rid'
+						}
+					}
+				}
+			}
+		});
+		common.server.addModel(JoinedModel);
+
+		MasterModel.create([{rid: 0, name: 'Zero'}, {rid: 1, name: 'One'}], createChildren);
+
+		function createChildren(err) {
+			should(err).be.not.ok;
+			ChildModel.create([{rid: 0, age: '24'}, {rid: 1, age: '39'}], testJoin);
+		}
+
+		function testJoin(err) {
+			should(err).be.not.ok;
+			JoinedModel.findAll(verifyJoin);
+		}
+
+		function verifyJoin(err, results) {
+			should(err).be.not.ok;
+			should(results.length).be.ok;
+			for (var i = 0; i < results.length; i++) {
+				var result = results[i];
+				should(result.name).be.ok;
+				should(result.age).be.ok;
+			}
+			next();
+		}
+
+	});
+
 	it('API-710: should allow joining when the joined value is 0', function (next) {
 		var MasterModel = Arrow.Model.extend('masterModel', {
-				fields: { rid: { type: Number }, name: { type: String } },
+				fields: {rid: {type: Number}, name: {type: String}},
 				connector: 'memory'
 			}),
 			ChildModel = Arrow.Model.extend('childModel', {
-				fields: { rid: { type: Number }, age: { type: String } },
+				fields: {rid: {type: Number}, age: {type: String}},
 				connector: 'memory'
 			});
 		common.server.addModel(MasterModel);
@@ -179,9 +238,9 @@ describe('Left Join', function () {
 
 		var JoinedModel = Arrow.Model.extend('joinedMasterChildModel', {
 			fields: {
-				rid: { type: Number, model: 'masterModel' },
-				name: { type: String, model: 'masterModel' },
-				age: { type: String, model: 'childModel' }
+				rid: {type: Number, model: 'masterModel'},
+				name: {type: String, model: 'masterModel'},
+				age: {type: String, model: 'childModel'}
 			},
 			connector: 'appc.composite',
 
@@ -198,11 +257,11 @@ describe('Left Join', function () {
 		});
 		common.server.addModel(JoinedModel);
 
-		MasterModel.create([{ rid: 0, name: 'Zero' }, { rid: 1, name: 'One' }], createChildren);
+		MasterModel.create([{rid: 0, name: 'Zero'}, {rid: 1, name: 'One'}], createChildren);
 
 		function createChildren(err) {
 			should(err).be.not.ok;
-			ChildModel.create([{ rid: 0, age: '24' }, { rid: 1, age: '39' }], testJoin);
+			ChildModel.create([{rid: 0, age: '24'}, {rid: 1, age: '39'}], testJoin);
 		}
 
 		function testJoin(err) {
