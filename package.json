@@ -1,7 +1,7 @@
 {
   "name": "appc.composite",
   "description": "Composite connector",
-  "version": "1.0.35",
+  "version": "1.0.36",
   "author": "Dawson Toth",
   "maintainers": [
     "Dawson Toth <dtoth@appcelerator.com>"
@@ -26,7 +26,7 @@
     "pkginfo": "^0.3.0"
   },
   "devDependencies": {
-    "arrow": "0.3.212",
+    "arrow": "1.2.26",
     "appc.arrowdb": "git+ssh://git@github.com:appcelerator/appc.arrowdb.git",
     "appc.mongo": "git+ssh://git@github.com:appcelerator/appc.mongo.git",
     "appc.mysql": "git+ssh://git@github.com:appcelerator/appc.mysql.git",
