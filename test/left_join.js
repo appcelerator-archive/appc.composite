@@ -112,6 +112,40 @@ describe('Left Join', function () {
 
 	});
 
+	it('API-933: should support both field and object overlapping fields', function (next) {
+
+		var objs = [
+			{
+				title: 'Test Title 1',
+				content: 'Test Content 1',
+				author_id: IDs.user
+			}
+		];
+
+		Models.articleEmbedded.create(objs, function (err, coll) {
+			should(err).be.not.ok;
+			should(coll.length).equal(objs.length);
+
+			Models.articleEmbedded.find(function (err, coll2) {
+				should(err).be.not.ok;
+				should(coll2.length).be.greaterThan(coll.length - 1);
+
+				async.eachSeries(coll2, function (post, cb) {
+					should(post).be.an.Object;
+					if (post.author_id > 0) {
+						should(post.author_first_name).be.ok;
+						should(post.author).be.ok;
+					}
+					cb();
+				}, function (err) {
+					next(err);
+				});
+			});
+
+		});
+
+	});
+
 	it('API-283: API-351: should allow 0-1-many joins', function (next) {
 		Models.employee.deleteAll(function (err) {
 			should(err).be.not.ok;
