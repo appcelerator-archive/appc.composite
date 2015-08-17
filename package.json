@@ -1,47 +1,45 @@
 {
-  "name": "appc.composite",
-  "description": "Composite connector",
-  "version": "1.0.36",
-  "author": "Dawson Toth",
-  "maintainers": [
-    "Dawson Toth <dtoth@appcelerator.com>"
-  ],
-  "license": "Apache-2.0",
-  "framework": "none",
-  "keywords": [
-    "arrow",
-    "arrow-connector",
-    "appcelerator"
-  ],
-  "repository": {},
-  "scripts": {
-    "test": "grunt",
-    "start": "node ./app.js",
-    "preinstall": "node ./bin/update"
-  },
-  "private": true,
-  "dependencies": {
-    "async": "^0.9.0",
-    "lodash": "^2.4.1",
-    "pkginfo": "^0.3.0"
-  },
-  "devDependencies": {
-    "arrow": "1.2.26",
-    "appc.arrowdb": "git+ssh://git@github.com:appcelerator/appc.arrowdb.git",
-    "appc.mongo": "git+ssh://git@github.com:appcelerator/appc.mongo.git",
-    "appc.mysql": "git+ssh://git@github.com:appcelerator/appc.mysql.git",
-    "appc.salesforce": "git+ssh://git@github.com:appcelerator/appc.salesforce.git",
-    "appc.mssql": "git+ssh://git@github.com:appcelerator/appc.mssql.git",
-    "ensure-latest": "^1.0.3",
-    "grunt": "^0.4.5",
-    "grunt-contrib-clean": "^0.6.0",
-    "grunt-contrib-jshint": "^0.10.0",
-    "grunt-kahvesi": "git+ssh://git@github.com:dawsontoth/grunt-kahvesi.git",
-    "grunt-mocha-test": "^0.12.0",
-    "mocha": "^1.21.4",
-    "should": "^4.0.4"
-  },
-  "ensureLatest": [
-    "arrow"
-  ]
+	"name": "appc.composite",
+	"description": "Composite connector",
+	"version": "1.1.0",
+	"author": "Dawson Toth",
+	"maintainers": [
+		"Dawson Toth <dtoth@appcelerator.com>"
+	],
+	"license": "Apache-2.0",
+	"framework": "none",
+	"keywords": [
+		"arrow",
+		"arrow-connector",
+		"appcelerator"
+	],
+	"repository": {
+		"type": "git",
+		"url": "git@github.com:appcelerator/appc.composite.git"
+	},
+	"scripts": {
+		"start": "appc run",
+		"test": "./node_modules/nodemon/bin/nodemon.js --exec 'grunt' -e js,json"
+	},
+	"private": true,
+	"dependencies": {
+		"async": "^0.9.0",
+		"lodash": "^2.4.1"
+	},
+	"devDependencies": {
+		"arrow": "^*",
+		"appc.arrowdb": "git+ssh://git@github.com:appcelerator/appc.arrowdb.git",
+		"appc.mongo": "git+ssh://git@github.com:appcelerator/appc.mongo.git",
+		"appc.mysql": "git+ssh://git@github.com:appcelerator/appc.mysql.git",
+		"appc.salesforce": "git+ssh://git@github.com:appcelerator/appc.salesforce.git",
+		"appc.mssql": "git+ssh://git@github.com:appcelerator/appc.mssql.git",
+		"grunt": "^0.4.5",
+		"grunt-contrib-clean": "^0.6.0",
+		"grunt-contrib-jshint": "^0.10.0",
+		"grunt-kahvesi-latest": "^0.2.5",
+		"grunt-mocha-test": "^0.12.0",
+		"mocha": "^1.21.4",
+		"nodemon": "^1.3.8",
+		"should": "^4.0.4"
+	}
 }

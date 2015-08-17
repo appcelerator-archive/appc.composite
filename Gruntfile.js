@@ -6,7 +6,8 @@ module.exports = function(grunt) {
 			options: {
 				timeout: 30000,
 				reporter: 'spec',
-				ignoreLeaks: true
+				ignoreLeaks: true,
+				bail: true
 			},
 			src: ['test/**/*.js']
 		},
@@ -26,7 +27,7 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-mocha-test');
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-contrib-clean');
-	grunt.loadNpmTasks('grunt-kahvesi');
+	grunt.loadNpmTasks('grunt-kahvesi-latest');
 
 	// register tasks
 	grunt.registerTask('cover', ['kahvesi', 'clean']);
