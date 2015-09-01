@@ -112,7 +112,7 @@ describe('Left Join', function () {
 
 	});
 
-	it('API-933: should support both field and object overlapping fields', function (next) {
+	it('API-933: should pull in fields and whole objects from joined models', function (next) {
 
 		var objs = [
 			{
@@ -144,6 +144,69 @@ describe('Left Join', function () {
 
 		});
 
+	});
+
+	it('API-933: should pull in fields and whole objects from source models', function (next) {
+
+		var Author = Arrow.createModel('author', {
+				fields: {
+					first_name: {type: String},
+					author_id: {type: String}
+				},
+				connector: 'memory'
+			}),
+			Book = Arrow.createModel('book', {
+				fields: {
+					title: {type: String},
+					genre: {type: String},
+					isbn: {type: String},
+					author_id: {type: String}
+				},
+				connector: 'memory'
+			}),
+			Library = Arrow.createModel('library', {
+				fields: {
+					first_name: {model: 'author', type: String},
+					title: {model: 'book', type: String},
+					book_info: {model: 'book', type: Object}
+				},
+				connector: 'appc.composite',
+				metadata: {
+					left_join: [
+						{
+							model: 'author',
+							join_properties: {
+								author_id: 'author_id'
+							}
+						}
+					]
+				}
+			});
+
+		common.server.addModel(Author);
+		common.server.addModel(Book);
+		common.server.addModel(Library);
+
+		Author.create([
+			{first_name: 'Wilson', author_id: 'w1'},
+			{first_name: 'Dawson', author_id: 'd2'}
+		]);
+		Book.create([
+			{title: 'The Life of Wilson', genre: 'biography', isbn: '123456732', author_id: 'w1'},
+			{title: 'Lessons in Failing [Tests]', genre: 'technology', isbn: '309183406', author_id: 'w1'},
+			{title: 'Writing Tests that Suck', genre: 'technology', isbn: '6206929406', author_id: 'd2'}
+		]);
+
+		Library.findAll(function (err, results) {
+			console.log(arguments);
+			should(err).be.not.ok;
+			for (var i = 0; i < results.length; i++) {
+				var result = results[i];
+				should(result.first_name).be.ok;
+				should(result.book_info.title).equal(result.title);
+			}
+			next();
+		});
 	});
 
 	it('API-283: API-351: should allow 0-1-many joins', function (next) {
