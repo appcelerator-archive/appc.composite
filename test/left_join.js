@@ -198,7 +198,6 @@ describe('Left Join', function () {
 		]);
 
 		Library.findAll(function (err, results) {
-			console.log(arguments);
 			should(err).be.not.ok;
 			for (var i = 0; i < results.length; i++) {
 				var result = results[i];
