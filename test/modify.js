@@ -74,7 +74,6 @@ describe('Create / Update / Delete', function () {
 
 			instance.remove(function (err, result) {
 				should(err).be.not.ok;
-				should(result).be.ok;
 
 				Models.article.findOne(id, function (err, result) {
 					should(err).be.not.ok;
