@@ -7,7 +7,7 @@ var should = require('should'),
 	server = new Arrow({
 		ignoreDuplicateModels: true
 	}),
-	log = server && server.logger || Arrow.createLogger({}, { name: 'appc.composite TEST' });
+	log = server && server.logger || Arrow.createLogger({}, {name: 'appc.composite TEST'});
 
 var Models = {},
 	IDs = {};
@@ -91,6 +91,32 @@ after(function (next) {
 		next
 	);
 });
+
+it('should require a minimum version of Arrow', function () {
+	var mockConnector = {
+		Capabilities: {},
+		extend: function () {}
+	};
+
+	should(function () {
+		require('../lib/index').create({
+			Connector: mockConnector
+		});
+	}).throw();
+	should(function () {
+		require('../lib/index').create({
+			Version: '1.2.0',
+			Connector: mockConnector
+		});
+	}).throw();
+	should(function () {
+		require('../lib/index').create({
+			Version: '1.5.0',
+			Connector: mockConnector
+		});
+	}).not.throw();
+});
+
 
 after(function (next) {
 	server.stop(next);

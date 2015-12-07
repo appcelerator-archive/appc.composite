@@ -68,4 +68,37 @@ describe('Inner Join', function () {
 
 	});
 
+	it('should return no results on failed inner join', function (next) {
+
+		var objs = [
+			{
+				title: 'Test Title 4',
+				content: 'Test Content 4',
+				author_id: -50
+			},
+			{
+				title: 'Test Title 5',
+				content: 'Test Content 5',
+				author_id: -20
+			},
+			{
+				title: 'Test Title 6',
+				content: 'Test Content 6',
+				author_id: -30
+			}
+		];
+
+		Models.article.create(objs, function (err, coll) {
+			should(err).be.not.ok;
+			should(coll.length).equal(objs.length);
+
+			Models.bad_inner_join.find(function (err) {
+				should(err).be.not.ok;
+				next();
+			});
+
+		});
+
+	});
+
 });
