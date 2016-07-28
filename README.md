@@ -130,7 +130,7 @@ The connector will go through the left_joins in order, looking them up and mergi
 #### Selecting Whole Models Instead of Fields
 
 Instead of specifying the precise fields you want, you can instead include the entire joined model in your model.
- 
+
 For example:
 
 ```javascript
@@ -184,6 +184,31 @@ Arrow.Model.extend('authorWithArticles', {
 	}
 })
 ```
+##### Controlling the Children Number
+
+By default the number of joined children is 10. However, this number can be controlled by providing a value between 1 and 1000. To achieve this specify "limit" parameter on the field of type Array like this:
+
+```javascript
+Arrow.Model.extend('authorWithArticles', {
+	fields: {
+		name: { type: String, model: 'user' },
+		posts: { type: Array, model: 'post', limit: '50' }
+	},
+	connector: 'appc.composite',
+	metadata: {
+		'appc.composite': {
+			left_join: {
+				model: 'post',
+				join_properties: {
+					'author_id': 'id'
+				}
+			}
+		}
+	}
+})
+```
+
+
 
 # Unrelated Model Batching
 
@@ -283,9 +308,9 @@ npm test
 
 # Contributing
 
-This project is open source and licensed under the [Apache Public License (version 2)](http://www.apache.org/licenses/LICENSE-2.0).  Please consider forking this project to improve, enhance or fix issues. If you feel like the community will benefit from your fork, please open a pull request. 
+This project is open source and licensed under the [Apache Public License (version 2)](http://www.apache.org/licenses/LICENSE-2.0).  Please consider forking this project to improve, enhance or fix issues. If you feel like the community will benefit from your fork, please open a pull request.
 
-To protect the interests of the contributors, Appcelerator, customers and end users we require contributors to sign a Contributors License Agreement (CLA) before we pull the changes into the main repository. Our CLA is simple and straightforward - it requires that the contributions you make to any Appcelerator open source project are properly licensed and that you have the legal authority to make those changes. This helps us significantly reduce future legal risk for everyone involved. It is easy, helps everyone, takes only a few minutes, and only needs to be completed once. 
+To protect the interests of the contributors, Appcelerator, customers and end users we require contributors to sign a Contributors License Agreement (CLA) before we pull the changes into the main repository. Our CLA is simple and straightforward - it requires that the contributions you make to any Appcelerator open source project are properly licensed and that you have the legal authority to make those changes. This helps us significantly reduce future legal risk for everyone involved. It is easy, helps everyone, takes only a few minutes, and only needs to be completed once.
 
 [You can digitally sign the CLA](http://bit.ly/app_cla) online. Please indicate your email address in your first pull request so that we can make sure that will locate your CLA.  Once you've submitted it, you no longer need to send one for subsequent submissions.
 
