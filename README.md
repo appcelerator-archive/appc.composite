@@ -1,6 +1,6 @@
 # Composite Connector
 
-This is a composite connector for Arrow. It lets you composite together models from other connectors in to a single model.
+This is a composite connector for Arrow. It lets you composite together models from other connectors in to a single model. Models are queried in parallel and the results are returned once the set of calls is completed.
 
 ## Installation
 
