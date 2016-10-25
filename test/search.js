@@ -20,7 +20,7 @@ describe('Find / Query', function () {
 			should(err).be.not.ok;
 			should(instance).be.an.Object;
 			var id = instance.getPrimaryKey();
-			Models.article.findOne(id, function (err, instance2) {
+			Models.article.findByID(id, function (err, instance2) {
 				should(err).be.not.ok;
 				should(instance2).be.an.Object;
 				should(instance2.getPrimaryKey()).equal(id);
@@ -133,7 +133,7 @@ describe('Find / Query', function () {
 				}
 			}
 		});
-		BadJoinedFieldModel.findOne(IDs.post, function (err, instance) {
+		BadJoinedFieldModel.findByID(IDs.post, function (err, instance) {
 			should(err).be.not.ok;
 			should(instance.author_id).be.ok;
 			should(instance.author_first_name).be.not.ok;
@@ -170,7 +170,7 @@ describe('Find / Query', function () {
 	});
 
 	it('API-344: should be able to find contracts with salesforce id', function (next) {
-		Models.sf_id.findOne('001M000000fe0V7IAI', function (err, result) {
+		Models.sf_id.findByID('001M000000fe0V7IAI', function (err, result) {
 			should(err).be.not.ok;
 			should(result).be.ok;
 			should(result.account).be.ok;
@@ -186,7 +186,7 @@ describe('Find / Query', function () {
 			should(coll.length).be.greaterThan(0);
 			var accountWithContract = coll[0].AccountId;
 
-			Models.account_contract.findOne(accountWithContract, function (err, instance) {
+			Models.account_contract.findByID(accountWithContract, function (err, instance) {
 				should(err).be.not.ok;
 				should(instance).be.ok;
 				should(instance.contract.ContractNumber).be.ok;

@@ -242,7 +242,7 @@ You can query by passing in the relevant arguments as sub-dictionaries:
 }
 ```
 
-This applies to all the methods. For example, a findOne could look like this:
+This applies to all the methods. For example, a findByID could look like this:
 
 ```javascript
 {
@@ -251,7 +251,7 @@ This applies to all the methods. For example, a findOne could look like this:
 }
 ```
 
-That findOne results in user.findOne('9bc...') being called, and post.findOne(61204).
+That findByID results in user.findByID('9bc...') being called, and post.findByID(61204).
 
 
 ## Development

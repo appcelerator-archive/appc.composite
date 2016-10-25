@@ -46,8 +46,8 @@ describe('Connector', function () {
 		});
 	});
 
-	it('should be able to batched findOne', function (next) {
-		Models.user_post.findOne({
+	it('should be able to batched findByID', function (next) {
+		Models.user_post.findByID({
 			users: IDs.user,
 			posts: IDs.post
 		}, function (err, result) {
@@ -60,8 +60,8 @@ describe('Connector', function () {
 		});
 	});
 
-	it('should be able to batched findOne with stringified params', function (next) {
-		Models.user_post.findOne(JSON.stringify({
+	it('should be able to batched findByID with stringified params', function (next) {
+		Models.user_post.findByID(JSON.stringify({
 			users: IDs.user,
 			posts: IDs.post
 		}), function (err, result) {
@@ -75,7 +75,7 @@ describe('Connector', function () {
 	});
 
 	it('should be able to handle bad stringified params', function (next) {
-		Models.user_post.findOne("{ some: bad json }", function (err, result) {
+		Models.user_post.findByID("{ some: bad json }", function (err, result) {
 			should(err).be.ok;
 			next();
 		});
