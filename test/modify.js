@@ -111,4 +111,60 @@ describe('Create / Update / Delete', function () {
 		});
 	});
 
+	it('should be able to update a model with aliased fields', function (done) {
+		// Base model that will be aliased..
+		var MasterModel = Arrow.Model.extend(
+			'masterModel', {
+				fields: {
+					rid: {type: Number},
+					name: {type: String}
+				},
+				connector: 'memory'
+			});
+		common.server.addModel(MasterModel);
+
+		// Alias model - name aliased to 'alias'
+		var AliasModel = Arrow.Model.extend('aliasModel', {
+			fields: {
+				rid: {type: Number, model: 'masterModel'},
+				alias: {type: String, model: 'masterModel', name: 'name'}
+			},
+			connector: 'appc.composite'
+		});
+		common.server.addModel(AliasModel);
+
+		// Create test data and update once created.
+		MasterModel.create([{rid: 0, name: 'Zero'}, {rid: 1, name: 'One'}], updateTestAlias);
+
+		function updateTestAlias(err, instances) {
+			if (err) {
+				done(err);
+				return;
+			}
+			AliasModel.update({ id: instances[0].id, rid: instances[0].rid, alias: 'Bob' }, findAll);
+		}
+
+		function findAll(err, instance) {
+			if (err) {
+				done(err);
+				return;
+			}
+			MasterModel.findAll(verifyUpdate);
+		}
+		function verifyUpdate(err, instances) {
+			if (err) {
+				done(err);
+				return;
+			}
+			should(instances).have.length(2);
+			should(instances[0].id).equal(1);
+			should(instances[0].rid).equal(0);
+			should(instances[0].name).equal('Bob');
+			should(instances[1].id).equal(2);
+			should(instances[1].rid).equal(1);
+			should(instances[1].name).equal('One');
+			done();
+		}
+	});
+
 });
