@@ -317,7 +317,62 @@ describe('Left Join', function () {
 			}
 			next();
 		}
+	});
 
+	// model fields containing 'name' should not be considered for join
+	it('RDPP-888: should handle joined field correctly', function (next) {
+		var MasterModel = Arrow.Model.extend('masterModel888', {
+				fields: {rid: {type: Number}, name: {type: Object}},
+				connector: 'memory'
+			}),
+			ChildModel = Arrow.Model.extend('childModel888', {
+				fields: {rid: {type: Number}, languages: {type: Array}},
+				connector: 'memory'
+			});
+		common.server.addModel(MasterModel);
+		common.server.addModel(ChildModel);
+
+		var JoinedModel = Arrow.Model.extend('joinedMasterChildModel888', {
+			fields: {
+				rid: {type: Number, name: 'rid', model: 'masterModel888'},
+				name: {type: Object, name: 'name', model: 'masterModel888'},
+				languages: {type: Array, model: 'childModel888'}
+			},
+			connector: 'appc.composite',
+
+			metadata: {
+				'appc.composite': {
+					left_join: {
+						model: 'childModel888',
+						join_properties: {
+							rid: 'rid'
+						}
+					}
+				}
+			}
+		});
+		common.server.addModel(JoinedModel);
+
+		MasterModel.create([{rid: 0, name: {first: 'Zero'}}, {rid: 1, name: {fist: 'One'}}], createChildren);
+
+		function createChildren(err) {
+			should(err).be.not.ok;
+			ChildModel.create([{rid: 0, languages: ['eng']}, {rid: 1, languages: ['fre']}], testJoin);
+		}
+
+		function testJoin(err) {
+			should(err).be.not.ok;
+			var jm = JoinedModel.findAll(() => {})
+			JoinedModel.findAll(verifyJoin);
+		}
+
+		function verifyJoin(err, results) {
+			should(err).be.not.ok;
+			should(results.length).eql(2);
+			should(results[0].languages.length).eql(2);
+			should(results[1].languages.length).eql(2);
+			next();
+		}
 	});
 
 	it('API-710: should allow joining when the joined value is 0', function (next) {
