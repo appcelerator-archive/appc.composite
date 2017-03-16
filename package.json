@@ -40,6 +40,6 @@
 		"grunt-mocha-istanbul": "^3.0.1",
 		"istanbul": "^0.4.1",
 		"mocha": "^1.21.4",
-		"should": "^4.0.4"
+		"should": "^11.2.1"
 	}
 }

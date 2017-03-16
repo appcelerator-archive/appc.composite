@@ -6,10 +6,67 @@ var should = require('should'),
 describe('Inner Join', function () {
 
 	var Models = common.Models,
-		IDs = common.IDs;
+		IDs = common.IDs,
+		MasterModel,
+		ChildModel,
+		ChildModel2,
+		JoinedModel;
+	
+	before(done => {
+		MasterModel = Arrow.Model.extend('masterModel', {
+			fields: {rid: {type: Number}, name: {type: Object}},
+			connector: 'memory'
+		});
+		ChildModel = Arrow.Model.extend('childModel', {
+			fields: {rid: {type: Number}, languages: {type: Object}},
+			connector: 'memory'
+		});
+		ChildModel2 = Arrow.Model.extend('childModel2', {
+			fields: {rid: {type: Number}, nationalities: {type: Array}},
+			connector: 'memory'
+		});
+
+		common.server.addModel(MasterModel);
+		common.server.addModel(ChildModel);
+		common.server.addModel(ChildModel2);
+
+		MasterModel.create([{rid: 0, name: {fname: 'Zero'}}, {rid: 1, name: {fname: 'One'}}], () => {
+			ChildModel.create([{rid: 0, languages: {native: 'FR'}}, {rid: 1, languages: {native: 'EN'}}], () => {
+				ChildModel2.create([{rid: 0, nationalities: ['CA']}, {rid: 1, nationalities: ['US']}], () => {
+					done();
+				});
+			});
+		});
+	});
+
+	beforeEach(() => {
+		JoinedModel = Arrow.Model.extend('joinedMasterChildModel', {
+			fields: {
+				rid: {type: Number, name: 'rid', model: 'masterModel'},
+				name: {type: Object, name: 'name', model: 'masterModel'},
+				languages: {type: Object, name: 'languages', model: 'childModel'},
+				nationalities: {type: Array, name: 'nationalities', model: 'childModel2'}
+			},
+			connector: 'appc.composite',
+
+			metadata: {
+				inner_join: [{
+					model: 'childModel',
+					join_properties: {
+						rid: 'rid'
+					}
+				},
+				{
+					model: 'childModel2',
+					join_properties: {
+						rid: 'rid'
+					}
+				}]
+			}
+		});
+	});
 
 	it('API-285: should support inner join', function (next) {
-
 		var objs = [
 			{
 				title: 'Test Title 1',
@@ -63,13 +120,10 @@ describe('Inner Join', function () {
 					next(err);
 				});
 			});
-
 		});
-
 	});
 
 	it('should return no results on failed inner join', function (next) {
-
 		var objs = [
 			{
 				title: 'Test Title 4',
@@ -96,9 +150,61 @@ describe('Inner Join', function () {
 				should(err).be.not.ok;
 				next();
 			});
-
 		});
-
 	});
 
+	// should support join as 'fields'
+	it('RDPP-888: should handle join as "field" correctly', function (next) {
+		common.server.addModel(JoinedModel);
+		JoinedModel.findAll(verifyJoin);
+		function verifyJoin(err, results) {
+			should(err).be.not.ok;
+			should(results.length).be.ok;
+			for (var i = 0; i < results.length; i++) {
+				var result = results[i];
+				should(result.name).be.ok;
+				should(result.languages).be.instanceof(Object);
+				should(result.languages.native).be.ok;
+				should(result.nationalities).be.instanceof(Array)
+				should(result.nationalities[0]).be.instanceof(String)
+			}
+			next();
+		}
+	});
+
+	// should support join as 'object'
+	it('RDPP-915: should handle join as "object" correctly', function (next) {
+		delete JoinedModel.fields.languages.name;
+		common.server.addModel(JoinedModel);
+		JoinedModel.findAll(verifyJoin);
+		function verifyJoin(err, results) {
+			should(err).be.not.ok;
+			should(results.length).be.ok;
+			for (var i = 0; i < results.length; i++) {
+				var result = results[i];
+				should(result.name).be.ok;
+				should(result.languages).be.instanceof(Object);
+				should(result.languages).have.keys('rid', 'languages');
+			}
+			next();
+		}
+	});
+
+	// should support join as 'array'
+	it('RDPP-994: should handle join as "array" correctly', function (next) {
+		delete JoinedModel.fields.nationalities.name;
+		common.server.addModel(JoinedModel);
+		JoinedModel.findAll(verifyJoin);
+		function verifyJoin(err, results) {
+			should(err).be.not.ok;
+			should(results.length).be.ok;
+			for (var i = 0; i < results.length; i++) {
+				var result = results[i];
+				should(result.name).be.ok;
+				should(result.nationalities).be.instanceof(Array)
+				should(result.nationalities[0]).have.keys('rid', 'nationalities');
+			}
+			next();
+		}
+	});
 });
