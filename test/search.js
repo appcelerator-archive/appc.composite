@@ -67,6 +67,31 @@ describe('Find / Query', function () {
 			});
 		});
 
+		it('should return no results when query with invalid where', function (callback) {
+
+			var obj = {
+				title: 'Test Title',
+				content: 'Test Content',
+				author_id: IDs.user,
+				attachment_id: IDs.attachment
+			};
+			Models.article.create(obj, function (err, instance) {
+				should(err).be.not.ok;
+				should(instance).be.an.Object;
+				var options = {
+					where: 'bad',
+					sel: { content: 1, author_first_name: 1 },
+					order: { title: -1, content: 1 },
+					limit: 3,
+					skip: 0
+				};
+				Models.article.query(options, function (err, coll) {
+					should(err).be.not.ok;
+					should(coll).have.length(0);
+					callback();
+				});
+			});
+		});
 	});
 
 	it('should be able to find all instances', function (next) {
