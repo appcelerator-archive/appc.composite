@@ -19,6 +19,7 @@ module.exports = function (grunt) {
 		},
 		jshint: {
 			options: {
+				reporterOutput: "",
 				jshintrc: true
 			},
 			src: ['lib/**/*.js', 'test/**/*.js']
