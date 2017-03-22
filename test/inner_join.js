@@ -107,11 +107,11 @@ describe.only('Inner Join', function () {
 		];
 
 		Models.article.create(objs, function (err, coll) {
-			should(err)..be.not.ok();
+			should(err).be.not.ok();
 			should(coll.length).equal(objs.length);
 
 			Models.authored_article.find(function (err, coll2) {
-				should(err)..be.not.ok();
+				should(err).be.not.ok();
 				should(coll2.length).be.greaterThan(1);
 
 				async.eachSeries(coll2, function (post, cb) {
@@ -147,11 +147,11 @@ describe.only('Inner Join', function () {
 		];
 
 		Models.article.create(objs, function (err, coll) {
-			should(err)..be.not.ok();
+			should(err).be.not.ok();
 			should(coll.length).equal(objs.length);
 
 			Models.bad_inner_join.find(function (err) {
-				should(err)..be.not.ok();
+				should(err).be.not.ok();
 				next();
 			});
 		});
@@ -162,7 +162,7 @@ describe.only('Inner Join', function () {
 		common.server.addModel(JoinedModel);
 		JoinedModel.findAll(verifyJoin);
 		function verifyJoin(err, results) {
-			should(err)..be.not.ok();
+			should(err).be.not.ok();
 			should(results.length).be.ok();
 			for (var i = 0; i < results.length; i++) {
 				var result = results[i];
@@ -182,7 +182,7 @@ describe.only('Inner Join', function () {
 		common.server.addModel(JoinedModel);
 		JoinedModel.findAll(verifyJoin);
 		function verifyJoin(err, results) {
-			should(err)..be.not.ok();
+			should(err).be.not.ok();
 			should(results.length).be.ok();
 			for (var i = 0; i < results.length; i++) {
 				var result = results[i];
@@ -200,7 +200,7 @@ describe.only('Inner Join', function () {
 		common.server.addModel(JoinedModel);
 		JoinedModel.findAll(verifyJoin);
 		function verifyJoin(err, results) {
-			should(err)..be.not.ok();
+			should(err).be.not.ok();
 			should(results.length).be.ok();
 			for (var i = 0; i < results.length; i++) {
 				var result = results[i];

@@ -17,11 +17,11 @@ describe('Find / Query', function () {
 			attachment_id: IDs.attachment
 		};
 		Models.article.create(obj, function (err, instance) {
-			should(err)..be.not.ok();
+			should(err).be.not.ok();
 			should(instance).be.an.Object();
 			var id = instance.getPrimaryKey();
 			Models.article.findOne(id, function (err, instance2) {
-				should(err)..be.not.ok();
+				should(err).be.not.ok();
 				should(instance2).be.an.Object();
 				should(instance2.getPrimaryKey()).equal(id);
 				should(instance2.title).equal(obj.title);
@@ -44,7 +44,7 @@ describe('Find / Query', function () {
 			attachment_id: IDs.attachment
 		};
 		Models.article.create(obj, function (err, instance) {
-			should(err)..be.not.ok();
+			should(err).be.not.ok();
 			should(instance).be.an.Object();
 			var options = {
 				where: { content: 'Test Title' },
@@ -54,15 +54,15 @@ describe('Find / Query', function () {
 				skip: 0
 			};
 			Models.article.query(options, function (err, coll) {
-				should(err)..be.not.ok();
+				should(err).be.not.ok();
 
 				async.eachSeries(coll, function (model, next) {
 					should(model.getPrimaryKey()).be.ok();
-					should(model.title)..be.not.ok();
+					should(model.title).be.not.ok();
 					should(model.content).be.a.String();
 					should(model.author_first_name).be.a.String();
-					should(model.author_last_name)..be.not.ok();
-					should(model.attachment_content)..be.not.ok();
+					should(model.author_last_name).be.not.ok();
+					should(model.attachment_content).be.not.ok();
 				}, callback);
 			});
 		});
@@ -87,7 +87,7 @@ describe('Find / Query', function () {
 		];
 
 		Models.article.create(objs, function (err, coll) {
-			should(err)..be.not.ok();
+			should(err).be.not.ok();
 			should(coll.length).equal(objs.length);
 
 			var keys = [];
@@ -96,7 +96,7 @@ describe('Find / Query', function () {
 			});
 
 			Models.article.find(function (err, coll2) {
-				should(err)..be.not.ok();
+				should(err).be.not.ok();
 				should(coll2.length).be.greaterThan(coll.length - 1);
 
 				async.eachSeries(coll2, function (post, cb) {
@@ -134,10 +134,10 @@ describe('Find / Query', function () {
 			}
 		});
 		BadJoinedFieldModel.findOne(IDs.post, function (err, instance) {
-			should(err)..be.not.ok();
+			should(err).be.not.ok();
 			should(instance.author_id).be.ok();
-			should(instance.author_first_name)..be.not.ok();
-			should(instance.author_last_name)..be.not.ok();
+			should(instance.author_first_name).be.not.ok();
+			should(instance.author_last_name).be.not.ok();
 			next();
 		});
 	});
@@ -171,7 +171,7 @@ describe('Find / Query', function () {
 
 	it('API-344: should be able to find contracts with salesforce id', function (next) {
 		Models.sf_id.findOne('001M000000fe0V7IAI', function (err, result) {
-			should(err)..be.not.ok();
+			should(err).be.not.ok();
 			should(result).be.ok();
 			should(result.account).be.ok();
 			should(result.contract).be.ok();
@@ -181,13 +181,13 @@ describe('Find / Query', function () {
 
 	it('API-317: should be able to reference models as objects', function (next) {
 		Models.contract.findAll(function (err, coll) {
-			should(err)..be.not.ok();
+			should(err).be.not.ok();
 			should(coll).be.ok();
 			should(coll.length).be.greaterThan(0);
 			var accountWithContract = coll[0].AccountId;
 
 			Models.account_contract.findOne(accountWithContract, function (err, instance) {
-				should(err)..be.not.ok();
+				should(err).be.not.ok();
 				should(instance).be.ok();
 				should(instance.contract.ContractNumber).be.ok();
 				next();
