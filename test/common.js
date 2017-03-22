@@ -22,7 +22,7 @@ before(function before(next) {
 	this.timeout(60 * 1000);
 
 	server.start(function (err) {
-		should(err).be.not.ok;
+		should(err)..be.not.ok();
 
 				// Load models from their directory.
 		fs.readdirSync('./test/models/').forEach(function (file) {
@@ -55,7 +55,7 @@ before(function before(next) {
 					author_id: IDs.user,
 					attachment_id: IDs.attachment
 				}, function (err, instance) {
-					should(err).be.not.ok;
+					should(err)..be.not.ok();
 					IDs.post = instance.getPrimaryKey();
 
 					var mysql = server.getConnector('appc.mysql');

@@ -29,7 +29,7 @@ describe('Left Join', function () {
 			}
 		});
 		ExampleModel.findAll(function (err) {
-			should(err).be.ok;
+			should(err).be.ok();
 			should(String(err)).containEql('Unable to find model i_dont_exist');
 			next();
 		});
@@ -41,8 +41,8 @@ describe('Left Join', function () {
 				fname: {$like: 'Fre%'}
 			}
 		}, function (err, results) {
-			should(err).be.not.ok;
-			should(results).be.ok;
+			should(err)..be.not.ok();
+			should(results).be.ok();
 			should(results.length).be.greaterThan(0);
 			next();
 		});
@@ -86,21 +86,21 @@ describe('Left Join', function () {
 		];
 
 		Models.article.create(objs, function (err, coll) {
-			should(err).be.not.ok;
+			should(err)..be.not.ok();
 			should(coll.length).equal(objs.length);
 
 			Models.article.find(function (err, coll2) {
-				should(err).be.not.ok;
+				should(err)..be.not.ok();
 				should(coll2.length).be.greaterThan(coll.length - 1);
 
 				async.eachSeries(coll2, function (post, cb) {
 					should(post).be.an.Object();
 					if (!post.author_id) {
-						should(post.author_first_name).be.not.ok;
-						should(post.author_last_name).be.not.ok;
+						should(post.author_first_name)..be.not.ok();
+						should(post.author_last_name)..be.not.ok();
 					}
 					if (!post.attachment_id) {
-						should(post.attachment_content).be.not.ok;
+						should(post.attachment_content)..be.not.ok();
 					}
 					cb();
 				}, function (err) {
@@ -123,18 +123,18 @@ describe('Left Join', function () {
 		];
 
 		Models.articleEmbedded.create(objs, function (err, coll) {
-			should(err).be.not.ok;
+			should(err)..be.not.ok();
 			should(coll.length).equal(objs.length);
 
 			Models.articleEmbedded.find(function (err, coll2) {
-				should(err).be.not.ok;
+				should(err)..be.not.ok();
 				should(coll2.length).be.greaterThan(coll.length - 1);
 
 				async.eachSeries(coll2, function (post, cb) {
 					should(post).be.an.Object();
 					if (post.author_id > 0) {
-						should(post.author_first_name).be.ok;
-						should(post.author).be.ok;
+						should(post.author_first_name).be.ok();
+						should(post.author).be.ok();
 					}
 					cb();
 				}, function (err) {
@@ -198,10 +198,10 @@ describe('Left Join', function () {
 		]);
 
 		Library.findAll(function (err, results) {
-			should(err).be.not.ok;
+			should(err)..be.not.ok();
 			for (var i = 0; i < results.length; i++) {
 				var result = results[i];
-				should(result.first_name).be.ok;
+				should(result.first_name).be.ok();
 				should(result.book_info.title).equal(result.title);
 			}
 			next();
@@ -210,7 +210,7 @@ describe('Left Join', function () {
 
 	it('API-283: API-351: should allow 0-1-many joins', function (next) {
 		Models.employee.deleteAll(function (err) {
-			should(err).be.not.ok;
+			should(err)..be.not.ok();
 			Models.employee.create([
 				{
 					first_name: 'Employee',
@@ -227,7 +227,7 @@ describe('Left Join', function () {
 					home_address: '2 St'
 				}
 			], function (err, coll) {
-				should(err).be.not.ok;
+				should(err)..be.not.ok();
 				should(coll.length).equal(2);
 
 				Models.habit.create([
@@ -244,15 +244,15 @@ describe('Left Join', function () {
 						habit: 'Sleeping'
 					}
 				], function (err, coll) {
-					should(err).be.not.ok;
+					should(err)..be.not.ok();
 					should(coll.length).equal(3);
 
 					Models.employee_habit.findAll(function (err, coll) {
-						should(err).be.not.ok;
+						should(err)..be.not.ok();
 						should(coll.length).equal(1);
-						should(coll[0].habit).be.ok;
+						should(coll[0].habit).be.ok();
 						should(coll[0].habit.length).equal(3);
-						should(coll[0].fname).be.ok;
+						should(coll[0].fname).be.ok();
 						next();
 					});
 				});
@@ -298,22 +298,22 @@ describe('Left Join', function () {
 		MasterModel.create([{rid: 0, name: 'Zero'}, {rid: 1, name: 'One'}], createChildren);
 
 		function createChildren(err) {
-			should(err).be.not.ok;
+			should(err)..be.not.ok();
 			ChildModel.create([{rid: 0, age: '24'}, {rid: 1, age: '39'}], testJoin);
 		}
 
 		function testJoin(err) {
-			should(err).be.not.ok;
+			should(err)..be.not.ok();
 			JoinedModel.findAll(verifyJoin);
 		}
 
 		function verifyJoin(err, results) {
-			should(err).be.not.ok;
-			should(results.length).be.ok;
+			should(err)..be.not.ok();
+			should(results.length).be.ok();
 			for (var i = 0; i < results.length; i++) {
 				var result = results[i];
-				should(result.name).be.ok;
-				should(result.age).be.ok;
+				should(result.name).be.ok();
+				should(result.age).be.ok();
 			}
 			next();
 		}
@@ -355,22 +355,22 @@ describe('Left Join', function () {
 		MasterModel.create([{rid: 0, name: 'Zero'}, {rid: 1, name: 'One'}], createChildren);
 
 		function createChildren(err) {
-			should(err).be.not.ok;
+			should(err)..be.not.ok();
 			ChildModel.create([{rid: 0, age: '24'}, {rid: 1, age: '39'}], testJoin);
 		}
 
 		function testJoin(err) {
-			should(err).be.not.ok;
+			should(err)..be.not.ok();
 			JoinedModel.findAll(verifyJoin);
 		}
 
 		function verifyJoin(err, results) {
-			should(err).be.not.ok;
-			should(results.length).be.ok;
+			should(err)..be.not.ok();
+			should(results.length).be.ok();
 			for (var i = 0; i < results.length; i++) {
 				var result = results[i];
-				should(result.name).be.ok;
-				should(result.age).be.ok;
+				should(result.name).be.ok();
+				should(result.age).be.ok();
 			}
 			next();
 		}

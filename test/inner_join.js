@@ -107,18 +107,18 @@ describe.only('Inner Join', function () {
 		];
 
 		Models.article.create(objs, function (err, coll) {
-			should(err).be.not.ok;
+			should(err)..be.not.ok();
 			should(coll.length).equal(objs.length);
 
 			Models.authored_article.find(function (err, coll2) {
-				should(err).be.not.ok;
+				should(err)..be.not.ok();
 				should(coll2.length).be.greaterThan(1);
 
 				async.eachSeries(coll2, function (post, cb) {
 					should(post).be.an.Object();
-					should(post.author_id).be.ok;
-					should(post.author_first_name).be.ok;
-					should(post.author_last_name).be.ok;
+					should(post.author_id).be.ok();
+					should(post.author_first_name).be.ok();
+					should(post.author_last_name).be.ok();
 					cb();
 				}, function (err) {
 					next(err);
@@ -147,11 +147,11 @@ describe.only('Inner Join', function () {
 		];
 
 		Models.article.create(objs, function (err, coll) {
-			should(err).be.not.ok;
+			should(err)..be.not.ok();
 			should(coll.length).equal(objs.length);
 
 			Models.bad_inner_join.find(function (err) {
-				should(err).be.not.ok;
+				should(err)..be.not.ok();
 				next();
 			});
 		});
@@ -162,13 +162,13 @@ describe.only('Inner Join', function () {
 		common.server.addModel(JoinedModel);
 		JoinedModel.findAll(verifyJoin);
 		function verifyJoin(err, results) {
-			should(err).be.not.ok;
-			should(results.length).be.ok;
+			should(err)..be.not.ok();
+			should(results.length).be.ok();
 			for (var i = 0; i < results.length; i++) {
 				var result = results[i];
-				should(result.name).be.ok;
+				should(result.name).be.ok();
 				should(result.languages).be.instanceof(Object);
-				should(result.languages.native).be.ok;
+				should(result.languages.native).be.ok();
 				should(result.nationalities).be.instanceof(Array);
 				should(result.nationalities[0]).be.instanceof(String);
 			}
@@ -182,11 +182,11 @@ describe.only('Inner Join', function () {
 		common.server.addModel(JoinedModel);
 		JoinedModel.findAll(verifyJoin);
 		function verifyJoin(err, results) {
-			should(err).be.not.ok;
-			should(results.length).be.ok;
+			should(err)..be.not.ok();
+			should(results.length).be.ok();
 			for (var i = 0; i < results.length; i++) {
 				var result = results[i];
-				should(result.name).be.ok;
+				should(result.name).be.ok();
 				should(result.languages).be.instanceof(Object);
 				should(result.languages).have.keys('rid', 'languages');
 			}
@@ -200,11 +200,11 @@ describe.only('Inner Join', function () {
 		common.server.addModel(JoinedModel);
 		JoinedModel.findAll(verifyJoin);
 		function verifyJoin(err, results) {
-			should(err).be.not.ok;
-			should(results.length).be.ok;
+			should(err)..be.not.ok();
+			should(results.length).be.ok();
 			for (var i = 0; i < results.length; i++) {
 				var result = results[i];
-				should(result.name).be.ok;
+				should(result.name).be.ok();
 				should(result.nationalities).be.instanceof(Array);
 				should(result.nationalities[0]).have.keys('rid', 'nationalities');
 			}
