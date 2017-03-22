@@ -24,7 +24,7 @@ before(function before(next) {
 	server.start(function (err) {
 		should(err).be.not.ok;
 
-		// Load models from their directory.
+				// Load models from their directory.
 		fs.readdirSync('./test/models/').forEach(function (file) {
 			if (file.indexOf('.js') > 0) {
 				var model = require('./models/' + file)(Arrow);
@@ -40,13 +40,13 @@ before(function before(next) {
 			first_name: 'Dawson',
 			last_name: 'Toth'
 		}, function (err, instance) {
-			should(err).be.not.ok;
+			should(err).be.not.ok();
 			IDs.user = instance.getPrimaryKey();
 
 			Models.attachment.create({
 				attachment_content: 'Test Attachment Content'
 			}, function (err, instance) {
-				should(err).be.not.ok;
+				should(err).be.not.ok();
 				IDs.attachment = instance.getPrimaryKey();
 
 				Models.post.create({

@@ -18,7 +18,7 @@ describe('Create / Update / Delete', function () {
 		};
 		Models.article.create(obj, function (err, instance) {
 			should(err).be.not.ok;
-			should(instance).be.an.Object;
+			should(instance).be.an.Object();
 			should(instance.getPrimaryKey()).be.ok;
 			should(instance.title).equal(obj.title);
 			should(instance.content).equal(obj.content);
@@ -41,12 +41,12 @@ describe('Create / Update / Delete', function () {
 
 		Models.article.create(obj, function (err, instance) {
 			should(err).be.not.ok;
-			should(instance).be.an.Object;
+			should(instance).be.an.Object();
 			var id = instance.getPrimaryKey();
 			instance.set('content', 'Goodbye world');
 			instance.save(function (err, result) {
 				should(err).be.not.ok;
-				should(result).be.an.Object;
+				should(result).be.an.Object();
 				should(result.getPrimaryKey()).equal(id);
 				should(result.title).equal(obj.title);
 				should(result.content).equal('Goodbye world');
@@ -69,7 +69,7 @@ describe('Create / Update / Delete', function () {
 
 		Models.article.create(obj, function (err, instance) {
 			should(err).be.not.ok;
-			should(instance).be.an.Object;
+			should(instance).be.an.Object();
 			var id = instance.getPrimaryKey();
 
 			instance.remove(function (err, result) {

@@ -3,7 +3,7 @@ var should = require('should'),
 	common = require('./common'),
 	Arrow = common.Arrow;
 
-describe('Inner Join', function () {
+describe.only('Inner Join', function () {
 
 	var Models = common.Models,
 		IDs = common.IDs,
@@ -12,7 +12,7 @@ describe('Inner Join', function () {
 		ChildModel2,
 		JoinedModel;
 	
-	before(done => {
+	before(function (done) {
 		MasterModel = Arrow.Model.extend('masterModel', {
 			fields: {rid: {type: Number}, name: {type: Object}},
 			connector: 'memory'
@@ -30,16 +30,20 @@ describe('Inner Join', function () {
 		common.server.addModel(ChildModel);
 		common.server.addModel(ChildModel2);
 
-		MasterModel.create([{rid: 0, name: {fname: 'Zero'}}, {rid: 1, name: {fname: 'One'}}], () => {
-			ChildModel.create([{rid: 0, languages: {native: 'FR'}}, {rid: 1, languages: {native: 'EN'}}], () => {
-				ChildModel2.create([{rid: 0, nationalities: ['CA']}, {rid: 1, nationalities: ['US']}], () => {
-					done();
-				});
-			});
-		});
+		async.series([
+			function(next) {
+				MasterModel.create([{rid: 0, name: {fname: 'Zero'}}, {rid: 1, name: {fname: 'One'}}], next);
+			},
+			function(next) {
+				ChildModel.create([{rid: 0, languages: {native: 'FR'}}, {rid: 1, languages: {native: 'EN'}}], next);
+			},
+			function(next) {
+				ChildModel2.create([{rid: 0, nationalities: ['CA']}, {rid: 1, nationalities: ['US']}], next);
+			}
+		], done);
 	});
 
-	beforeEach(() => {
+	beforeEach(function () {
 		JoinedModel = Arrow.Model.extend('joinedMasterChildModel', {
 			fields: {
 				rid: {type: Number, name: 'rid', model: 'masterModel'},
@@ -111,7 +115,7 @@ describe('Inner Join', function () {
 				should(coll2.length).be.greaterThan(1);
 
 				async.eachSeries(coll2, function (post, cb) {
-					should(post).be.an.Object;
+					should(post).be.an.Object();
 					should(post.author_id).be.ok;
 					should(post.author_first_name).be.ok;
 					should(post.author_last_name).be.ok;
@@ -165,8 +169,8 @@ describe('Inner Join', function () {
 				should(result.name).be.ok;
 				should(result.languages).be.instanceof(Object);
 				should(result.languages.native).be.ok;
-				should(result.nationalities).be.instanceof(Array)
-				should(result.nationalities[0]).be.instanceof(String)
+				should(result.nationalities).be.instanceof(Array);
+				should(result.nationalities[0]).be.instanceof(String);
 			}
 			next();
 		}
@@ -201,7 +205,7 @@ describe('Inner Join', function () {
 			for (var i = 0; i < results.length; i++) {
 				var result = results[i];
 				should(result.name).be.ok;
-				should(result.nationalities).be.instanceof(Array)
+				should(result.nationalities).be.instanceof(Array);
 				should(result.nationalities[0]).have.keys('rid', 'nationalities');
 			}
 			next();

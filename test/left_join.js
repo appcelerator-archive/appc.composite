@@ -94,7 +94,7 @@ describe('Left Join', function () {
 				should(coll2.length).be.greaterThan(coll.length - 1);
 
 				async.eachSeries(coll2, function (post, cb) {
-					should(post).be.an.Object;
+					should(post).be.an.Object();
 					if (!post.author_id) {
 						should(post.author_first_name).be.not.ok;
 						should(post.author_last_name).be.not.ok;
@@ -131,7 +131,7 @@ describe('Left Join', function () {
 				should(coll2.length).be.greaterThan(coll.length - 1);
 
 				async.eachSeries(coll2, function (post, cb) {
-					should(post).be.an.Object;
+					should(post).be.an.Object();
 					if (post.author_id > 0) {
 						should(post.author_first_name).be.ok;
 						should(post.author).be.ok;

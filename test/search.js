@@ -18,11 +18,11 @@ describe('Find / Query', function () {
 		};
 		Models.article.create(obj, function (err, instance) {
 			should(err).be.not.ok;
-			should(instance).be.an.Object;
+			should(instance).be.an.Object();
 			var id = instance.getPrimaryKey();
 			Models.article.findOne(id, function (err, instance2) {
 				should(err).be.not.ok;
-				should(instance2).be.an.Object;
+				should(instance2).be.an.Object();
 				should(instance2.getPrimaryKey()).equal(id);
 				should(instance2.title).equal(obj.title);
 				should(instance2.content).equal(obj.content);
@@ -45,7 +45,7 @@ describe('Find / Query', function () {
 		};
 		Models.article.create(obj, function (err, instance) {
 			should(err).be.not.ok;
-			should(instance).be.an.Object;
+			should(instance).be.an.Object();
 			var options = {
 				where: { content: 'Test Title' },
 				sel: { content: 1, author_first_name: 1 },
@@ -59,8 +59,8 @@ describe('Find / Query', function () {
 				async.eachSeries(coll, function (model, next) {
 					should(model.getPrimaryKey()).be.ok;
 					should(model.title).be.not.ok;
-					should(model.content).be.a.String;
-					should(model.author_first_name).be.a.String;
+					should(model.content).be.a.String();
+					should(model.author_first_name).be.a.String();
 					should(model.author_last_name).be.not.ok;
 					should(model.attachment_content).be.not.ok;
 				}, callback);
@@ -100,7 +100,7 @@ describe('Find / Query', function () {
 				should(coll2.length).be.greaterThan(coll.length - 1);
 
 				async.eachSeries(coll2, function (post, cb) {
-					should(post).be.an.Object;
+					should(post).be.an.Object();
 					cb();
 				}, function (err) {
 					next(err);
