@@ -17,9 +17,9 @@ describe('Create / Update / Delete', function () {
 			attachment_id: IDs.attachment
 		};
 		Models.article.create(obj, function (err, instance) {
-			should(err).be.not.ok;
-			should(instance).be.an.Object;
-			should(instance.getPrimaryKey()).be.ok;
+			should(err).be.not.ok();
+			should(instance).be.an.Object();
+			should(instance.getPrimaryKey()).be.ok();
 			should(instance.title).equal(obj.title);
 			should(instance.content).equal(obj.content);
 			should(instance.author_first_name).equal('Dawson');
@@ -40,13 +40,13 @@ describe('Create / Update / Delete', function () {
 		};
 
 		Models.article.create(obj, function (err, instance) {
-			should(err).be.not.ok;
-			should(instance).be.an.Object;
+			should(err).be.not.ok();
+			should(instance).be.an.Object();
 			var id = instance.getPrimaryKey();
 			instance.set('content', 'Goodbye world');
 			instance.save(function (err, result) {
-				should(err).be.not.ok;
-				should(result).be.an.Object;
+				should(err).be.not.ok();
+				should(result).be.an.Object();
 				should(result.getPrimaryKey()).equal(id);
 				should(result.title).equal(obj.title);
 				should(result.content).equal('Goodbye world');
@@ -68,16 +68,16 @@ describe('Create / Update / Delete', function () {
 		};
 
 		Models.article.create(obj, function (err, instance) {
-			should(err).be.not.ok;
-			should(instance).be.an.Object;
+			should(err).be.not.ok();
+			should(instance).be.an.Object();
 			var id = instance.getPrimaryKey();
 
 			instance.remove(function (err, result) {
-				should(err).be.not.ok;
+				should(err).be.not.ok();
 
 				Models.article.findOne(id, function (err, result) {
-					should(err).be.not.ok;
-					should(result).be.not.ok;
+					should(err).be.not.ok();
+					should(result).be.not.ok();
 					next();
 				});
 			});
@@ -106,13 +106,13 @@ describe('Create / Update / Delete', function () {
 			}
 		});
 		ExampleModel.create({ first_name: 'cant be written just yet' }, function (err, instance) {
-			should(err).be.ok;
+			should(err).be.ok();
 			next();
 		});
 	});
 
 	it('should be able to update a model with aliased fields', function (done) {
-		// Base model that will be aliased..
+		// Base model that will be aliased.
 		var MasterModel = Arrow.Model.extend(
 			'rdpp487MasterModel', {
 				fields: {

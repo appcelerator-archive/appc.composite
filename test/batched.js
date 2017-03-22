@@ -16,14 +16,14 @@ describe('Connector', function () {
 
 		// Create test data.
 		Models.user.create([user1Data, user2Data], function (err, user1) {
-			should(err).be.not.ok;
+			should(err).be.not.ok();
 			Models.post.create([post1Data, post2Data], function (err, post1) {
-				should(err).be.not.ok;
+				should(err).be.not.ok();
 				Models.user_post.findAll(function (err, result) {
-					should(err).be.not.ok;
-					should(result.users).be.ok;
+					should(err).be.not.ok();
+					should(result.users).be.ok();
 					should(result.users.length).be.greaterThan(0);
-					should(result.posts).be.ok;
+					should(result.posts).be.ok();
 					should(result.posts.length).be.greaterThan(0);
 					next();
 				});
@@ -36,11 +36,11 @@ describe('Connector', function () {
 			users: { limit: 2 },
 			posts: { where: { title: 'Title1' } }
 		}, function (err, result) {
-			should(err).be.not.ok;
-			should(result.users).be.ok;
+			should(err).be.not.ok();
+			should(result.users).be.ok();
 			should(result.users.length).be.greaterThan(0);
 			should(result.users.length).be.lessThan(3);
-			should(result.posts).be.ok;
+			should(result.posts).be.ok();
 			should(result.posts.length).be.greaterThan(0);
 			next();
 		});
@@ -51,11 +51,11 @@ describe('Connector', function () {
 			users: IDs.user,
 			posts: IDs.post
 		}, function (err, result) {
-			should(err).be.not.ok;
-			should(result.users).be.ok;
-			should(result.users.getPrimaryKey()).be.ok;
-			should(result.posts).be.ok;
-			should(result.posts.getPrimaryKey()).be.ok;
+			should(err).be.not.ok();
+			should(result.users).be.ok();
+			should(result.users.getPrimaryKey()).be.ok();
+			should(result.posts).be.ok();
+			should(result.posts.getPrimaryKey()).be.ok();
 			next();
 		});
 	});
@@ -65,26 +65,26 @@ describe('Connector', function () {
 			users: IDs.user,
 			posts: IDs.post
 		}), function (err, result) {
-			should(err).be.not.ok;
-			should(result.users).be.ok;
-			should(result.users.getPrimaryKey()).be.ok;
-			should(result.posts).be.ok;
-			should(result.posts.getPrimaryKey()).be.ok;
+			should(err).be.not.ok();
+			should(result.users).be.ok();
+			should(result.users.getPrimaryKey()).be.ok();
+			should(result.posts).be.ok();
+			should(result.posts.getPrimaryKey()).be.ok();
 			next();
 		});
 	});
 
 	it('should be able to handle bad stringified params', function (next) {
 		Models.user_post.findOne("{ some: bad json }", function (err, result) {
-			should(err).be.ok;
+			should(err).be.ok();
 			next();
 		});
 	});
 
 	it('API-344: should be able to batch across 4 different connectors', function (next) {
 		Models.uc_9a.findAll(function (err, result) {
-			should(err).be.not.ok;
-			should(result).be.ok;
+			should(err).be.not.ok();
+			should(result).be.ok();
 
 			Models.uc_9a.query({
 				users: { where: { last_name: 'Toth' } },
@@ -92,8 +92,8 @@ describe('Connector', function () {
 				mongo_posts: { where: { title: { $like: '%o%' } } },
 				accounts: { where: { Name: { $like: '%ee%' } } }
 			}, function (err, results) {
-				should(err).be.not.ok;
-				should(results).be.ok;
+				should(err).be.not.ok();
+				should(results).be.ok();
 				for (var i = 0; i < results.users.length; i++) {
 					should(results.users[i].last_name).equal('Toth');
 				}
@@ -112,11 +112,11 @@ describe('Connector', function () {
 				cars: { where: { model: { $like: 'anza%' } } }
 			}
 		}, function (err, results) {
-			should(err).be.not.ok;
-			should(results).be.ok;
-			should(results.employees).be.ok;
-			should(results.teams).be.ok;
-			should(results.accounts).be.ok;
+			should(err).be.not.ok();
+			should(results).be.ok();
+			should(results.employees).be.ok();
+			should(results.teams).be.ok();
+			should(results.accounts).be.ok();
 			next();
 		});
 	});
