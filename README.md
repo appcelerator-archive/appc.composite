@@ -5,7 +5,7 @@ This is a composite connector for Arrow. It lets you composite together models f
 ## Installation
 
 ```bash
-$ appc install connector/appc.composite --save
+$ appc install connector/appc.composite
 ```
 
 ## Usage

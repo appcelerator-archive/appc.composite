@@ -22,9 +22,9 @@ before(function before(next) {
 	this.timeout(60 * 1000);
 
 	server.start(function (err) {
-		should(err).be.not.ok;
+		should(err).be.not.ok();
 
-		// Load models from their directory.
+				// Load models from their directory.
 		fs.readdirSync('./test/models/').forEach(function (file) {
 			if (file.indexOf('.js') > 0) {
 				var model = require('./models/' + file)(Arrow);
@@ -40,13 +40,13 @@ before(function before(next) {
 			first_name: 'Dawson',
 			last_name: 'Toth'
 		}, function (err, instance) {
-			should(err).be.not.ok;
+			should(err).be.not.ok();
 			IDs.user = instance.getPrimaryKey();
 
 			Models.attachment.create({
 				attachment_content: 'Test Attachment Content'
 			}, function (err, instance) {
-				should(err).be.not.ok;
+				should(err).be.not.ok();
 				IDs.attachment = instance.getPrimaryKey();
 
 				Models.post.create({
@@ -55,7 +55,7 @@ before(function before(next) {
 					author_id: IDs.user,
 					attachment_id: IDs.attachment
 				}, function (err, instance) {
-					should(err).be.not.ok;
+					should(err).be.not.ok();
 					IDs.post = instance.getPrimaryKey();
 
 					var mysql = server.getConnector('appc.mysql');
@@ -99,18 +99,18 @@ it('should require a minimum version of Arrow', function () {
 	};
 
 	should(function () {
-		require('../lib/index').create({
+		require('./lib/index').create({
 			Connector: mockConnector
 		});
 	}).throw();
 	should(function () {
-		require('../lib/index').create({
+		require('./lib/index').create({
 			Version: '1.2.0',
 			Connector: mockConnector
 		});
 	}).throw();
 	should(function () {
-		require('../lib/index').create({
+		require('./lib/index').create({
 			Version: '1.5.0',
 			Connector: mockConnector
 		});

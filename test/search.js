@@ -17,12 +17,12 @@ describe('Find / Query', function () {
 			attachment_id: IDs.attachment
 		};
 		Models.article.create(obj, function (err, instance) {
-			should(err).be.not.ok;
-			should(instance).be.an.Object;
+			should(err).be.not.ok();
+			should(instance).be.an.Object();
 			var id = instance.getPrimaryKey();
 			Models.article.findByID(id, function (err, instance2) {
-				should(err).be.not.ok;
-				should(instance2).be.an.Object;
+				should(err).be.not.ok();
+				should(instance2).be.an.Object();
 				should(instance2.getPrimaryKey()).equal(id);
 				should(instance2.title).equal(obj.title);
 				should(instance2.content).equal(obj.content);
@@ -44,8 +44,8 @@ describe('Find / Query', function () {
 			attachment_id: IDs.attachment
 		};
 		Models.article.create(obj, function (err, instance) {
-			should(err).be.not.ok;
-			should(instance).be.an.Object;
+			should(err).be.not.ok();
+			should(instance).be.an.Object();
 			var options = {
 				where: { content: 'Test Title' },
 				sel: { content: 1, author_first_name: 1 },
@@ -54,19 +54,44 @@ describe('Find / Query', function () {
 				skip: 0
 			};
 			Models.article.query(options, function (err, coll) {
-				should(err).be.not.ok;
+				should(err).be.not.ok();
 
 				async.eachSeries(coll, function (model, next) {
-					should(model.getPrimaryKey()).be.ok;
-					should(model.title).be.not.ok;
-					should(model.content).be.a.String;
-					should(model.author_first_name).be.a.String;
-					should(model.author_last_name).be.not.ok;
-					should(model.attachment_content).be.not.ok;
+					should(model.getPrimaryKey()).be.ok();
+					should(model.title).be.not.ok();
+					should(model.content).be.a.String();
+					should(model.author_first_name).be.a.String();
+					should(model.author_last_name).be.not.ok();
+					should(model.attachment_content).be.not.ok();
 				}, callback);
 			});
 		});
 
+		it('should return no results when query with invalid where', function (callback) {
+
+			var obj = {
+				title: 'Test Title',
+				content: 'Test Content',
+				author_id: IDs.user,
+				attachment_id: IDs.attachment
+			};
+			Models.article.create(obj, function (err, instance) {
+				should(err).be.not.ok;
+				should(instance).be.an.Object;
+				var options = {
+					where: 'bad',
+					sel: { content: 1, author_first_name: 1 },
+					order: { title: -1, content: 1 },
+					limit: 3,
+					skip: 0
+				};
+				Models.article.query(options, function (err, coll) {
+					should(err).be.not.ok;
+					should(coll).have.length(0);
+					callback();
+				});
+			});
+		});
 	});
 
 	it('should be able to find all instances', function (next) {
@@ -87,7 +112,7 @@ describe('Find / Query', function () {
 		];
 
 		Models.article.create(objs, function (err, coll) {
-			should(err).be.not.ok;
+			should(err).be.not.ok();
 			should(coll.length).equal(objs.length);
 
 			var keys = [];
@@ -96,11 +121,11 @@ describe('Find / Query', function () {
 			});
 
 			Models.article.find(function (err, coll2) {
-				should(err).be.not.ok;
+				should(err).be.not.ok();
 				should(coll2.length).be.greaterThan(coll.length - 1);
 
 				async.eachSeries(coll2, function (post, cb) {
-					should(post).be.an.Object;
+					should(post).be.an.Object();
 					cb();
 				}, function (err) {
 					next(err);
@@ -134,10 +159,10 @@ describe('Find / Query', function () {
 			}
 		});
 		BadJoinedFieldModel.findByID(IDs.post, function (err, instance) {
-			should(err).be.not.ok;
-			should(instance.author_id).be.ok;
-			should(instance.author_first_name).be.not.ok;
-			should(instance.author_last_name).be.not.ok;
+			should(err).be.not.ok();
+			should(instance.author_id).be.ok();
+			should(instance.author_first_name).be.not.ok();
+			should(instance.author_last_name).be.not.ok();
 			next();
 		});
 	});
@@ -163,7 +188,7 @@ describe('Find / Query', function () {
 			}
 		});
 		ExampleModel.query({ first_name: 'cant be queried on just yet' }, function (err) {
-			should(err).be.ok;
+			should(err).be.ok();
 			should(String(err)).containEql('Joined fields cannot be queried on yet');
 			next();
 		});
@@ -171,25 +196,25 @@ describe('Find / Query', function () {
 
 	it('API-344: should be able to find contracts with salesforce id', function (next) {
 		Models.sf_id.findByID('001M000000fe0V7IAI', function (err, result) {
-			should(err).be.not.ok;
-			should(result).be.ok;
-			should(result.account).be.ok;
-			should(result.contract).be.ok;
+			should(err).be.not.ok();
+			should(result).be.ok();
+			should(result.account).be.ok();
+			should(result.contract).be.ok();
 			next();
 		});
 	});
 
 	it('API-317: should be able to reference models as objects', function (next) {
 		Models.contract.findAll(function (err, coll) {
-			should(err).be.not.ok;
-			should(coll).be.ok;
+			should(err).be.not.ok();
+			should(coll).be.ok();
 			should(coll.length).be.greaterThan(0);
 			var accountWithContract = coll[0].AccountId;
 
 			Models.account_contract.findByID(accountWithContract, function (err, instance) {
-				should(err).be.not.ok;
-				should(instance).be.ok;
-				should(instance.contract.ContractNumber).be.ok;
+				should(err).be.not.ok();
+				should(instance).be.ok();
+				should(instance.contract.ContractNumber).be.ok();
 				next();
 			});
 		});
