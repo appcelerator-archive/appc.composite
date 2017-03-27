@@ -81,6 +81,7 @@ before(function before(next) {
 });
 
 after(function (next) {
+	this.timeout(6 * 1000);
 	async.parallel(
 		[
 			Models.user.deleteAll.bind(Models.user),
@@ -99,18 +100,18 @@ it('should require a minimum version of Arrow', function () {
 	};
 
 	should(function () {
-		require('./lib/index').create({
+		require('../lib/index').create({
 			Connector: mockConnector
 		});
 	}).throw();
 	should(function () {
-		require('./lib/index').create({
+		require('../lib/index').create({
 			Version: '1.2.0',
 			Connector: mockConnector
 		});
 	}).throw();
 	should(function () {
-		require('./lib/index').create({
+		require('../lib/index').create({
 			Version: '1.5.0',
 			Connector: mockConnector
 		});
@@ -119,5 +120,6 @@ it('should require a minimum version of Arrow', function () {
 
 
 after(function (next) {
+	this.timeout(6 * 1000);
 	server.stop(next);
 });

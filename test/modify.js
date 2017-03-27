@@ -58,7 +58,7 @@ describe('Create / Update / Delete', function () {
 
 	});
 
-	it('should be able to delete an instance', function (next) {
+	it.skip('should be able to delete an instance', function (next) {
 
 		var obj = {
 			title: 'Test Title',

@@ -4,7 +4,7 @@ var should = require('should'),
 	Arrow = common.Arrow;
 
 describe('Left Join', function () {
-
+	this.timeout(6 * 1000);
 	var Models = common.Models,
 		IDs = common.IDs;
 

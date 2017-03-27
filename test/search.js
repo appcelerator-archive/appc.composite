@@ -4,7 +4,7 @@ var should = require('should'),
 	Arrow = common.Arrow;
 
 describe('Find / Query', function () {
-
+	this.timeout(16 * 1000);
 	var Models = common.Models,
 		IDs = common.IDs;
 
