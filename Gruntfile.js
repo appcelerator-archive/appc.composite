@@ -19,7 +19,6 @@ module.exports = function (grunt) {
 		},
 		jshint: {
 			options: {
-				reporterOutput: "",
 				jshintrc: true
 			},
 			src: ['lib/**/*.js', 'test/**/*.js']
@@ -35,7 +34,6 @@ module.exports = function (grunt) {
 
 	// Register tasks.
 	// TODO: Uncomment when unit-tests are working
-	// grunt.registerTask('default', ['jshint', 'mocha_istanbul:coverage', 'clean']);
+ 	// grunt.registerTask('default', ['jshint', 'mocha_istanbul:coverage', 'clean']);
 	grunt.registerTask('default', ['jshint', 'clean']);
-
 };
