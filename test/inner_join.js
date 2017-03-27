@@ -35,10 +35,10 @@ describe.only('Inner Join', function () {
 				MasterModel.create([{rid: 0, name: {fname: 'Zero'}}, {rid: 1, name: {fname: 'One'}}], next);
 			},
 			function(next) {
-				ChildModel.create([{rid: 0, languages: {native: 'FR'}}, {rid: 1, languages: {native: 'EN'}}], next);
+				ChildModel.create([{rid: 0, languages: {native: 'FR'}}, {rid: 1, languages: {native: 'EN'}, {rid: 1, languages: {native: 'DE'}}], next);
 			},
 			function(next) {
-				ChildModel2.create([{rid: 0, nationalities: ['CA']}, {rid: 1, nationalities: ['US']}], next);
+				ChildModel2.create([{rid: 0, nationalities: ['CA']}, {rid: 0, nationalities: ['JP']}, {rid: 1, nationalities: ['US']}], next);
 			}
 		], done);
 	});
@@ -163,51 +163,84 @@ describe.only('Inner Join', function () {
 		JoinedModel.findAll(verifyJoin);
 		function verifyJoin(err, results) {
 			should(err).be.not.ok();
-			should(results.length).be.ok();
-			for (var i = 0; i < results.length; i++) {
-				var result = results[i];
-				should(result.name).be.ok();
-				should(result.languages).be.instanceof(Object);
-				should(result.languages.native).be.ok();
-				should(result.nationalities).be.instanceof(Array);
-				should(result.nationalities[0]).be.instanceof(String);
-			}
+			should(results.length).equal(2);
+			
+			var result = results[0];
+			should(result).deepEqual({
+				name: {fName: 'Zero'},
+				languages: {native: 'FR'},
+				nationalities: ['JP']
+			});
+			result = results[1];
+			should(result).deepEqual({
+				name: {fName: 'One'},
+				languages: {native: 'DE'},
+				nationalities: ['US']
+			});
 			next();
 		}
 	});
 
 	// should support join as 'object'
 	it('RDPP-915: should handle join as "object" correctly', function (next) {
+		// if the field does not have name property it will not reference a single field from the linked
+		// model with that name, and instead join as the type specified. In this case it will
+		// set the whole matched result on the field as an object. 
+		// NOTE: if many matches are possible, then it's not clear what will be returned from findAll.
+		// ArrowDB seems to return the last registered model.
 		delete JoinedModel.fields.languages.name;
 		common.server.addModel(JoinedModel);
 		JoinedModel.findAll(verifyJoin);
 		function verifyJoin(err, results) {
 			should(err).be.not.ok();
-			should(results.length).be.ok();
-			for (var i = 0; i < results.length; i++) {
-				var result = results[i];
-				should(result.name).be.ok();
-				should(result.languages).be.instanceof(Object);
-				should(result.languages).have.keys('rid', 'languages');
-			}
-			next();
+			should(results.length).be.equal(2);
+			var result = results[0];
+			should(result.name).be.deepEqual({fname: 'Zero'});
+			should(result.languages).be.instanceof(Object);
+			should(result.languages).be.deepEqual({
+				rid: 0,
+				languages: {native: 'FR'}
+			});
+			result = results[1];
+			should(result.name).be.deepEqual({fname: 'One'});
+			should(result.languages).be.instanceof(Array);
+			should(result.languages).deepEqual([{
+				rid: 1,
+				languages: {native: 'DE'}
+			}]);
+			next();	
 		}
 	});
 
 	// should support join as 'array'
 	it('RDPP-994: should handle join as "array" correctly', function (next) {
+		// if the field does not have name property it will not reference a single field from the linked
+		// model with that name, and instead join as the type specified. In this case it will
+		// set all the matched results as an array
 		delete JoinedModel.fields.nationalities.name;
 		common.server.addModel(JoinedModel);
 		JoinedModel.findAll(verifyJoin);
 		function verifyJoin(err, results) {
 			should(err).be.not.ok();
-			should(results.length).be.ok();
-			for (var i = 0; i < results.length; i++) {
-				var result = results[i];
-				should(result.name).be.ok();
-				should(result.nationalities).be.instanceof(Array);
-				should(result.nationalities[0]).have.keys('rid', 'nationalities');
-			}
+			should(results.length).be.equal(2);
+
+			var result = results[0];
+			should(result.name).be.deepEqual({fname: 'Zero'});
+			should(result.nationalities).be.instanceof(Array);
+			should(result.nationalities).deepEqual([{
+				rid: 0,
+				nationalities: ['CA']
+			}, {
+				rid: 0,
+				nationalities: ['JP']
+			}]);
+			result = results[1];
+			should(result.name).be.deepEqual({fname: 'One'});
+			should(result.nationalities).be.instanceof(Array);
+			should(result.nationalities).deepEqual([{
+				rid: 1,
+				nationalities: ['US']
+			}]);
 			next();
 		}
 	});
