@@ -3,8 +3,8 @@ var should = require('should'),
 	common = require('./common'),
 	Arrow = common.Arrow;
 
-describe.only('Inner Join', function () {
-
+describe('Inner Join', function () {
+	this.timeout(6 * 1000);
 	var Models = common.Models,
 		IDs = common.IDs,
 		MasterModel,
@@ -181,7 +181,7 @@ describe.only('Inner Join', function () {
 	// should support join as 'fields' with multiple field matches
 	it('RDPP-1053: should group multiple matches of a single field with multiple set to true in the merge metadata', function (next) {
 		JoinedModel.metadata.inner_join[1].multiple = true;
-		JoinedModel.fields.nationalities =  {type: Array, name: 'nationality', model: 'childModel2'};
+		JoinedModel.fields.nationality.type = Array;
 		common.server.addModel(JoinedModel);
 		JoinedModel.findAll(verifyJoin);
 		function verifyJoin(err, results) {
@@ -191,12 +191,12 @@ describe.only('Inner Join', function () {
 			var result = results[0];
 			should(result).have.property('name', { fname: 'Zero' });
 			should(result).have.property('languages', { native: 'FR' });
-			should(result).have.property('nationalities', ['CA', 'JP']);
+			should(result).have.property('nationality', ['CA', 'JP']);
 
 			result = results[1];
 			should(result).have.property('name', { fname: 'One' });
 			should(result).have.property('languages', { native: 'EN' });
-			should(result).have.property('nationalities', ['US']);
+			should(result).have.property('nationality', ['US']);
 			next();
 		}
 	});
