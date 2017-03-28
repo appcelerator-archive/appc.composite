@@ -35,7 +35,7 @@ describe.only('Inner Join', function () {
 				MasterModel.create([{rid: 0, name: {fname: 'Zero'}}, {rid: 1, name: {fname: 'One'}}], next);
 			},
 			function(next) {
-				ChildModel.create([{rid: 0, languages: {native: 'FR'}}, {rid: 1, languages: {native: 'EN'}, {rid: 1, languages: {native: 'DE'}}], next);
+				ChildModel.create([{rid: 0, languages: {native: 'FR'}}, {rid: 1, languages: {native: 'EN'}}, {rid: 1, languages: {native: 'DE'}}], next);
 			},
 			function(next) {
 				ChildModel2.create([{rid: 0, nationalities: ['CA']}, {rid: 0, nationalities: ['JP']}, {rid: 1, nationalities: ['US']}], next);
