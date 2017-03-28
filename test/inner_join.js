@@ -38,7 +38,7 @@ describe.only('Inner Join', function () {
 				ChildModel.create([{rid: 0, languages: {native: 'FR'}}, {rid: 1, languages: {native: 'EN'}}, {rid: 1, languages: {native: 'DE'}}], next);
 			},
 			function(next) {
-				ChildModel2.create([{rid: 0, nationality: 'CA'}, {rid: 0, nationality: 'JP'}, {rid: 1, nationality: ['US']}], next);
+				ChildModel2.create([{rid: 0, nationality: 'CA'}, {rid: 0, nationality: 'JP'}, {rid: 1, nationality: 'US'}], next);
 			}
 		], done);
 	});
@@ -234,6 +234,7 @@ describe.only('Inner Join', function () {
 		// model with that name, and instead join as the type specified. In this case it will
 		// set all the matched results as an array
 		delete JoinedModel.fields.nationality.name;
+		JoinedModel.fields.nationality.type = Array;
 		common.server.addModel(JoinedModel);
 		JoinedModel.findAll(verifyJoin);
 		function verifyJoin(err, results) {
