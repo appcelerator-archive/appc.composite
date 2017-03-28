@@ -166,17 +166,14 @@ describe.only('Inner Join', function () {
 			should(results.length).equal(2);
 			
 			var result = results[0];
-			should(result).deepEqual({
-				name: {fName: 'Zero'},
-				languages: {native: 'FR'},
-				nationalities: ['JP']
-			});
+			should(result).have.property('name', { fname: 'Zero' });
+			should(result).have.property('languages', { native: 'FR' });
+			should(result).have.property('nationalities', ['CA']);
+
 			result = results[1];
-			should(result).deepEqual({
-				name: {fName: 'One'},
-				languages: {native: 'DE'},
-				nationalities: ['US']
-			});
+			should(result).have.property('name', { fname: 'One' });
+			should(result).have.property('languages', { native: 'EN' });
+			should(result).have.property('nationalities', ['US']);
 			next();
 		}
 	});
@@ -197,17 +194,13 @@ describe.only('Inner Join', function () {
 			var result = results[0];
 			should(result.name).be.deepEqual({fname: 'Zero'});
 			should(result.languages).be.instanceof(Object);
-			should(result.languages).be.deepEqual({
-				rid: 0,
-				languages: {native: 'FR'}
-			});
+			should(result.languages).have.property('rid', 0);
+			should(result.languages).have.property('languages', {native: 'FR'});
 			result = results[1];
 			should(result.name).be.deepEqual({fname: 'One'});
-			should(result.languages).be.instanceof(Array);
-			should(result.languages).deepEqual([{
-				rid: 1,
-				languages: {native: 'DE'}
-			}]);
+			should(result.languages).be.instanceof(Object);
+			should(result.languages).have.property('rid', 1);
+			should(result.languages).have.property('languages', {native: 'EN'});
 			next();	
 		}
 	});
@@ -227,20 +220,17 @@ describe.only('Inner Join', function () {
 			var result = results[0];
 			should(result.name).be.deepEqual({fname: 'Zero'});
 			should(result.nationalities).be.instanceof(Array);
-			should(result.nationalities).deepEqual([{
-				rid: 0,
-				nationalities: ['CA']
-			}, {
-				rid: 0,
-				nationalities: ['JP']
-			}]);
+			should(result.nationalities).have.length(2);
+			should(result.nationalities[0]).have.property('rid', 0);
+			should(result.nationalities[0]).have.property('nationalities', ['CA']);
+			should(result.nationalities[1]).have.property('rid', 0);
+			should(result.nationalities[1]).have.property('nationalities', ['JP']);
 			result = results[1];
 			should(result.name).be.deepEqual({fname: 'One'});
 			should(result.nationalities).be.instanceof(Array);
-			should(result.nationalities).deepEqual([{
-				rid: 1,
-				nationalities: ['US']
-			}]);
+			should(result.nationalities).have.length(1);
+			should(result.nationalities[0]).have.property('rid', 1);
+			should(result.nationalities[0]).have.property('nationalities', ['US']);
 			next();
 		}
 	});
