@@ -201,6 +201,32 @@ describe('Inner Join', function () {
 		}
 	});
 
+		// should support join as 'fields' with multiple field matches. This time we called the joined field something different
+	it('RDPP-1059: should group multiple matches of a single field with multiple set to true in the merge metadata with aliased field', function (next) {
+		JoinedModel.metadata.inner_join[1].multiple = true;
+		JoinedModel.fields.nationalities = JoinedModel.fields.nationality;
+		JoinedModel.fields.nationalities.type = Array;
+		delete JoinedModel.fields.nationality;
+		common.server.addModel(JoinedModel);
+		JoinedModel.findAll(verifyJoin);
+		function verifyJoin(err, results) {
+			should(err).be.not.ok();
+			should(results.length).equal(2);
+			
+			var result = results[0];
+			should(result).have.property('name', { fname: 'Zero' });
+			should(result).have.property('languages', { native: 'FR' });
+			should(result).have.property('nationalities', ['CA', 'JP']);
+
+			result = results[1];
+			should(result).have.property('name', { fname: 'One' });
+			should(result).have.property('languages', { native: 'EN' });
+			should(result).have.property('nationalities', ['US']);
+			next();
+		}
+	});
+
+
 	// should support join as 'object'
 	it('RDPP-915: should handle join as "object" correctly', function (next) {
 		// if the field does not have name property it will not reference a single field from the linked
