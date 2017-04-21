@@ -16,7 +16,8 @@ $ appc install connector/appc.composite
 var User = Arrow.Model.extend('user', {
 		fields: {
 			first_name: { type: String },
-			last_name: { type: String }
+			last_name: { type: String },
+			roles: { type: Array }
 		},
 		connector: 'appc.mysql'
 	}),
@@ -34,7 +35,50 @@ var User = Arrow.Model.extend('user', {
 			attachment_content: { name: 'content', type: String }
 		},
 		connector: 'appc.mongo'
-	});
+	})
+```
+
+#### Selecting Fields
+
+To select precise fields from a data source, for the majority of cases making a model with fields with keys which match those of a specified model, and specifying the correct type is enough:
+
+```javascript
+Arrow.Model.extend('simpleUser', {
+	fields: {
+			first_name: { type: String, model: 'user' },
+			last_name: { type: String, model: 'user' }
+	},
+	connector: 'appc.composite'
+})
+```
+
+In some cases this isn't precise enough. Using a field of type: Array or Object can result in "Selecting Whole Models Instead of Fields" or "Joining with Multiple Children" as described below. To make sure that the response is always as expected, when selecting individual fields from models, always specify a "name" property, even when it's identical to the field key.
+
+```javascript
+Arrow.Model.extend('simpleUser', {
+	fields: {
+			first_name: { type: String, model: 'user', name: 'first_name' }
+			last_name: { type: String, model: 'user', name: 'last_name' },
+			roles: {type: Array, model: 'user', name: 'roles'}
+	},
+	connector: 'appc.composite'
+})
+```
+
+#### Renaming/Aliasing Fields
+
+The composite connector also allows fields to be named differently from their undelying data source.
+In this example, we are accessing the fields first_name and last_name originating in the user model, as author_first_name and author_last_name in the new model. 
+
+```javascript
+Arrow.Model.extend('simpleUser', {
+	fields: {
+			author_first_name: { type: String, model: 'user', name: 'first_name' }
+			author_last_name: { type: String, model: 'user', name: 'last_name' },
+			roles: {type: Array, model: 'user', name: 'roles'}
+	},
+	connector: 'appc.composite'
+})
 ```
 
 ### Joining
@@ -47,9 +91,9 @@ Let's say we have a table "post" with a field "author_id". author_id contains a 
 ```javascript
 Arrow.Model.extend('article', {
 	fields: {
-		title: { type: String, model: 'post' },
-		content: { type: String, model: 'post' },
-		author_id: { type: Number, model: 'post' },
+		title: { type: String, model: 'post', name: 'title' },
+		content: { type: String, model: 'post', name: 'content' },
+		author_id: { type: Number, model: 'post', name: 'author_id' },
 		author_first_name: { type: String, name: 'first_name', required: false, model: 'user' },
 		author_last_name: { type: String, name: 'last_name', required: false, model: 'user' }
 	},
@@ -94,12 +138,12 @@ example to also lookup an "attachment" table for our article:
 ```javascript
 Arrow.Model.extend('article', {
 	fields: {
-		title: { type: String, model: 'post' },
-		content: { type: String, model: 'post' },
-		author_id: { type: Number, model: 'post' },
+		title: { type: String, model: 'post', name: 'title' },
+		content: { type: String, model: 'post', name: 'content' },
+		author_id: { type: Number, model: 'post', name: 'author_id' },
 		author_first_name: { type: String, name: 'first_name', required: false, model: 'user' },
 		author_last_name: { type: String, name: 'last_name', required: false, model: 'user' },
-		attachment_id: { type: String, model: 'post' },
+		attachment_id: { type: String, model: 'post', name: 'attachment_id' },
 		attachment_content: { type: String, name: 'attachment_content', required: false, model: 'attachment' }
 	},
 	connector: 'appc.composite',
@@ -129,7 +173,7 @@ The connector will go through the left_joins in order, looking them up and mergi
 
 #### Selecting Whole Models Instead of Fields
 
-Instead of specifying the precise fields you want, you can instead include the entire joined model in your model.
+Instead of specifying the precise fields you want, you can instead include the entire joined model in your model. The property "name" should *not* be used.
 
 For example:
 
@@ -161,13 +205,15 @@ look up contracts that have an AccountId of the account's id, and store one in a
 
 We have heretofore assumed that an article will have just a single author. But what if we want to join with multiple
 results? For example, let's say we have a "author" model, and we want to select all of their posts. Just add
-a field with type: Array and model: "post" and the connector will handle the rest:
+a field with type: Array and model: "post" and the connector will handle the rest.
+
+As with selecting a joined object, the property "name" should also *not* be used:
 
 ```javascript
 Arrow.Model.extend('authorWithArticles', {
 	fields: {
-		first_name: { type: String, model: 'user' },
-		last_name: { type: String, model: 'user' },
+		first_name: { type: String, model: 'user', name: 'first_name' },
+		last_name: { type: String, model: 'user', name: 'last_name' },
 		posts: { type: Array, model: 'post' }
 	},
 	connector: 'appc.composite',
@@ -184,6 +230,36 @@ Arrow.Model.extend('authorWithArticles', {
 	}
 })
 ```
+
+#### Joining with Single Field from Multiple Children
+
+It's also possible that we don't want every whole post object returned, but to save bandwidth, only the title of each post is necesarry. This is also possible! We just need to specify the name of the field we want to use, but this time we set the field type as Array and add a parameter "multiple" to the join metadata.
+
+Note: This only works for single fields from an existing model. To return a subset of fields from a model, a reduced version of the 'post' object would first need to be created and then used in it's place.
+
+```javascript
+Arrow.Model.extend('authorWithArticles', {
+	fields: {
+		first_name: { type: String, model: 'user', name: 'first_name' },
+		last_name: { type: String, model: 'user', name: 'last_name' },
+		posts: { type: Array, model: 'post', name: 'title' }
+	},
+	connector: 'appc.composite',
+
+	metadata: {
+		'appc.composite': {
+			left_join: {
+				model: 'post',
+				multiple: true,
+				join_properties: {
+					'author_id': 'id'
+				}
+			}
+		}
+	}
+})
+```
+
 ##### Controlling the Children Number
 
 By default the number of joined children is 10. However, this number can be controlled by providing a value between 1 and 1000. To achieve this specify "limit" parameter on the field of type Array like this:
@@ -191,7 +267,7 @@ By default the number of joined children is 10. However, this number can be cont
 ```javascript
 Arrow.Model.extend('authorWithArticles', {
 	fields: {
-		name: { type: String, model: 'user' },
+		name: { type: String, model: 'user', name: 'name' },
 		posts: { type: Array, model: 'post', limit: '50' }
 	},
 	connector: 'appc.composite',
@@ -207,7 +283,6 @@ Arrow.Model.extend('authorWithArticles', {
 	}
 })
 ```
-
 
 
 # Unrelated Model Batching
