@@ -16,69 +16,132 @@ $ appc install connector/appc.composite
 var User = Arrow.Model.extend('user', {
 		fields: {
 			first_name: { type: String },
-			last_name: { type: String },
-			roles: { type: Array }
+			last_name:  { type: String },
+			roles:      { type: Array }
 		},
 		connector: 'appc.mysql'
 	}),
 	Post = Arrow.Model.extend('post', {
 		fields: {
-			title: { type: String },
-			content: { type: String },
-			author_id: { type: Number },
+			title:         { type: String },
+			content:       { type: String },
+			author_id:     { type: Number },
 			attachment_id: { type: String }
 		},
 		connector: 'appc.mongo'
 	}),
 	Attachment = Arrow.Model.extend('attachment', {
 		fields: {
-			attachment_content: { name: 'content', type: String }
+			attachment_content: { type: String, name: 'content' }
 		},
 		connector: 'appc.mongo'
 	})
 ```
 
+### Example Data
+
+```javascript
+var Users = [
+		{
+			id: 1,
+			first_name: 'Alasdair',
+			last_name: 'Hurst',
+			roles: ['admin', 'user']
+		},
+		{
+			id: 2,
+			first_name: 'Gavin',
+			last_name: 'Matthews',
+			roles: ['user']
+		}
+	],
+	Posts = [
+		{
+			id: 1,
+			title: 'Welcome',
+			content: 'Welcome to Axway!',
+			author_id: 1,
+			attachment_id: 1
+		},
+		{
+			id: 2,
+			title: 'Instructions',
+			content: 'This is how to use the appc.composite connector.',
+			author_id: 2
+		}
+	],
+	Attachments = [
+		{
+			id: 1,
+			attachement_content: '[photo]'
+		},
+	];
+```
+
 #### Selecting Fields
 
-To select precise fields from a data source, for the majority of cases making a model with fields with keys which match those of a specified model, and specifying the correct type is enough:
+Composite model creation allows you to expose a subset of fields from a source model. To do this, you should specify the correct type, name and source model.
 
 ```javascript
 Arrow.Model.extend('simpleUser', {
 	fields: {
-			first_name: { type: String, model: 'user' },
-			last_name: { type: String, model: 'user' }
+			first_name: { type: String, name: 'first_name', model: 'user' },
+			roles:      { type: Array,  name: 'roles',      model: 'user' }
 	},
 	connector: 'appc.composite'
 })
 ```
 
-In some cases this isn't precise enough. Using a field of type: Array or Object can result in "Selecting Whole Models Instead of Fields" or "Joining with Multiple Children" as described below. To make sure that the response is always as expected, when selecting individual fields from models, always specify a "name" property, even when it's identical to the field key.
+A response from FindAll would look like this:
 
-```javascript
-Arrow.Model.extend('simpleUser', {
-	fields: {
-			first_name: { type: String, model: 'user', name: 'first_name' }
-			last_name: { type: String, model: 'user', name: 'last_name' },
-			roles: {type: Array, model: 'user', name: 'roles'}
+```json
+[
+	{
+		"id": 1,
+		"first_name": "Alasdair",
+		"roles": ["admin", "user"]
 	},
-	connector: 'appc.composite'
-})
+	{
+		"id": 2,
+		"first_name": "Gavin",
+		"roles": ["user"]
+	}
+]
 ```
 
 #### Renaming/Aliasing Fields
 
-The composite connector also allows fields to be named differently from their undelying data source.
-In this example, we are accessing the fields first_name and last_name originating in the user model, as author_first_name and author_last_name in the new model. 
+The composite connector also allows fields to be named differently from their underlying data source.
+In this example, we are exposing the fields first_name and last_name originating in the user model, as author_first_name and author_last_name in the composite model. 
 
 ```javascript
 Arrow.Model.extend('simpleUser', {
 	fields: {
-			author_first_name: { type: String, model: 'user', name: 'first_name' }
-			author_last_name: { type: String, model: 'user', name: 'last_name' },
-			roles: {type: Array, model: 'user', name: 'roles'}
+			author_first_name: { type: String, name: 'first_name', model: 'user' },
+			author_last_name:  { type: String, name: 'last_name',  model: 'user' },
+			roles:             { type: Array,  name: 'roles',      model: 'user' }
 	},
 	connector: 'appc.composite'
 })
+```
+
+A response from FindAll would look like this:
+
+```json
+[
+	{
+		"id": 1,
+		"author_first_name": "Alasdair",
+		"author_first_name": "Hurst",
+		"roles": ["admin", "user"]
+	},
+	{
+		"id": 2,
+		"author_first_name": "Gavin",
+		"author_first_name": "Matthews",
+		"roles": ["user"]
+	}
+]
 ```
 
 ### Joining
@@ -91,11 +154,11 @@ Let's say we have a table "post" with a field "author_id". author_id contains a 
 ```javascript
 Arrow.Model.extend('article', {
 	fields: {
-		title: { type: String, model: 'post', name: 'title' },
-		content: { type: String, model: 'post', name: 'content' },
-		author_id: { type: Number, model: 'post', name: 'author_id' },
-		author_first_name: { type: String, name: 'first_name', required: false, model: 'user' },
-		author_last_name: { type: String, name: 'last_name', required: false, model: 'user' }
+		title:             { type: String, name: 'title',      model: 'post' },
+		content:           { type: String, name: 'content',    model: 'post' },
+		author_id:         { type: Number, name: 'author_id',  model: 'post' },
+		author_first_name: { type: String, name: 'first_name', model: 'user', required: false },
+		author_last_name:  { type: String, name: 'last_name',  model: 'user', required: false }
 	},
 	connector: 'appc.composite',
 
@@ -112,6 +175,7 @@ Arrow.Model.extend('article', {
 })
 ```
 
+
 The often difficult bit to understand is that "left_join" property, so let's unpack it together. Notice that we specify
 a model of "user" or "post" on each of the fields, and in the join, only model "user". This implies that "post" is our
 main table, and all results will be drawn first from it. An equivalent SQL statement might look like this:
@@ -123,6 +187,29 @@ SELECT * FROM post p LEFT JOIN user u ON u.id = p.author_id;
 The composite connector will thus do a findAll, query, update, or whatever other method you specify on "post" first.
 Having received the results from post, it will then continue and do a query on "user", searching for the specific
 "author_id" from each result, one at a time. It then merges the results together and returns them as one unified model.
+
+A response from FindAll would look like this:
+
+```json
+[
+	{
+		"id": 1,
+		"title": "Welcome",
+		"content": "Welcome to Axway!",
+		"author_id": 1,
+		"author_first_name": "Alasdair",
+		"author_first_name": "Hurst"
+	},
+	{
+		"id": 2,
+		"title": "Instructions",
+		"content": "This is how to use the appc.composite connector.",
+		"author_id": 2,
+		"author_first_name": "Gavin",
+		"author_first_name": "Matthews"
+	}
+]
+```
 
 #### Single Inner Join
 
@@ -138,13 +225,13 @@ example to also lookup an "attachment" table for our article:
 ```javascript
 Arrow.Model.extend('article', {
 	fields: {
-		title: { type: String, model: 'post', name: 'title' },
-		content: { type: String, model: 'post', name: 'content' },
-		author_id: { type: Number, model: 'post', name: 'author_id' },
-		author_first_name: { type: String, name: 'first_name', required: false, model: 'user' },
-		author_last_name: { type: String, name: 'last_name', required: false, model: 'user' },
-		attachment_id: { type: String, model: 'post', name: 'attachment_id' },
-		attachment_content: { type: String, name: 'attachment_content', required: false, model: 'attachment' }
+		title:              { type: String, name: 'title',              model: 'post' },
+		content:            { type: String, name: 'content',            model: 'post' },
+		author_id:          { type: Number, name: 'author_id',          model: 'post' },
+		author_first_name:  { type: String, name: 'first_name',         model: 'user', required: false },
+		author_last_name:   { type: String, name: 'last_name',          model: 'user', required: false },
+		attachment_id:      { type: String, name: 'attachment_id',      model: 'post' },
+		attachment_content: { type: String, name: 'attachment_content', model: 'attachment', required: false }
 	},
 	connector: 'appc.composite',
 
@@ -171,26 +258,52 @@ Arrow.Model.extend('article', {
 
 The connector will go through the left_joins in order, looking them up and merging the results together.
 
+A response from FindAll would look like this:
+
+```json
+[
+	{
+		"id": 1,
+		"title": "Welcome",
+		"content": "Welcome to Axway!",
+		"author_id": 1,
+		"author_first_name": "Alasdair",
+		"author_first_name": "Hurst",
+		"attachment_id": 1,
+		"attachement_content": "[photo]"
+	},
+	{
+		"id": 2,
+		"title": "Instructions",
+		"content": "This is how to use the appc.composite connector.",
+		"author_id": 2,
+		"author_first_name": "Gavin",
+		"author_first_name": "Matthews"
+	}
+]
+```
+
+
 #### Selecting Whole Models Instead of Fields
 
-Instead of specifying the precise fields you want, you can instead include the entire joined model in your model. The property "name" should *not* be used.
+Instead of specifying the precise fields you want, you can instead include a one-to-one mapping of the entire joined model in your model. This is done by defining a field of type Object, without the property "name".
 
 For example:
 
 ```javascript
-Arrow.Model.extend('accountContract', {
+Arrow.Model.extend('PostAttachment', {
 	fields: {
-		account: { type: Object, model: 'account' },
-		contract: { type: Object, model: 'contract' }
+		post:  { type: Object, model: 'post' },
+		attachment: { type: Object, model: 'attachment' }
 	},
 	connector: 'appc.composite',
 
 	metadata: {
 		'appc.composite': {
 			left_join: {
-				model: 'contract',
+				model: 'attachment',
 				join_properties: {
-					'AccountId': 'id'
+					'id': 'attachment_id'
 				}
 			}
 		}
@@ -198,13 +311,42 @@ Arrow.Model.extend('accountContract', {
 })
 ```
 
-This will look up accounts and each instance will have the account stored in an "account" sub-dictionary. Then it will
-look up contracts that have an AccountId of the account's id, and store one in a "contract" sub-dictionary.
+This will look up posts and each instance will have the post stored in an "post" sub-dictionary. Then it will
+look up attachments that have an id of the post's attachment_id, and store one in a "attachment" sub-dictionary.
+
+A response from FindAll would look like this:
+
+```json
+[
+	{
+		"id": 1,
+		"post":	{
+			"id": 1,
+			"title": "Welcome",
+			"content": "Welcome to Axway!",
+			"author_id": 1,
+			"attachment_id": 1
+		},
+		"attachement": {
+			"id": 1,
+			"attachement_content": "[photo]"
+		}
+	},
+	{
+		"id": 2,
+		"post":	{
+			"id": 2,
+			"title": "Instructions",
+			"content": "This is how to use the appc.composite connector.",
+			"author_id": 2
+		},
+	}
+]
+```
 
 #### Joining with Multiple Children
 
-We have heretofore assumed that an article will have just a single author. But what if we want to join with multiple
-results? For example, let's say we have a "author" model, and we want to select all of their posts. Just add
+We have heretofore assumed that an article will have just a single author. But what if we want to join with multiple results for a one-to-many relationship? For example, let's say we have a "author" model, and we want to select all of their posts. Just add
 a field with type: Array and model: "post" and the connector will handle the rest.
 
 As with selecting a joined object, the property "name" should also *not* be used:
@@ -212,9 +354,9 @@ As with selecting a joined object, the property "name" should also *not* be used
 ```javascript
 Arrow.Model.extend('authorWithArticles', {
 	fields: {
-		first_name: { type: String, model: 'user', name: 'first_name' },
-		last_name: { type: String, model: 'user', name: 'last_name' },
-		posts: { type: Array, model: 'post' }
+		first_name: { type: String, name: 'first_name', model: 'user' },
+		last_name:  { type: String, name: 'last_name',  model: 'user' },
+		posts:      { type: Array,  model: 'post' }
 	},
 	connector: 'appc.composite',
 
@@ -231,18 +373,52 @@ Arrow.Model.extend('authorWithArticles', {
 })
 ```
 
+A response from FindAll would look like this:
+
+```json
+[
+	{
+		"id": 1,
+		"first_name":	"Alasdair",
+		"last_name": "Hurst",
+		"posts": [
+			{
+				"id": 1,
+				"title": "Welcome",
+				"content": "Welcome to Axway!",
+				"author_id": 1,
+				"attachment_id": 1
+			}
+		]
+	},
+	{
+		"id": 2,
+		"first_name":	"Gavin",
+		"last_name": "Matthews",
+		"posts": [
+			{
+				"id": 2,
+				"title": "Instructions",
+				"content": "This is how to use the appc.composite connector.",
+				"author_id": 2,
+			}
+		]
+	}
+]
+```
+
 #### Joining with Single Field from Multiple Children
 
-It's also possible that we don't want every whole post object returned, but to save bandwidth, only the title of each post is necesarry. This is also possible! We just need to specify the name of the field we want to use, but this time we set the field type as Array and add a parameter "multiple" to the join metadata.
+It's also possible that we don't want every whole post object returned, but to save bandwidth, only the title of each post is necesarry. We just need to specify the name of the field we want to use, but this time we set the field type as Array and add a parameter "multiple" to the join metadata.
 
 Note: This only works for single fields from an existing model. To return a subset of fields from a model, a reduced version of the 'post' object would first need to be created and then used in it's place.
 
 ```javascript
 Arrow.Model.extend('authorWithArticles', {
 	fields: {
-		first_name: { type: String, model: 'user', name: 'first_name' },
-		last_name: { type: String, model: 'user', name: 'last_name' },
-		posts: { type: Array, model: 'post', name: 'title' }
+		first_name: { type: String, name: 'first_name', model: 'user' },
+		last_name:  { type: String, name: 'last_name',  model: 'user' },
+		posts:      { type: Array,  name: 'title',      model: 'post' }
 	},
 	connector: 'appc.composite',
 
@@ -260,6 +436,25 @@ Arrow.Model.extend('authorWithArticles', {
 })
 ```
 
+A response from FindAll would look like this:
+
+```json
+[
+	{
+		"id": 1,
+		"first_name":	"Alasdair",
+		"last_name": "Hurst",
+		"posts": [ "Welcome" ]
+	},
+	{
+		"id": 2,
+		"first_name":	"Gavin",
+		"last_name": "Matthews",
+		"posts": [ "Instructions" ]
+	}
+]
+```
+
 ##### Controlling the Children Number
 
 By default the number of joined children is 10. However, this number can be controlled by providing a value between 1 and 1000. To achieve this specify "limit" parameter on the field of type Array like this:
@@ -267,8 +462,8 @@ By default the number of joined children is 10. However, this number can be cont
 ```javascript
 Arrow.Model.extend('authorWithArticles', {
 	fields: {
-		name: { type: String, model: 'user', name: 'name' },
-		posts: { type: Array, model: 'post', limit: '50' }
+		name:  { type: String, name: 'name',  model: 'user' },
+		posts: { type: Array,  model: 'post', limit: '50' }
 	},
 	connector: 'appc.composite',
 	metadata: {
@@ -303,6 +498,45 @@ module.exports = function(Arrow) {
 
 Notice that we don't need any metadata. This just batches the two models together, so a findAll on the composite model
 will result in the same being applied to each sub-model, and the results are returned together.
+
+
+A response from FindAll would look like this:
+
+```json
+[
+	{
+		"users": [
+			{
+				"id": 1,
+				"first_name": "Alasdair",
+				"last_name": "Hurst",
+				"roles": ["admin", "user"]
+			},
+			{
+				"id": 2,
+				"first_name": "Gavin",
+				"last_name": "Matthews",
+				"roles": ["user"]
+			}
+		],
+		"posts": [
+			{
+				"id": 1,
+				"title": "Welcome",
+				"content": "Welcome to Axway!",
+				"author_id": 1,
+				"attachment_id": 1
+			},
+			{
+				"id": 2,
+				"title": "Instructions",
+				"content": "This is how to use the appc.composite connector.",
+				"author_id": 2
+			}
+		]
+	}
+]
+```
 
 You can query by passing in the relevant arguments as sub-dictionaries:
 
