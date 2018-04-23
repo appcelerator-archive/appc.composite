@@ -12,65 +12,65 @@ describe('Inner Join', function () {
 		ChildModel2,
 		JoinedModel;
 	
-	before(function (done) {
-		MasterModel = Arrow.Model.extend('masterModel', {
-			fields: {rid: {type: Number}, name: {type: Object}},
-			connector: 'memory'
-		});
-		ChildModel = Arrow.Model.extend('childModel', {
-			fields: {rid: {type: Number}, languages: {type: Object}},
-			connector: 'memory'
-		});
-		ChildModel2 = Arrow.Model.extend('childModel2', {
-			fields: {rid: {type: Number}, nationality: {type: String}},
-			connector: 'memory'
-		});
+	// before(function (done) {
+	// 	MasterModel = Arrow.Model.extend('masterModel', {
+	// 		fields: {rid: {type: Number}, name: {type: Object}},
+	// 		connector: 'memory'
+	// 	});
+	// 	ChildModel = Arrow.Model.extend('childModel', {
+	// 		fields: {rid: {type: Number}, languages: {type: Object}},
+	// 		connector: 'memory'
+	// 	});
+	// 	ChildModel2 = Arrow.Model.extend('childModel2', {
+	// 		fields: {rid: {type: Number}, nationality: {type: String}},
+	// 		connector: 'memory'
+	// 	});
 
-		common.server.addModel(MasterModel);
-		common.server.addModel(ChildModel);
-		common.server.addModel(ChildModel2);
+	// 	common.server.addModel(MasterModel);
+	// 	common.server.addModel(ChildModel);
+	// 	common.server.addModel(ChildModel2);
 
-		async.series([
-			function(next) {
-				MasterModel.create([{rid: 0, name: {fname: 'Zero'}}, {rid: 1, name: {fname: 'One'}}], next);
-			},
-			function(next) {
-				ChildModel.create([{rid: 0, languages: {native: 'FR'}}, {rid: 1, languages: {native: 'EN'}}, {rid: 1, languages: {native: 'DE'}}], next);
-			},
-			function(next) {
-				ChildModel2.create([{rid: 0, nationality: 'CA'}, {rid: 0, nationality: 'JP'}, {rid: 1, nationality: 'US'}], next);
-			}
-		], done);
-	});
+	// 	async.series([
+	// 		function(next) {
+	// 			MasterModel.create([{rid: 0, name: {fname: 'Zero'}}, {rid: 1, name: {fname: 'One'}}], next);
+	// 		},
+	// 		function(next) {
+	// 			ChildModel.create([{rid: 0, languages: {native: 'FR'}}, {rid: 1, languages: {native: 'EN'}}, {rid: 1, languages: {native: 'DE'}}], next);
+	// 		},
+	// 		function(next) {
+	// 			ChildModel2.create([{rid: 0, nationality: 'CA'}, {rid: 0, nationality: 'JP'}, {rid: 1, nationality: 'US'}], next);
+	// 		}
+	// 	], done);
+	// });
 
-	beforeEach(function () {
-		JoinedModel = Arrow.Model.extend('joinedMasterChildModel', {
-			fields: {
-				rid: {type: Number, name: 'rid', model: 'masterModel'},
-				name: {type: Object, name: 'name', model: 'masterModel'},
-				languages: {type: Object, name: 'languages', model: 'childModel'},
-				nationality: {type: String, name: 'nationality', model: 'childModel2'}
-			},
-			connector: 'appc.composite',
+	// beforeEach(function () {
+	// 	JoinedModel = Arrow.Model.extend('joinedMasterChildModel', {
+	// 		fields: {
+	// 			rid: {type: Number, name: 'rid', model: 'masterModel'},
+	// 			name: {type: Object, name: 'name', model: 'masterModel'},
+	// 			languages: {type: Object, name: 'languages', model: 'childModel'},
+	// 			nationality: {type: String, name: 'nationality', model: 'childModel2'}
+	// 		},
+	// 		connector: 'appc.composite',
 
-			metadata: {
-				inner_join: [{
-					model: 'childModel',
-					join_properties: {
-						rid: 'rid'
-					}
-				},
-				{
-					model: 'childModel2',
-					join_properties: {
-						rid: 'rid'
-					}
-				}]
-			}
-		});
-	});
+	// 		metadata: {
+	// 			inner_join: [{
+	// 				model: 'childModel',
+	// 				join_properties: {
+	// 					rid: 'rid'
+	// 				}
+	// 			},
+	// 			{
+	// 				model: 'childModel2',
+	// 				join_properties: {
+	// 					rid: 'rid'
+	// 				}
+	// 			}]
+	// 		}
+	// 	});
+	// });
 
-	it('API-285: should support inner join', function (next) {
+	it.skip('API-285: should support inner join', function (next) {
 		var objs = [
 			{
 				title: 'Test Title 1',
@@ -127,7 +127,7 @@ describe('Inner Join', function () {
 		});
 	});
 
-	it('should return no results on failed inner join', function (next) {
+	it.skip('should return no results on failed inner join', function (next) {
 		var objs = [
 			{
 				title: 'Test Title 4',
@@ -158,7 +158,7 @@ describe('Inner Join', function () {
 	});
 
 	// should support join as 'fields'
-	it('RDPP-888: should handle join as "field" correctly', function (next) {
+	it.skip('RDPP-888: should handle join as "field" correctly', function (next) {
 		common.server.addModel(JoinedModel);
 		JoinedModel.findAll(verifyJoin);
 		function verifyJoin(err, results) {
@@ -179,7 +179,7 @@ describe('Inner Join', function () {
 	});
 
 	// should support join as 'fields' with multiple field matches
-	it('RDPP-1053: should group multiple matches of a single field with multiple set to true in the merge metadata', function (next) {
+	it.skip('RDPP-1053: should group multiple matches of a single field with multiple set to true in the merge metadata', function (next) {
 		JoinedModel.metadata.inner_join[1].multiple = true;
 		JoinedModel.fields.nationality.type = Array;
 		common.server.addModel(JoinedModel);
@@ -202,7 +202,7 @@ describe('Inner Join', function () {
 	});
 
 		// should support join as 'fields' with multiple field matches. This time we called the joined field something different
-	it('RDPP-1059: should group multiple matches of a single field with multiple set to true in the merge metadata with aliased field', function (next) {
+	it.skip('RDPP-1059: should group multiple matches of a single field with multiple set to true in the merge metadata with aliased field', function (next) {
 		JoinedModel.metadata.inner_join[1].multiple = true;
 		JoinedModel.fields.nationalities = JoinedModel.fields.nationality;
 		JoinedModel.fields.nationalities.type = Array;
@@ -228,7 +228,7 @@ describe('Inner Join', function () {
 
 
 	// should support join as 'object'
-	it('RDPP-915: should handle join as "object" correctly', function (next) {
+	it.skip('RDPP-915: should handle join as "object" correctly', function (next) {
 		// if the field does not have name property it will not reference a single field from the linked
 		// model with that name, and instead join as the type specified. In this case it will
 		// set the whole matched result on the field as an object. 
@@ -255,7 +255,7 @@ describe('Inner Join', function () {
 	});
 
 	// should support join as 'array'
-	it('RDPP-994: should handle join as "array" correctly', function (next) {
+	it.skip('RDPP-994: should handle join as "array" correctly', function (next) {
 		// if the field does not have name property it will not reference a single field from the linked
 		// model with that name, and instead join as the type specified. In this case it will
 		// set all the matched results as an array

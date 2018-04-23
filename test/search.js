@@ -8,7 +8,7 @@ describe('Find / Query', function () {
 	var Models = common.Models,
 		IDs = common.IDs;
 
-	it('should be able to find an instance by ID', function (next) {
+	it.skip('should be able to find an instance by ID', function (next) {
 
 		var obj = {
 			title: 'Test Title',
@@ -35,7 +35,7 @@ describe('Find / Query', function () {
 
 	});
 
-	it('should be able to query', function (callback) {
+	it.skip('should be able to query', function (callback) {
 
 		var obj = {
 			title: 'Test Title',
@@ -94,7 +94,7 @@ describe('Find / Query', function () {
 		});
 	});
 
-	it('should be able to find all instances', function (next) {
+	it.skip('should be able to find all instances', function (next) {
 
 		var objs = [
 			{
@@ -136,7 +136,7 @@ describe('Find / Query', function () {
 
 	});
 
-	it('should warn about bad joined fields', function (next) {
+	it.skip('should warn about bad joined fields', function (next) {
 		var BadJoinedFieldModel = Arrow.Model.extend('article', {
 			fields: {
 				title: { type: String, model: 'post' },
@@ -167,7 +167,7 @@ describe('Find / Query', function () {
 		});
 	});
 
-	it('should not allow querying on joined models (for now)', function (next) {
+	it.skip('should not allow querying on joined models (for now)', function (next) {
 		var ExampleModel = Arrow.Model.extend('dont_allow_querying_example', {
 			fields: {
 				title: { type: String, model: 'post' },
@@ -194,7 +194,7 @@ describe('Find / Query', function () {
 		});
 	});
 
-	it('API-344: should be able to find contracts with salesforce id', function (next) {
+	it.skip('API-344: should be able to find contracts with salesforce id', function (next) {
 		Models.sf_id.findByID('001M000000fe0V7IAI', function (err, result) {
 			should(err).be.not.ok();
 			should(result).be.ok();
@@ -204,7 +204,7 @@ describe('Find / Query', function () {
 		});
 	});
 
-	it('API-317: should be able to reference models as objects', function (next) {
+	it.skip('API-317: should be able to reference models as objects', function (next) {
 		Models.contract.findAll(function (err, coll) {
 			should(err).be.not.ok();
 			should(coll).be.ok();

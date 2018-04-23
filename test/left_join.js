@@ -8,7 +8,7 @@ describe('Left Join', function () {
 	var Models = common.Models,
 		IDs = common.IDs;
 
-	it('should warn when joined on a bad model', function (next) {
+	it.skip('should warn when joined on a bad model', function (next) {
 		var ExampleModel = Arrow.Model.extend('bad_model_query_example', {
 			fields: {
 				title: {type: String, model: 'i_dont_exist'},
@@ -35,7 +35,7 @@ describe('Left Join', function () {
 		});
 	});
 
-	it('API-565: should translate named fields in queries', function (next) {
+	it.skip('API-565: should translate named fields in queries', function (next) {
 		Models.emp.query({
 			where: {
 				fname: {$like: 'Fre%'}
@@ -48,7 +48,7 @@ describe('Left Join', function () {
 		});
 	});
 
-	it('API-284: should handle left join when right can be null', function (next) {
+	it.skip('API-284: should handle left join when right can be null', function (next) {
 
 		var objs = [
 			{
@@ -112,7 +112,7 @@ describe('Left Join', function () {
 
 	});
 
-	it('API-933: should pull in fields and whole objects from joined models', function (next) {
+	it.skip('API-933: should pull in fields and whole objects from joined models', function (next) {
 
 		var objs = [
 			{
@@ -146,7 +146,7 @@ describe('Left Join', function () {
 
 	});
 
-	it('API-933: should pull in fields and whole objects from source models', function (next) {
+	it.skip('API-933: should pull in fields and whole objects from source models', function (next) {
 
 		var Author = Arrow.createModel('author', {
 				fields: {
@@ -208,7 +208,7 @@ describe('Left Join', function () {
 		});
 	});
 
-	it('API-283: API-351: should allow 0-1-many joins', function (next) {
+	it.skip('API-283: API-351: should allow 0-1-many joins', function (next) {
 		Models.employee.deleteAll(function (err) {
 			should(err).be.not.ok();
 			Models.employee.create([
@@ -261,7 +261,7 @@ describe('Left Join', function () {
 		});
 	});
 
-	it('API-805: should ignore custom fields', function (next) {
+	it.skip('API-805: should ignore custom fields', function (next) {
 		var MasterModel = Arrow.Model.extend('masterModel805', {
 				fields: {rid: {type: Number}, name: {type: String}},
 				connector: 'memory'
@@ -319,7 +319,7 @@ describe('Left Join', function () {
 		}
 	});
 
-	it('API-710: should allow joining when the joined value is 0', function (next) {
+	it.skip('API-710: should allow joining when the joined value is 0', function (next) {
 		var MasterModel = Arrow.Model.extend('masterModel', {
 				fields: {rid: {type: Number}, name: {type: String}},
 				connector: 'memory'
