@@ -13,7 +13,7 @@ timestamps {
 
 		buildConnector {
 			// don't override anything yet
-			nodeVersion = 8.11.1
+			nodeVersion = '8.11.1'
 		}
 	}
 }
