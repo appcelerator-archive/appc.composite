@@ -29,7 +29,7 @@ describe('Composite - CRUD', function () {
 		], next);
 	});	
 
-	it('[RDPP-4451] Should be able to find an instance by ID', function (next) {
+	it('[RDPP-4451-2] Should be able to find an instance by ID', function (next) {
 		var obj = {
 			title: 'Article Title 0',
 			content: 'Article Content 0',
@@ -53,14 +53,14 @@ describe('Composite - CRUD', function () {
 		});
 	});
 
-	it('[RDPP-4451] Should be able to find all instances', function (next) {
+	it('[RDPP-4451-1] Should be able to find all instances', function (next) {
 		utils.server().models.Article.find(function (err, articles) {
 			should(articles.length === 1);
 			return next();
 		});
 	});
 
-	it('[RDPP-4451] API-710: Should be able to find when the joined value is 0', function (next) {
+	it('[RDPP-4451-3] API-710: Should be able to find when the joined value is 0', function (next) {
 		utils.server().models.MasterModel.create([{ rid: 0, name: 'Zero' }, { rid: 1, name: 'One' }], function (err, instance) {
 			utils.addInstance('MasterModel', instance);
 			utils.server().models.ChildModel.create([{ rid: 0, age: '24' }, { rid: 1, age: '39' }], function (err, instance) {
@@ -73,7 +73,7 @@ describe('Composite - CRUD', function () {
 		});
 	});
 
-	it('[RDPP-4451] Should be able to CRUD composite instance joining 3 models', function () {
+	it('[RDPP-4451-4] Should be able to CRUD composite instance joining 3 models', function () {
 		var obj = {
 			title: 'Article Title 0',
 			content: 'Article Content 0',

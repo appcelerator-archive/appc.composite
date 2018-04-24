@@ -37,7 +37,7 @@ describe('Composite - Quering', function() {
 		], next);
 	});	
 
-	it('[RDPP-4451] Should be able to query', function (next) {
+	it('[RDPP-4451-27] Should be able to query', function (next) {
 		var options = {
 			where: { content: 'Main Article Content' }
 		};
@@ -48,7 +48,7 @@ describe('Composite - Quering', function() {
 		});
 	});
 
-	it('[RDPP-4451] Should return no results when query with invalid where', function (next) {
+	it('[RDPP-4451-28] Should return no results when query with invalid where', function (next) {
 		var options = { where: { content: 'bad' } };
 		utils.server().models.Article.query(options, function (err, articles) {
 			should(articles).have.length(0);
@@ -56,7 +56,7 @@ describe('Composite - Quering', function() {
 		});
 	});
 
-	it('[RDPP-4451] API 354. Joined fields cannot be queried on yet', function (next) {
+	it('[RDPP-4451-25] API 354. Joined fields cannot be queried on yet', function (next) {
 		utils.server().models.Article.query({ where: { author_first_name: 'cant be queried on just yet' } }, function (err) {
 			should(err).be.ok();
 			should(String(err)).containEql('Joined fields cannot be queried on yet');
@@ -64,7 +64,7 @@ describe('Composite - Quering', function() {
 		});
 	});
 
-	it('[RDPP-4451] Should be able to query via aliased fields - exact value in where caluse', function () {
+	it('[RDPP-4451-26] Should be able to query via aliased fields - exact value in where caluse', function () {
 		async.series([
 			function (done) {
 				utils.createModelInstance('Employee',{ first_name: 'Fred' }, done);

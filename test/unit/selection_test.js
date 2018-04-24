@@ -15,7 +15,7 @@ describe('Composite - Selection', function () {
 		}, next);		
 	});
 
-	it('[RDPP-4451] Selection + Alias', function (next) {
+	it('[RDPP-4451-30] Selection Alias', function (next) {
 		var originalModel = utils.server().instances.Superuser[0];
 		utils.server().models.ReducedSuperuser.find(validate);
 

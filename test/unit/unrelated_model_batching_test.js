@@ -40,7 +40,7 @@ describe('Composite - Unrelated Models Batching', function () {
 		], next);
 	});
 
-	it('[RDPP-4451] Should be able to find all', function (next) {
+	it('[RDPP-4451-32] Should be able to find all', function (next) {
 		utils.server().models.SuperusersPosts.find(validate);
 		function validate(err, result) {
 			should(result).is.Object();
@@ -50,7 +50,7 @@ describe('Composite - Unrelated Models Batching', function () {
 		}
 	});
 
-	it('[RDPP-4451] Should be able to findByID', function (next) {
+	it('[RDPP-4451-33] Should be able to findByID', function (next) {
 		var userId = utils.server().instances.Superuser[0].getPrimaryKey();
 		var postId = utils.server().instances.Post[0].getPrimaryKey();
 		utils.server().models.SuperusersPosts.findByID({
@@ -67,7 +67,7 @@ describe('Composite - Unrelated Models Batching', function () {
 		}
 	});
 
-	it('[RDPP-4451] Should be able to findByID with JSON.stringify', function (next) {
+	it('[RDPP-4451-31] Should be able to findByID with JSON.stringify', function (next) {
 		var userId = utils.server().instances.Superuser[0].getPrimaryKey();
 		var postId = utils.server().instances.Post[0].getPrimaryKey();
 		utils.server().models.SuperusersPosts.findByID(JSON.stringify({
@@ -80,7 +80,7 @@ describe('Composite - Unrelated Models Batching', function () {
 		}
 	});
 
-	it('[RDPP-4451] Should be able to query', function (next) {
+	it('[RDPP-4451-34] Should be able to query', function (next) {
 		utils.server().models.SuperusersPosts.query({
 			users: { limit: 1 },
 			posts: { where: { title: 'Post 1' } }

@@ -37,7 +37,7 @@ describe('Composite - One to One', function () {
 		], next);
 	});
 
-	it('[RDPP-4451] Left Join - One to One with Object', function(next) {
+	it('[RDPP-4451-24] Left Join - One to One with Object', function(next) {
 		utils.server().models.CustomerInfo1.find(validate);
 
 		function validate(err, result) {
@@ -53,7 +53,7 @@ describe('Composite - One to One', function () {
 	/**
 	 * When the field is alased the Object type is ignored and string is returned instead of the whole Object
 	 */
-	it('[RDPP-4451] Left Join - One to One with Aliased Object', function (next) {
+	it('[RDPP-4451-17] Left Join - One to One with Aliased Object', function (next) {
 		utils.server().models.CustomerInfo7.find(validate);
 		function validate(err, result) {
 			should(result.length).equal(3);
@@ -71,7 +71,7 @@ describe('Composite - One to One', function () {
 	 * TODO: Should we fix this.
 	 * Ticket: https://techweb.axway.com/jira/browse/RDPP-4454
 	 */
-	it('[RDPP-4451] Left Join - One to One with String', function (next) {
+	it('[RDPP-4451-18] Left Join - One to One with String', function (next) {
 		utils.server().models.CustomerInfo3.find(validate);
 		function validate(err, result) {
 			should(result.length).equal(3);
@@ -86,7 +86,7 @@ describe('Composite - One to One', function () {
 	/**
 	 * When the field is aliased it works as expected having the joined values as strings
 	 */
-	it('[RDPP-4451] Left Join - One to One with Aliased String', function (next) {
+	it('[RDPP-4451-21] Left Join - One to One with Aliased String', function (next) {
 		utils.server().models.CustomerInfo2.find(validate);
 
 		function validate(err, result) {
@@ -99,7 +99,7 @@ describe('Composite - One to One', function () {
 		}
 	});
 
-	it('[RDPP-4451] Inner Join - One to One with Object', function (next) {
+	it('[RDPP-4451-23] Inner Join - One to One with Object', function (next) {
 		utils.server().models.CustomerInfo4.find(validate);
 
 		function validate(err, result) {
@@ -116,7 +116,7 @@ describe('Composite - One to One', function () {
 	 * When the field is alased the Object type is ignored and string is returned instead of the whole Object
 	 * Ticket: https://techweb.axway.com/jira/browse/RDPP-4461
 	 */
-	it('[RDPP-4451] Inner Join - One to One with Aliased Object', function (next) {
+	it('[RDPP-4451-20] Inner Join - One to One with Aliased Object', function (next) {
 		utils.server().models.CustomerInfo8.find(validate);
 		function validate(err, result) {
 			should(result.length).equal(2);
@@ -135,7 +135,7 @@ describe('Composite - One to One', function () {
 	 * TODO: Should we fix this.
 	 * Ticket: https://techweb.axway.com/jira/browse/RDPP-4454
 	 */
-	it('[RDPP-4451] Inner Join - One to One with String', function (next) {
+	it('[RDPP-4451-19] Inner Join - One to One with String', function (next) {
 		utils.server().models.CustomerInfo6.find(validate);
 		function validate(err, result) {
 			should(result.length).equal(2);
@@ -150,7 +150,7 @@ describe('Composite - One to One', function () {
 	/**
 	 * Ticket: https://techweb.axway.com/jira/browse/RDPP-4461
 	 */
-	it(' [RDPP-4451] Inner Join - One to One with Aliased String', function (next) {
+	it('[RDPP-4451-22] Inner Join - One to One with Aliased String', function (next) {
 		utils.server().models.CustomerInfo5.find(validate);
 
 		function validate(err, result) {

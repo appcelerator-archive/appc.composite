@@ -60,7 +60,7 @@ describe('Composite - One to Many', function () {
 	/**
 	 * We get Array with the whole joined object data when no field is specified
 	 */
-	it('[RDPP-4451] Left Join Array - No Alias - No Mupltiple', function (next) {
+	it('[RDPP-4451-10] Left Join Array - No Alias - No Mupltiple', function (next) {
 		utils.server().models.Blog1.find(function (err, result) {
 			should(result.length).equal(3);
 			should(result[0].posts.length).equal(2);
@@ -75,7 +75,7 @@ describe('Composite - One to Many', function () {
 	/**
 	 * Multiple has no effect here and we get the same as previous
 	 */
-	it('[RDPP-4451] Left Join Array - No Alias - With Multiple', function (next) {
+	it('[RDPP-4451-13] Left Join Array - No Alias - With Multiple', function (next) {
 		utils.server().models.Blog2.find(function (err, result) {
 			should(result.length).equal(3);
 			should(result[0].posts.length).equal(2);
@@ -91,7 +91,7 @@ describe('Composite - One to Many', function () {
 	 * We defined an Alias which denotes which data from the references Model we need.
 	 * So we endup getting String instead of Array for the joined models.
 	 */
-	it('[RDPP-4451] Left Join Array - With Alias - No Multiple', function (next) {
+	it('[RDPP-4451-12] Left Join Array - With Alias - No Multiple', function (next) {
 		utils.server().models.Blog3.find(function (err, result) {
 			should(result.length).equal(3);
 			should(result[0].posts).is.String();
@@ -108,7 +108,7 @@ describe('Composite - One to Many', function () {
 	 * We defined an Alias which denotes which data from the references Model we need.
 	 * So we endup getting Array with strings. Multiple property has no real effect.
 	 */
-	it('[RDPP-4451] Left Join - With Alias - With Multiple', function (next) {
+	it('[RDPP-4451-9] Left Join - With Alias - With Multiple', function (next) {
 		utils.server().models.Blog4.find(function (err, result) {
 			should(result.length).equal(3);
 			should(result[0].posts.length).equal(2);
@@ -123,7 +123,7 @@ describe('Composite - One to Many', function () {
 	/**
 	 * We get Array with the whole joined object data when no field is specified
 	 */
-	it('[RDPP-4451] Inner Join Array - No Alias - No Mupltiple', function (next) {
+	it('[RDPP-4451-11] Inner Join Array - No Alias - No Mupltiple', function (next) {
 		utils.server().models.Blog5.find(function (err, result) {
 			should(result.length).equal(2);
 			should(result[0].posts.length).equal(2);
@@ -137,7 +137,7 @@ describe('Composite - One to Many', function () {
 	/**
 	 * Multiple has no effect here and we get the same as previous
 	 */
-	it('[RDPP-4451] Inner Join Array - No Alias - With Multiple', function (next) {
+	it('[RDPP-4451-14] Inner Join Array - No Alias - With Multiple', function (next) {
 		utils.server().models.Blog6.find(function (err, result) {
 			should(result.length).equal(2);
 			should(result[0].posts.length).equal(2);
@@ -153,7 +153,7 @@ describe('Composite - One to Many', function () {
 	 * So we endup getting String instead of Array for the joined models.
 	 * Ticket: https://techweb.axway.com/jira/browse/RDPP-4461
 	 */
-	it('[RDPP-4451] Inner Join Array - With Alias - No Multiple', function (next) {
+	it('[RDPP-4451-16] Inner Join Array - With Alias - No Multiple', function (next) {
 		utils.server().models.Blog7.find(function (err, result) {
 			should(result.length).equal(2);
 			should(result[0].posts).is.String();
@@ -170,7 +170,7 @@ describe('Composite - One to Many', function () {
 	 * We defined an Alias which denotes which data from the references Model we need.
 	 * So we endup getting Array with strings. Multiple property has no real effect.
 	 */
-	it('[RDPP-4451] Inner Join Array - With Alias - With Multiple', function (next) {
+	it('[RDPP-4451-15] Inner Join Array - With Alias - With Multiple', function (next) {
 		utils.server().models.Blog8.find(function (err, result) {
 			should(result.length).equal(2);
 			should(result[0].posts).is.Array();

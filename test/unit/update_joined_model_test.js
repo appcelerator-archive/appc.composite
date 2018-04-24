@@ -8,7 +8,7 @@ describe('Composite - Updating Joined Model Through Its Paired Model', function 
 		return next();
 	});
 
-	it('[RDPP-4451] Should be able to update the master model via the aliased fields', function (next) {
+	it('[RDPP-4451-35] Should be able to update the master model via the aliased fields', function (next) {
 		utils.createModelInstance('MasterModel', { rid: 0, name: 'Zero' }, function(err, mmInstance) {
 			var pk = mmInstance.getPrimaryKey();
 			var updatedValue = 'Bob';

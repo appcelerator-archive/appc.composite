@@ -32,7 +32,7 @@ describe('Composite - Instance Creation', function () {
 	/**
    * When not aliased setting joined field on creation throws
    */
-	it('[RDPP-4451] API-354 Joined fields cannot be written to yet.', function (next) {
+	it('[RDPP-4451-7] API-354 Joined fields cannot be written to yet.', function (next) {
 		var obj = {
 			title: 'Article Title 0',
 			content: 'Article Content 0',
@@ -50,7 +50,7 @@ describe('Composite - Instance Creation', function () {
 	 * When is aliased the creation of the composite model that points to existing pk "recover" the model with its relations.
 	 * Should we do something here: https://techweb.axway.com/jira/browse/RDPP-4453
    */
-	it('[RDPP-4451] Should not allow writing to joined models - aliased', function (next) {
+	it('[RDPP-4451-8] Should not allow writing to joined models - aliased', function (next) {
 		var obj = {
 			title: 'Article Title 1',
 			content: 'Article Content 1',
@@ -68,14 +68,14 @@ describe('Composite - Instance Creation', function () {
 		});
 	});
 
-	it('[RDPP-4451] Badly joined fields affects the proper creation of the model instance', function (next) {
+	it('[RDPP-4451-6] Badly joined fields affects the proper creation of the model instance', function (next) {
 		utils.server().models.BadJoin.find(function (err, article) {
 			should(article.getPrimaryKey).be.not.ok();
 			return next();
 		});
 	});
 
-	it('[RDPP-4451] Should warn when joined on a bad model', function (next) {
+	it('[RDPP-4451-5] Should warn when joined on a bad model', function (next) {
 		utils.server().models.BadModel.findAll(function (err) {
 			should(err).be.ok();
 			should(String(err)).containEql('Unable to find model i_dont_exist');
