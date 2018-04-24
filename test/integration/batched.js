@@ -81,7 +81,7 @@ describe('Connector', function () {
 		});
 	});
 
-	it.skip('API-344: should be able to batch across 4 different connectors', function (next) {
+	it('API-344: should be able to batch across 4 different connectors', function (next) {
 		Models.uc_9a.findAll(function (err, result) {
 			should(err).be.not.ok();
 			should(result).be.ok();
@@ -102,7 +102,7 @@ describe('Connector', function () {
 		});
 	});
 
-	it.skip('API-567: should not mysql error on bad regex field', function (next) {
+	it('API-567: should not mysql error on bad regex field', function (next) {
 		Models.multijoin.query({
 			where: {
 				employees: { where: { email_address: { $like: 'smith.com' } } },

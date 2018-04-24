@@ -4,7 +4,7 @@ module.exports = function (grunt) {
 	grunt.initConfig({
 		mocha_istanbul: {
 			coverage: {
-				src: 'test',
+				src: 'test/unit',
 				options: {
 					timeout: 30000,
 					ignoreLeaks: false,
@@ -29,12 +29,9 @@ module.exports = function (grunt) {
 
 	// Load grunt plugins for modules.
 	grunt.loadNpmTasks('grunt-contrib-jshint');
-	// TODO: Uncomment when unit-tests are working
-	// grunt.loadNpmTasks('grunt-mocha-istanbul');
+	grunt.loadNpmTasks('grunt-mocha-istanbul');
 	grunt.loadNpmTasks('grunt-contrib-clean');
 
 	// Register tasks.
-	// TODO: Uncomment when unit-tests are working
- 	// grunt.registerTask('default', ['jshint', 'mocha_istanbul:coverage', 'clean']);
-	grunt.registerTask('default', ['jshint', 'clean']);
+ 	grunt.registerTask('default', ['jshint', 'mocha_istanbul:coverage', 'clean']);
 };
