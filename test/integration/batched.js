@@ -8,7 +8,7 @@ describe('Connector', function () {
 	var Models = common.Models,
 		IDs = common.IDs;
 
-	it.skip('should be able to batched find all', function (next) {
+	it('should be able to batched find all', function (next) {
 		var user1Data = { first_name: 'Dawson1', last_name: 'Toth1' },
 			user2Data = { first_name: 'Dawson2', last_name: 'Toth2' },
 			post1Data = { title: 'Title1', content: 'Content1', author_id: IDs.user },
@@ -31,7 +31,7 @@ describe('Connector', function () {
 		});
 	});
 
-	it.skip('should be able to batched query', function (next) {
+	it('should be able to batched query', function (next) {
 		Models.user_post.query({
 			users: { limit: 2 },
 			posts: { where: { title: 'Title1' } }
@@ -46,7 +46,7 @@ describe('Connector', function () {
 		});
 	});
 
-	it.skip('should be able to batched findByID', function (next) {
+	it('should be able to batched findByID', function (next) {
 		Models.user_post.findByID({
 			users: IDs.user,
 			posts: IDs.post
@@ -60,7 +60,7 @@ describe('Connector', function () {
 		});
 	});
 
-	it.skip('should be able to batched findByID with stringified params', function (next) {
+	it('should be able to batched findByID with stringified params', function (next) {
 		Models.user_post.findByID(JSON.stringify({
 			users: IDs.user,
 			posts: IDs.post
@@ -74,14 +74,14 @@ describe('Connector', function () {
 		});
 	});
 
-	it.skip('should be able to handle bad stringified params', function (next) {
+	it('should be able to handle bad stringified params', function (next) {
 		Models.user_post.findByID("{ some: bad json }", function (err, result) {
 			should(err).be.ok();
 			next();
 		});
 	});
 
-	it.skip('API-344: should be able to batch across 4 different connectors', function (next) {
+	it('API-344: should be able to batch across 4 different connectors', function (next) {
 		Models.uc_9a.findAll(function (err, result) {
 			should(err).be.not.ok();
 			should(result).be.ok();
@@ -102,7 +102,7 @@ describe('Connector', function () {
 		});
 	});
 
-	it.skip('API-567: should not mysql error on bad regex field', function (next) {
+	it('API-567: should not mysql error on bad regex field', function (next) {
 		Models.multijoin.query({
 			where: {
 				employees: { where: { email_address: { $like: 'smith.com' } } },

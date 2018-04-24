@@ -4,15 +4,15 @@ module.exports = function (grunt) {
 	grunt.initConfig({
 		mocha_istanbul: {
 			coverage: {
-				src: 'test',
+				src: 'test/unit',
 				options: {
 					timeout: 30000,
 					ignoreLeaks: false,
 					check: {
-						statements: 60,
-						branches: 60,
-						functions: 60,
-						lines: 60
+						statements: 90,
+						branches: 90,
+						functions: 90,
+						lines: 90
 					}
 				}
 			}

@@ -1,73 +1,38 @@
 var should = require('should');
 var async = require('async');
-var utils = require('./utils')();
+var utils = require('../utils')();
 
 describe('Composite - One to One', function () {
 
 	beforeEach(function (next) {
-		utils.loadModelsToServer('db-one-to-one');
+		utils.loadModelsToServer('unit', 'db-one-to-one');
 		async.series([
 			function (done) {
-				utils.server().models.Customer.create({
+				utils.createModelInstance('Customer', {
 					name: 'Michael Jordan'
-				}, function (err, instance) {
-					if (err) {
-						done(err);
-					} else {
-						utils.addInstance('Customer', instance);
-						done(null, instance);
-					}
-				});
+				}, done);
 			},
 			function (done) {
-				utils.server().models.Customer.create({
+				utils.createModelInstance('Customer', {
 					name: 'Kevin Garnet'
-				}, function (err, instance) {
-					if (err) {
-						done(err);
-					} else {
-						utils.addInstance('Customer', instance);
-						done(null, instance);
-					}
-				});
+				}, done);
 			},
 			function (done) {
-				utils.server().models.Customer.create({
+				utils.createModelInstance('Customer', {
 					name: 'Kobe Bryant'
-				}, function (err, instance) {
-					if (err) {
-						done(err);
-					} else {
-						utils.addInstance('Customer', instance);
-						done(null, instance);
-					}
-				});
+				}, done);
 			},
 			function (done) {
-				utils.server().models.Address.create({
+				utils.createModelInstance('Address', {
 					street: 'Street 1',
 					customerId: utils.server().instances.Customer[0].getPrimaryKey()
-				}, function (err, instance) {
-					if (err) {
-						done(err);
-					} else {
-						utils.addInstance('Address', instance);
-						done(null, instance);
-					}
-				});
+				}, done);
 			},
 			function (done) {
-				utils.server().models.Address.create({
+				utils.createModelInstance('Address', {
 					street: 'Street 2',
 					customerId: utils.server().instances.Customer[1].getPrimaryKey()
-				}, function (err, instance) {
-					if (err) {
-						done(err);
-					} else {
-						utils.addInstance('Address', instance);
-						done(null, instance);
-					}
-				});
+				}, done);
 			}
 		], next);
 	});

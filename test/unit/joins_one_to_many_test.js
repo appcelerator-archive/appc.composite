@@ -1,100 +1,58 @@
 var should = require('should');
 var async = require('async');
-var utils = require('./utils')();
+var utils = require('../utils')();
 
 describe('Composite - One to Many', function () {
 	beforeEach(function (next) {
-		utils.loadModelsToServer('db-one-to-many');
+		utils.loadModelsToServer('unit', 'db-one-to-many');
 		async.series([
 			function (done) {
-				utils.server().models.Author.create({
+				utils.createModelInstance('Author', {
 					first_name: 'Michael',
 					last_name: 'Jordan',
 					nickname: 'MJ',
 					mobile: '23',
 					email: 'mj@chicago.com'
-				}, function (err, instance) {
-					if (err) {
-						done(err);
-					} else {
-						utils.addInstance('Author', instance);
-						done(null, instance);
-					}
-				});
+				}, done);
 			},
 			function (done) {
-				utils.server().models.Author.create({
+				utils.createModelInstance('Author', {
 					first_name: 'Lebron',
 					last_name: 'James',
 					nickname: 'LJ',
 					mobile: '32',
 					email: 'lj@miami.com'
-				}, function (err, instance) {
-					if (err) {
-						done(err);
-					} else {
-						utils.addInstance('Author', instance);
-						done(null, instance);
-					}
-				});
+				}, done);
 			},
 			function (done) {
-				utils.server().models.Author.create({
+				utils.createModelInstance('Author', {
 					first_name: 'Kobe',
 					last_name: 'Bryant',
 					nickname: 'KB',
 					mobile: '24',
 					email: 'kb@la.com'
-				}, function (err, instance) {
-					if (err) {
-						done(err);
-					} else {
-						utils.addInstance('Author', instance);
-						done(null, instance);
-					}
-				});
+				}, done);
 			},
 			function (done) {
-				utils.server().models.Post.create({
+				utils.createModelInstance('Post', {
 					title: 'Post 2',
 					content: 'Nice one',
 					author_id: utils.server().instances.Author[0].getPrimaryKey()
-				}, function (err, instance) {
-					if (err) {
-						done(err);
-					} else {
-						utils.addInstance('Post', instance);
-						done(null, instance);
-					}
-				});
+				}, done);
 			},
 			function (done) {
-				utils.server().models.Post.create({
+				utils.createModelInstance('Post', {
 					title: 'Post 3',
 					content: 'My Post 3 Content',
 					author_id: utils.server().instances.Author[0].getPrimaryKey()
-				}, function (err, instance) {
-					if (err) {
-						done(err);
-					} else {
-						utils.addInstance('Post', instance);
-						done(null, instance);
-					}
-				});
+				}, done);
 			},
 			function (done) {
-				utils.server().models.Post.create({
+				utils.createModelInstance('Post', {
 					title: 'Post 1',
 					content: 'TLDR',
 					author_id: utils.server().instances.Author[1].getPrimaryKey()
-				}, function (err, instance) {
-					if (err) {
-						done(err);
-					} else {
-						utils.addInstance('Post', instance);
-						done(null, instance);
-					}
-				});
+				}, done);
 			}
 		], next);
 	});

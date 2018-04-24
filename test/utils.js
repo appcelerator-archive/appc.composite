@@ -5,21 +5,24 @@ var path = require('path');
 module.exports = function () {
 	var server;
 	return {
-    addInstance: function (modelType, instance) {
-			if (server.instances[modelType]) {
-				server.instances[modelType].push(instance);
-			} else {
-				server.instances[modelType] = [];
-				server.instances[modelType].push(instance);
-			}
+		createModelInstance: function (modelType, data, callback) {
+				server.models[modelType].create(data, function (err, instance) {
+					if (err) {
+						callback(err);
+					} else {
+						addInstance(modelType, instance);
+						callback(null, instance);
+					}
+				});
 		},
+		addInstance: addInstance,		
 		server: function () {
 			return server;
 		},
 		/**
 		* This method loads our memory and composite structures
 		*/
-		loadModelsToServer: function (database) {
+		loadModelsToServer: function (testType, database) {
 			// Let's reset all previous Arrow instantiations just in case we run this test suite standalone
 			Arrow.resetGlobal();
 			// Note that we do not start the http server for faster execution
@@ -29,7 +32,7 @@ module.exports = function () {
 			}, loadOnly);
 			// Store here the instances created for each model for convenience
 			server.instances = {};
-			var modelDir = path.join(__dirname, 'models', database);
+			var modelDir = path.join(__dirname, testType, 'models', database);
 			fs.readdirSync(modelDir).forEach(function (file) {
 				if (file.indexOf('.js') > 0) {
 					var model = require(path.join(modelDir, file))(Arrow);
@@ -45,4 +48,13 @@ module.exports = function () {
 			return server;
 		}
 	};
+
+	function addInstance (modelType, instance) {
+		if (server.instances[modelType]) {
+			server.instances[modelType].push(instance);
+		} else {
+			server.instances[modelType] = [];
+			server.instances[modelType].push(instance);
+		}
+	}
 };
